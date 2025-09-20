@@ -1,0 +1,88 @@
+{
+  "homecom": {
+    "navbar": {
+      "home": "Home",
+      "products": "Products",
+      "categories": "Categories",
+      "offers": "Offers",
+      "login": "Login",
+      "register": "Register",
+
+      "profile": {
+        "allorders": "All Orders",
+        "wishlist": "Wish List",
+        "signout": "SignOut"
+      },
+      "openmainmenu": "Open main menu"
+    },
+
+    "allcategories": "All Categories",
+    "shopbyyourfavoritecategory": "Shop By Your Favorite Category",
+    "bestoffers": "Best Offers",
+    "bestoffers!shopnow": "Best Offers! Shop Now",
+    "mostpurchasedproducts": "Most Purchased Products",
+    "Enjoythemostpopularproducts": "Enjoy The Most Popular Products",
+    "searchbycategoryname...": "Search By Category Name..."
+  },
+
+  "products": {
+    "addtocart": "Add To Cart",
+    "brandname": "Brand Name"
+  },
+
+  "auth": {
+    "login": {
+      "loginnow": "Login Now",
+      "username": "User Name",
+      "password": "Password",
+      "userNameisrequired": "UserName is required",
+      "passwordisrequired": "Password is required",
+      "passwordmustbeatleast6characters": "Password must be at least 6 characters",
+      "Passwordcanonlycontainenglishletters,numbers,andunderscores": "Password can only contain english letters,numbers,andunderscores",
+      "forgetpassword?": "Forget Password?",
+      "rememberme": "Remember Me",
+      "login": "Login",
+      "loading...": "Loading...",
+      "continueasguest": "Continue As Guest",
+      "notamember": "Not a member",
+      "registernow": "Register Now"
+    },
+
+    "register": {
+      "registernow": "Register Now",
+      "enteryouremail": "Enter Your Email",
+      "register": "Register",
+      "alreadyamember?": "Already a member ?"
+    }
+  },
+
+  "footer": {
+    "allrightsreserved": " All Rights Reserved.",
+    "about": "About",
+    "privacypolicy": "Privacy Policy",
+    "contact": "Contact",
+    "licensing": "Licensing"
+  },
+
+  "homecomponent": {
+    "allcategories": "All Categories",
+    "shopbyyourfavoritecategory": "Shop By Your Favorite Category",
+    "bestoffers": "Best Offers",
+    "bestoffers!shopnow": "Best offers! Shop now",
+    "mostpurchasedproducts": "Most purchased products",
+    "enjoythemostpopularproducts": "Enjoy the most popular products",
+    "searchbyproductname": "Search By Product Name..."
+  },
+
+  "productdet": {
+    "material": "Material",
+    "blend": "Blend",
+    "category": "Category",
+    "categoryname": "Category Name",
+    "OldPriceEGP": "Old Price EGP",
+    "priceEGP": "price EGP",
+    "totalquentity": "Total Quentity",
+    "pice": "pice",
+    "createdat:": "Created At :"
+  }
+}

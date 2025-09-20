@@ -1,0 +1,92 @@
+{
+  "homecom": {
+    "navbar": {
+      "home": "الرئيسية",
+      "products": "المنتجات",
+      "categories": "الفئات",
+      "offers": "العروض",
+      "login": "تسجيل الدخول",
+      "register": "تسجيل جديد",
+
+      "profile": {
+        "allorders": "جميع الطلبات",
+        "wishlist": "قائمة الرغبات",
+        "signout": "تسجيل الخروج"
+      },
+      "openmainmenu": "افتح القائمة الرئيسية"
+    },
+
+    "allcategories": "جميع الفئات",
+    "shopbyyourfavoritecategory": "تسوق حسب فئتك المفضلة",
+    "bestoffers": "أفضل العروض",
+    "bestoffers!shop now": "أفضل العروض! تسوق الآن",
+    "mostpurchasedproducts": "المنتجات الأكثر شراءً",
+    "Enjoythemostpopularproducts": "استمتع بأكثر المنتجات شعبية",
+    "searchbycategoryname...": " ابحث باسم الفئه ... "
+  },
+
+  "products": {
+    "addtocart": "أضف إلى السلة",
+    "brandname": "العلامة التجارية"
+  },
+
+  "auth": {
+    "login": {
+      "loginnow": "تسجيل الدخول الآن",
+      "username": "اسم المستخدم",
+      "password": "كلمة المرور",
+      "userNameisrequired": "اسم المستخدم مطلوب",
+      "passwordisrequired": "كلمة المرور مطلوبة",
+      "passwordmustbeatleast6characters": "يجب أن تكون كلمة المرور مكونة من 6 أحرف على الأقل",
+      "passwordvalidation": "كلمة المرور يمكن أن تحتوي فقط على أحرف إنجليزية وأرقام وشرطة سفلية (_)",
+      "forgetpassword?": "هل نسيت كلمة المرور ؟",
+      "rememberme": "تذكرني",
+      "login": "تسجيل الدخول",
+      "loading...": "جارٍ التحميل...",
+      "continueasguest": "الدخول كزائر",
+      "notamember": "لست عضواً ؟",
+      "registernow": "سجل الآن",
+      "placeholders": {
+        "username": "أدخل اسم المستخدم",
+        "password": "أدخل كلمة المرور"
+      }
+    },
+
+    "register": {
+      "registernow": "سجّل الآن",
+      "enteryouremail": "أدخل بريدك الإلكتروني",
+      "register": "تسجيل",
+      "alreadyamember?": "هل أنت عضو بالفعل؟"
+    }
+  },
+
+  "footer": {
+    "allrightsreserved": "جميع الحقوق محفوظة.",
+    "about": "من نحن",
+    "privacypolicy": "سياسة الخصوصية",
+    "contact": "اتصل بنا",
+    "licensing": "إدارة التراخيص"
+  },
+
+  "homecomponent": {
+    "allcategories": "كل الفئات",
+    "shopbyyourfavoritecategory": "تسوق حسب فئتك المفضلة",
+    "bestoffers": "أفضل العروض",
+    "bestoffers!shopnow": "أفضل العروض! تسوق الآن",
+    "mostpurchasedproducts": "المنتجات الأكثر شراءً",
+    "enjoythemostpopularproducts": "استمتع بالمنتجات الأكثر رواجًا",
+    "searchbyproductname": "ابحث باسم المنتج..."
+  },
+
+  "productdet": {
+    "material": "الخامة",
+    "blend": "الخليط",
+    "category": "الفئة",
+    "categoryname": "اسم الفئة",
+    "OldPriceEGP": "السعر القديم (ج.م)",
+    "priceEGP": "السعر (ج.م)",
+    "totalquentity:": "إجمالي الكمية:",
+    "pice": "قطعة",
+    "createdat": "تاريخ الإضافة:"
+  }
+}
