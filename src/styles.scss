@@ -1,0 +1,433 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css?family=Raleway:400,700");
+
+// Globel Style
+:root {
+  --primary-green: #28a745;
+  --primary-green-dark: #218838; /* درجة أغمق */
+  --primary-green-light: #34d058; /* درجة أفتح */
+}
+
+// Icons Style
+.iconsColor {
+  color: #6c6c6c;
+
+  &:hover {
+    color: black;
+  }
+}
+
+// inputs
+.form-control {
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: white;
+  background-color: transparent;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  margin-bottom: 5px !important;
+  position: relative;
+
+  &:focus {
+    color: #34d058;
+    backdrop-filter: blur(100px);
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+}
+
+// herf    a
+.links {
+  color: rgb(114, 157, 226);
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+    color: #1c72ce;
+  }
+}
+
+// Register And Login Form
+
+.login-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .login-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+
+    .login-card {
+      width: 420px;
+      border: 1px solid rgba(255, 255, 255, 0.1019607843);
+      backdrop-filter: blur(100px);
+      background: rgba(255, 255, 255, 0.051);
+      border-radius: 25px;
+      padding: 40px 30px;
+      box-shadow: -4px 7px 8px rgb(207, 207, 207);
+
+      .login-title {
+        text-align: center;
+        color: #fff;
+        font-size: 44px;
+        margin-bottom: 25px;
+        font-family: serif;
+      }
+
+      .login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .input-group {
+          position: relative;
+
+          .input-icon {
+            position: absolute;
+            top: 45%;
+            left: 12px;
+            transform: translateY(-50%);
+          }
+
+          .input-field {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+          }
+        }
+
+        .options-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 14px;
+          margin-top: 8px;
+
+          .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #fff;
+          }
+        }
+
+        .login-button {
+          width: 100%;
+          padding: 11px;
+          background-color: #afafaf;
+          color: #000;
+          font-size: 16px;
+          font-weight: bold;
+          border: none;
+          border-radius: 12px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 8px;
+          margin-top: 12px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background-color: #3c3c3c;
+            color: white;
+          }
+        }
+
+        .divider {
+          margin: 15px 0;
+          border: 0.5px solid #ccc;
+        }
+      }
+    }
+  }
+}
+
+// Components Headline
+.heading {
+  h3 {
+    color: var(--primary-green);
+  }
+}
+
+// Product card
+.product-card {
+  background-color: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0px 0px 20px rgba(62, 62, 62, 0.5);
+  transition: all 0.3s ease;
+  width: 100%;
+  height: 400px;
+  position: relative;
+  padding: 5px 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  &:hover {
+    transform: translateY(-6px);
+  }
+
+  &:hover .image-container img {
+    transform: scale(1.1);
+  }
+
+  &:hover .add-to-cart {
+    transform: translateY(0);
+  }
+}
+
+.image-container {
+  overflow: hidden;
+  position: relative;
+  max-height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 10px;
+  img {
+    width: 100%;
+    height: 180px;
+    margin: auto;
+    transition: transform 0.4s ease;
+  }
+}
+
+.product-body {
+  padding: 12px 16px;
+
+  .product-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    span {
+      font-size: 12px;
+    }
+  }
+
+  .price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    .old-price {
+      color: #888;
+      text-decoration: line-through;
+      font-size: 0.85rem;
+    }
+    .current-price {
+      color: var(--primary-green);
+      font-weight: bold;
+    }
+  }
+
+  .rating {
+    font-size: 0.85rem;
+    color: #ffcc00;
+    margin-bottom: 10px;
+  }
+
+  .add-to-cart {
+    background-color: var(--primary-green);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transform: translateY(150%);
+    transition: transform 0.4s ease;
+
+    &:hover {
+      background-color: var(--primary-green-dark);
+    }
+  }
+}
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+}
+
+// Responsive from Reg & Login
+@media (max-width: 768px) {
+  .login-card {
+    width: 90% !important;
+    padding: 30px 20px;
+  }
+
+  .login-title {
+    font-size: 28px;
+  }
+
+  .input-field {
+    padding: 10px 15px 10px 40px;
+    font-size: 14px;
+  }
+
+  .login-button {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    width: 100%;
+    padding: 20px 15px;
+  }
+
+  .login-title {
+    font-size: 24px;
+  }
+
+  .input-field {
+    font-size: 12px;
+  }
+
+  .login-button {
+    font-size: 12px;
+  }
+
+  .options-row {
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .forgot-password {
+    text-align: center;
+  }
+}
+
+@media (max-width: 639px) {
+  nav {
+    padding: 0.5rem 0rem;
+  }
+
+  nav h2 {
+    font-size: 1rem !important;
+  }
+
+  .px-16 {
+    padding-left: 0.8rem !important;
+    padding-right: 0.8rem !important;
+  }
+  #navbar-language {
+    ul {
+      position: relative;
+      z-index: 9999999999999;
+    }
+  }
+
+  .cartCounter {
+    font-size: 10px;
+    top: -8px;
+    left: 8px;
+  }
+
+  .dropdown-menu {
+    right: 0;
+    left: auto;
+    width: 100px;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  nav h2 {
+    font-size: 1.8rem;
+  }
+
+  #navbar-language ul {
+    gap: 1.5rem;
+  }
+
+  .cart .fa-cart-shopping {
+    font-size: 1.2rem;
+  }
+
+  .dropdown-menu {
+    width: 120px;
+  }
+}
+
+@media (min-width: 1024px) {
+  nav h2 {
+    font-size: 2rem;
+  }
+
+  #navbar-language ul {
+    gap: 2rem;
+  }
+
+  .cart .fa-cart-shopping {
+    font-size: 1.4rem;
+  }
+
+  .dropdown-menu {
+    width: 150px;
+  }
+}

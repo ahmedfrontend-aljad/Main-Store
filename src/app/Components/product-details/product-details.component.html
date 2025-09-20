@@ -1,0 +1,84 @@
+<section class="relative" style="padding-top: 80px; background: #fff">
+  <div class="product-detail">
+    <div class="image-section">
+      <img
+        src="../../../assets/images/Product.png"
+        alt="Product Image"
+        class="main-image"
+      />
+
+      <div class="thumbnails">
+        <img src="./assets/images/Product.png" alt="Thumbnail" />
+        <img src="./assets/images/Product.png" alt="Thumbnail" />
+        <img src="./assets/images/Product.png" alt="Thumbnail" />
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2 class="mx-1 font-bold">{{ detailsProduct.NameAr }}</h2>
+      <div class="flex align-middle">
+        <span class="text-muted font-bold small mx-1">By:</span>
+        <img src="./assets/images/Offers/offer-2.jpeg" width="60px" alt="" />
+      </div>
+      <div class="color-select">
+        <ul class="list-unstyled">
+          <li>
+            <strong>{{ "productdet.material" | translate }}: </strong>
+            {{ "productdet.material" | translate }}
+          </li>
+          <li>
+            <strong> {{ "productdet.blend" | translate }}: </strong>
+            {{ "productdet.blend" | translate }}
+          </li>
+          <li style="width: 300px; display: inline-block; line-height: 1.5">
+            <strong>{{ "productdet.category" | translate }}</strong>
+            <span>{{ "productdet.categoryname" | translate }}</span>
+          </li>
+        </ul>
+
+        <p>
+          Fully Description Lorem ipsum dolor sit amet consectetur adipisicing
+          elit. Quam, sunt?
+        </p>
+      </div>
+      <div>
+        <div class="flex align-middle justify-start">
+          <p class="old-price">{{ "productdet.OldPriceEGP" | translate }}</p>
+
+          <p class="price mx-2">{{ "productdet.priceEGP" | translate }}</p>
+        </div>
+      </div>
+
+      <div class="benefits">
+        <div class="flex m-0">
+          <span class="font-bold">
+            <i class="fas fa-box text-warning me-2"></i>
+            {{ "productdet.totalquentity" | translate }}:
+          </span>
+          <p class="font-bold text-muted mx-2 text-green-500">
+            {{ detailsProduct.TotalOutQty }} {{ "productdet.pice" | translate }}
+          </p>
+        </div>
+
+        <div class="sold flex">
+          <span class="font-bold"
+            ><i class="fas fa-shopping-basket text-secondary me-2"></i>
+            {{ "productdet.createdat" | translate }} :
+          </span>
+          <p class="mx-2 font-bold text-muted">
+            {{ detailsProduct.CreatedDate | date }}
+          </p>
+        </div>
+      </div>
+
+      <button class="add-to-cart">
+        <i class="fas fa-shopping-cart me-2"></i>
+        {{ "products.addtocart" | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="backIcon absolute cursor-pointer" (click)="selected()">
+    <i class="fa-regular fa-circle-xmark text-3xl"></i>
+  </div>
+</section>

@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-image: url("/assets/images/Background/mainBack.webp");
+  background-size: cover;
+  background-position: center;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

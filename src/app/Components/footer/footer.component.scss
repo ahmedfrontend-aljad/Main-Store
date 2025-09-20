@@ -1,0 +1,30 @@
+footer {
+  .footer-container {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+      gap: 0;
+    }
+  }
+  .rights {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+  }
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      gap: 30px;
+    }
+  }
+}

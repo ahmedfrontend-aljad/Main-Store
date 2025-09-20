@@ -1,0 +1,145 @@
+nav #navbar-language {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1019607843);
+  backdrop-filter: blur(4px);
+  background-color: rgba(255, 255, 255, 0.051);
+}
+.userIcon {
+  color: rgba(47, 47, 211, 0.8);
+  font-size: 1.4rem;
+  transition: all 0.5s;
+
+  &:hover {
+    color: rgba(7, 7, 229, 1);
+    transform: scale(1.2);
+  }
+}
+
+.cart {
+  .fa-cart-shopping {
+    font-size: 1.4rem;
+    color: var(--primary-green);
+    transition: all 0.5s;
+  }
+  .cartCounter {
+    left: 10px;
+    top: -10px;
+    background-color: #dc3545;
+    padding: 0px 5px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+  }
+  &:hover .fa-cart-shopping {
+    color: var(--primary-green-dark);
+    transform: scale(1.2);
+  }
+}
+.dropdown {
+  position: relative;
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    width: 130px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    right: -32px;
+    left: auto;
+    padding: 0px;
+  }
+
+  .dropdown-menu.show {
+    display: block;
+  }
+
+  html[dir="rtl"] & .dropdown-menu {
+    right: auto;
+    left: 0;
+  }
+}
+
+.dropdown-menu li,
+.dropdown-menu button,
+.dropdown-menu a.nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  text-decoration: none;
+  background: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dropdown-menu li:hover,
+.dropdown-menu button:hover,
+.dropdown-menu a.nav-link:hover {
+  background-color: #626262;
+  color: var(--primary-green);
+  border-radius: 10px;
+}
+
+.dropdown-menu i {
+  font-size: 16px;
+  color: #dc3545;
+}
+
+.guest .container {
+  margin-top: 100px;
+}
+
+.logged-in .container {
+  margin-top: 70px;
+}
+
+/* الموبايل والشاشات الصغيرة */
+@media (max-width: 768px) {
+  nav#navbar-language {
+    border-radius: 10px !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    backdrop-filter: none !important;
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    padding: 10px !important;
+  }
+
+  .userIcon {
+    font-size: 1.2rem !important;
+    color: #007bff !important;
+  }
+
+  .cart .fa-cart-shopping {
+    font-size: 1.2rem !important;
+    color: #28a745 !important;
+  }
+
+  .cart .cartCounter {
+    top: -8px !important;
+    left: 8px !important;
+    font-size: 10px !important;
+    padding: 0px 4px !important;
+  }
+
+  .dropdown .dropdown-menu {
+    width: 100px !important;
+    right: 0 !important;
+    font-size: 13px !important;
+  }
+
+  .guest .container {
+    margin-top: 50px !important;
+  }
+
+  .logged-in .container {
+    margin-top: 40px !important;
+  }
+}

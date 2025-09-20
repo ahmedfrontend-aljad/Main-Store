@@ -1,0 +1,139 @@
+<section class="login-section">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <h2 class="login-title font-semibold font-serif">
+        {{ "auth.login.loginnow" | translate }}
+      </h2>
+      <form
+        class="login-form"
+        [formGroup]="loginForm"
+        (ngSubmit)="sendLodinData()"
+      >
+        <div class="inputInfo">
+          <div class="input-group">
+            <i class="fa-solid fa-user input-icon iconsColor"></i>
+
+            <input
+              [ngClass]="{
+                'border-red-500 ring-1 ring-red-500':
+                  loginForm.get('userName')?.touched &&
+                  loginForm.get('userName')?.invalid,
+                'border-gray-300 focus:ring-blue-500 focus:border-blue-500': !(
+                  loginForm.get('userName')?.touched &&
+                  loginForm.get('userName')?.invalid
+                )
+              }"
+              formControlName="userName"
+              type="text"
+              placeholder="{{ 'auth.login.username' | translate }}"
+              class="input-field form-control block w-full px-3 py-2 rounded-md shadow-sm sm:text-sm"
+            />
+          </div>
+          @if(loginForm.get('userName')?.touched &&
+          loginForm.get('userName')?.errors){
+          <div
+            class="bg-red-100 border border-red-400 text-red-700 px-2 py-1 rounded-md"
+          >
+            @if(loginForm.get('userName')?.getError('required')){
+            <p class=" ">{{ "auth.login.userNameisrequired" | translate }}</p>
+            }
+          </div>
+          }
+        </div>
+
+        <div class="input-info">
+          <div class="input-group">
+            <i class="fa-solid fa-key input-icon iconsColor"></i>
+            <input
+              [ngClass]="{
+                'border-red-500 ring-1 ring-red-500':
+                  loginForm.get('password')?.touched &&
+                  loginForm.get('password')?.invalid,
+                'border-gray-300 focus:ring-blue-500 focus:border-blue-500': !(
+                  loginForm.get('password')?.touched &&
+                  loginForm.get('password')?.invalid
+                )
+              }"
+              type="password"
+              placeholder="{{ 'auth.login.password' | translate }}"
+              class="input-field form-control"
+              formControlName="password"
+            />
+          </div>
+
+          @if (loginForm.get('password')?.touched &&
+          loginForm.get('password')?.invalid) {
+          <div class="mt-2 space-y-1">
+            @if (loginForm.get('password')?.getError('required')) {
+            <p
+              class="bg-red-100 border border-red-400 text-red-700 px-2 py-1 rounded-md"
+            >
+              {{ "auth.login.passwordisrequired" | translate }}
+            </p>
+            } @if (loginForm.get('password')?.getError('minlength')) {
+            <p
+              class="bg-red-100 border border-red-400 text-red-700 px-2 py-1 rounded-md"
+            >
+              {{ "auth.login.passwordmustbeatleast6characters" | translate }}
+            </p>
+            } @if (loginForm.get('password')?.getError('pattern')) {
+            <p
+              class="bg-red-100 border border-red-400 text-red-700 px-2 py-1 rounded-md"
+            >
+              {{
+                "auth.login.Passwordcanonlycontainenglishletters,numbers,andunderscores"
+                  | translate
+              }}
+            </p>
+            }
+          </div>
+          }
+        </div>
+
+        <div class="options-row">
+          <label class="flex items-center space-x-2">
+            <input
+              formControlName="rememberMe"
+              type="checkbox"
+              checked
+              class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+            />
+            <span class="text-sm text-white px-1">
+              {{ "auth.login.rememberme" | translate }}</span
+            >
+          </label>
+
+          <div class="links">
+            <a routerLink="/forgetpassword">
+              {{ "auth.login.forgetpassword?" | translate }}</a
+            >
+          </div>
+        </div>
+        <button
+          type="button"
+          (click)="sendLodinData()"
+          [disabled]="loginForm.invalid || isloading"
+          class="login-button disabled:bg-gray-400 disabled:cursor-not-allowed disabled:pointer-events-none"
+        >
+          @if (isloading) { {{ "auth.login.loading..." | translate }} } @else {
+          {{ "auth.login.login" | translate }} }
+        </button>
+
+        <hr class="divider" />
+        <button
+          (click)="guestLogin()"
+          type="button"
+          class="w-full m-auto px-4 py-2 rounded-2xl font-serif font-semibold text-blue-800 transition-all bg-gray-100 hover:bg-gray-400 mt-0 flex items-center justify-center"
+        >
+          {{ "auth.login.continueasguest" | translate }}
+        </button>
+        <p class="text-center text-white">
+          {{ "auth.login.notamember" | translate }}
+          <a type="button" routerLink="/auth/register" class="links">
+            {{ "auth.login.registernow" | translate }}</a
+          >
+        </p>
+      </form>
+    </div>
+  </div>
+</section>

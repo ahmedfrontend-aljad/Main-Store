@@ -1,0 +1,51 @@
+<nav>
+  <div class="col-12 pt-4 pb-3 px-16 flex justify-between items-center">
+    <div class="mainlogo">
+      <a href="" class="flex items-center gap-1.5">
+        <i class="fa-solid fa-cart-shopping fa-2xl iconsColor"></i>
+        <h2 class="text-3xl font-semibold text-white font-serif">TradeCraft</h2>
+      </a>
+    </div>
+
+    <div
+      class="flex items-center md:order-2 space-x-1 md:space-x-0 rtl:space-x-reverse"
+      id="navbar-language"
+    >
+      <!-- Dropdown -->
+      <div class="relative">
+        <button
+          type="button"
+          (click)="toggleLangDropdown()"
+          class="inline-flex items-center font-medium justify-center px-4 py-2 text-sm text-gray-900 dark:text-white rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+        >
+          {{ selectedLanguage }}
+          <i class="fa-solid fa-chevron-down ms-2"></i>
+        </button>
+
+        <!-- Dropdown List -->
+        @if(showLangDropdown){
+        <ul
+          class="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-200 border border-gray-200 dark:border-gray-200 rounded-lg shadow-lg z-50"
+        >
+          <li (click)="changeLang('en')">
+            <button
+              class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              English
+            </button>
+          </li>
+          <li (click)="changeLang('ar')">
+            <button
+              class="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              عربي
+            </button>
+          </li>
+        </ul>
+        }
+      </div>
+
+     
+    </div>
+  </div>
+</nav>

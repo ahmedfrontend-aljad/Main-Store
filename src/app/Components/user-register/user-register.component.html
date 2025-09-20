@@ -1,0 +1,62 @@
+<section class="login-section">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <h2 class="login-title font-semibold font-serif">
+        {{ "auth.register.registernow" | translate }}
+      </h2>
+      <form
+        class="login-form"
+        [formGroup]="registerForm"
+        (ngSubmit)="sendResgisterData()"
+      >
+        <div class="input-group">
+          <i class="fa-solid fa-user input-icon iconsColor"></i>
+          <input
+            type="text"
+            placeholder="{{ 'auth.login.username' | translate }}"
+            class="input-field form-control"
+            formControlName="userName"
+          />
+        </div>
+
+        <div class="input-group">
+          <i class="fa-solid fa-envelope input-icon iconsColor"></i>
+          <input
+            type="email"
+            placeholder="{{ 'auth.register.enteryouremail' | translate }}"
+            class="input-field form-control"
+            formControlName="email"
+          />
+        </div>
+
+        <div class="input-group">
+          <i class="fa-solid fa-key input-icon iconsColor"></i>
+          <input
+            type="password"
+            placeholder="{{ 'auth.login.password' | translate }}"
+            class="input-field form-control"
+            formControlName="password"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="login-button disabled:bg-gray-400 disabled:cursor-not-allowed disabled:pointer-events-none"
+          [disabled]="registerForm.invalid || isloading"
+        >
+          @if (isloading) { {{ "auth.login.loading..." | translate }} } @else {
+          {{ "auth.register.register" | translate }} }
+        </button>
+
+        <hr class="divider" />
+
+        <p class="text-center text-white">
+          {{ "auth.register.alreadyamember?" | translate }}
+          <a routerLink="/auth/login" class="links">{{
+            "auth.login.loginnow" | translate
+          }}</a>
+        </p>
+      </form>
+    </div>
+  </div>
+</section>

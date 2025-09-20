@@ -1,0 +1,88 @@
+<div class="container m-auto">
+  <section>
+    <div class="w-full mt-16 products">
+      <div class="heading text-center">
+        <h3 class="mt-8 font-weight-bolder font-serif text-4xl">
+          {{ "homecomponent.mostpurchasedproducts" | translate }}
+        </h3>
+        <p class="mb-8 mt-1 text-yellow-50 text-1xl">
+          {{ "homecomponent.enjoythemostpopularproducts" | translate }}
+        </p>
+      </div>
+
+      <div class="input-group m-auto text-center relative">
+        <input
+          type="search"
+          [(ngModel)]="text"
+          class="form-control"
+          placeholder="{{ 'homecomponent.searchbyproductname' | translate }}"
+        />
+        <button class="btn btn-outline-secondary" type="button">
+          <i
+            class="fa-solid fa-magnifying-glass absolute text-white iconSearch"
+          ></i>
+        </button>
+      </div>
+
+      <div
+        class="section-content mt-16 grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
+      >
+        @for (product of filteredItems; track product.Id) {
+        <div class="flex justify-center">
+          <div class="product-card px-1">
+            <div class="wishIcon px-2 text-right py-1">
+              <i class="fa-solid fa-heart fa-heart text-xl cursor-pointer"></i>
+            </div>
+            <div
+              class="image-container cursor-pointer"
+              [routerLink]="['/details', product.Id]"
+            >
+              <img src="./assets/images/Product.png" alt="product.title" />
+            </div>
+            <div class="product-body">
+              <div
+                [routerLink]="['/details', product.Id]"
+                [state]="{ from: currentUrl }"
+                class="cursor-pointer"
+              >
+                <div class="product-title">
+                  <h3>{{ product.NameAr }}</h3>
+                </div>
+
+                <div class="brand">
+                  <img src="./assets/images/OIP.webp" alt="Brand Logo" />
+                  <span>{{ "products.brandname" | translate}}</span>
+                </div>
+                @for (price of product.ItemUnits.slice(0, 1) || []; track
+                price.Id) {
+                <div class="price">
+                  <span class="current-price"> {{ price.Price }} EGP </span>
+                  <span class="old-price"> {{ price.Price + 20 }}EGP </span>
+                </div>
+                }
+                <div class="rating">
+                  @for (num of [1, 2, 3, 4, 5]; track $index) {
+                  <ng-container>
+                    @if (num <= math.floor(num)) {
+                    <i class="fa-solid fa-star rating-color"></i>
+                    }
+                  </ng-container>
+                  }
+                </div>
+              </div>
+
+              <button class="add-to-cart">🛒 {{ "products.addtocart" | translate}}</button>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="mt-12 flex justify-center align-middle">
+      <app-pagination (pageChanged)="pagePagnation($event)"></app-pagination>
+    </div>
+  </section>
+</div>
