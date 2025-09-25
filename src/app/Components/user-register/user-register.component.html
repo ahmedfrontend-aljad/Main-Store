@@ -1,6 +1,9 @@
 <section class="login-section">
+  <div class="image">
+    <img src="./assets/images/Background/Auth.png" class="" alt="" />
+  </div>
   <div class="login-wrapper">
-    <div class="login-card">
+    <div class="login-card" style="width: 50%">
       <h2 class="login-title font-semibold font-serif">
         {{ "auth.register.registernow" | translate }}
       </h2>
@@ -9,6 +12,7 @@
         [formGroup]="registerForm"
         (ngSubmit)="sendResgisterData()"
       >
+        <!-- Username -->
         <div class="input-group">
           <i class="fa-solid fa-user input-icon iconsColor"></i>
           <input
@@ -18,7 +22,13 @@
             formControlName="userName"
           />
         </div>
+        @if (getErrorMessage('userName')) {
+        <div class="error-message text-red-500">
+          {{ getErrorMessage("userName") }}
+        </div>
+        }
 
+        <!-- Email -->
         <div class="input-group">
           <i class="fa-solid fa-envelope input-icon iconsColor"></i>
           <input
@@ -29,6 +39,13 @@
           />
         </div>
 
+        @if(getErrorMessage('email')){
+        <div class="error-message text-red-500">
+          {{ getErrorMessage("email") }}
+        </div>
+        }
+
+        <!-- Password -->
         <div class="input-group">
           <i class="fa-solid fa-key input-icon iconsColor"></i>
           <input
@@ -39,22 +56,32 @@
           />
         </div>
 
+        @if (getErrorMessage('password')) {
+        <div class="error-message text-red-500">
+          {{ getErrorMessage("password") }}
+        </div>
+        }
+
+        <!-- Submit -->
         <button
           type="submit"
           class="login-button disabled:bg-gray-400 disabled:cursor-not-allowed disabled:pointer-events-none"
           [disabled]="registerForm.invalid || isloading"
         >
-          @if (isloading) { {{ "auth.login.loading..." | translate }} } @else {
-          {{ "auth.register.register" | translate }} }
+          @if (isloading) {
+          {{ "auth.login.loading..." | translate }}
+          } @else {
+          {{ "auth.register.register" | translate }}
+          }
         </button>
 
         <hr class="divider" />
 
-        <p class="text-center text-white">
+        <p class="text-center">
           {{ "auth.register.alreadyamember?" | translate }}
-          <a routerLink="/auth/login" class="links">{{
-            "auth.login.loginnow" | translate
-          }}</a>
+          <a routerLink="/auth/login" class="links">
+            {{ "auth.login.loginnow" | translate }}
+          </a>
         </p>
       </form>
     </div>

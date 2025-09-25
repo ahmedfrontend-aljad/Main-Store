@@ -161,6 +161,15 @@ export const routes: Routes = [
           ),
         title: 'Offers',
       },
+
+      {
+        path: 'payment',
+        loadComponent: () =>
+          import('./Components/payment/payment.component').then(
+            (c) => c.PaymentComponent
+          ),
+        title: 'Payment',
+      },
     ],
   },
 

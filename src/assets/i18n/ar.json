@@ -57,6 +57,16 @@
       "enteryouremail": "أدخل بريدك الإلكتروني",
       "register": "تسجيل",
       "alreadyamember?": "هل أنت عضو بالفعل؟"
+    },
+    "loginError": "اسم المستخدم أو كلمة المرور غير صحيحة",
+    "loginSuccess": "تم تسجيل الدخول بنجاح",
+    "successTitle": "نجاح",
+    "validation": {
+      "required": "هذا الحقل مطلوب",
+      "minLength": "الحد الأدنى لعدد الاحرف هو {{min}} حروف",
+      "maxLength": "الحد الأقصى لعدد الاحرف هو {{max}} حروف",
+      "email": "يرجى إدخال بريد إلكتروني صحيح",
+      "passwordInvalid": "كلمة المرور يجب أن تحتوي على أحرف انجليزي وأرقام على الأقل"
     }
   },
 
@@ -88,5 +98,25 @@
     "totalquentity:": "إجمالي الكمية:",
     "pice": "قطعة",
     "createdat": "تاريخ الإضافة:"
+  },
+  "cart": {
+    "shoppingcart": "عربة التسوق",
+    "deleteallitems": "حذف جميع العناصر",
+    "discountcode": "كود الخصم",
+    "apply": "تطبيق",
+    "entercode": "أدخل الكود",
+    "carttotal": "إجمالي العربة:",
+    "selectpaymentmethod": "اختر طريقة الدفع",
+    "paywithcash": "الدفع نقدًا",
+    "paywithvisa": "الدفع ببطاقة فيزا",
+
+    "payment": {
+      "paymentdetails": "تفاصيل الدفع",
+      "details": "التفاصيل",
+      "phone": "رقم الهاتف",
+      "city": "المدينة",
+      "checkout": "إتمام الدفع",
+      "enteryourdetails": "أدخل تفاصيلك"
+    }
   }
 }

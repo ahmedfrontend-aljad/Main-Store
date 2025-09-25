@@ -2,6 +2,7 @@ import { Component, inject, PLATFORM_ID } from '@angular/core';
 import { MyTranslateService } from '../../Core/Services/my-translate.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { isPlatformBrowser } from '@angular/common';
+import { ThemeService } from '../../Core/Services/theme.service';
 
 @Component({
   selector: 'app-nav-auth',
@@ -15,7 +16,7 @@ export class NavAuthComponent {
   private readonly _MyTranslateService = inject(MyTranslateService);
   private readonly _PLATFORM_ID = inject(PLATFORM_ID);
 
-  constructor() {
+  constructor(private _themeService: ThemeService) {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
       const savedLang = localStorage.getItem('lang') || 'en';
       this.selectedLanguage = savedLang === 'ar' ? 'عربي' : 'English';
@@ -35,5 +36,13 @@ export class NavAuthComponent {
     }
 
     this.showLangDropdown = false;
+  }
+
+  ngOnInit(): void {
+    this._themeService.loadTheme();
+  }
+
+  toggleTheme() {
+    this._themeService.toggleTheme();
   }
 }

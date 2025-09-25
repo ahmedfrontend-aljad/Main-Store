@@ -10,7 +10,7 @@
         class="fa-solid fa-cart-shopping fa-2xl iconsColor"
         ngSkipHydration
       ></i>
-      <h2 class="text-3xl font-semibold text-white font-serif">TradeCraft</h2>
+      <h2 class="text-3xl font-semibold font-serif">TradeCraft</h2>
     </a>
 
     <!-- Right Side Buttons -->
@@ -35,12 +35,22 @@
       </div>
       }
 
+      <!-- Theme Toggle Button -->
+      <button 
+        type="button"
+        (click)="toggleTheme()"
+        class="px-4 py-2  mx-6 rounded-lg ml-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+      >
+        <i class="fa-solid fa-moon dark:hidden"></i>
+        <i class="fa-solid fa-sun hidden dark:inline"></i>
+      </button>
+
       <!-- Language Dropdown -->
       <div class="relative">
         <button
           type="button"
           (click)="toggleLangDropdown()"
-          class="inline-flex items-center font-medium justify-center px-4 py-2 text-sm text-gray-900 dark:text-white rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+          class="bg-white inline-flex items-center font-medium justify-center px-4 py-2 text-sm text-gray-900 dark:text-blue-400 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
         >
           {{ selectedLanguage }}
           <i class="fa-solid fa-chevron-down ms-2" ngSkipHydration></i>
@@ -49,7 +59,7 @@
         <!-- Dropdown List -->
         @if(showLangDropdown){
         <ul
-          class="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-200 border border-gray-200 dark:border-gray-200 rounded-lg shadow-lg z-50"
+          class="absolute right-0 mt-2 w-32 text-blue-400 bg-white dark:bg-gray-200 border border-gray-200 dark:border-gray-200 rounded-lg shadow-lg z-50"
         >
           <li (click)="changeLang('en')">
             <button
@@ -147,9 +157,7 @@
       id="navbar-language"
       class="hidden md:flex items-center justify-between w-full md:w-auto md:order-1 py-3 px-10"
     >
-      <ul
-        class="flex flex-row font-medium space-x-8 rtl:space-x-reverse text-white"
-      >
+      <ul class="flex flex-row font-medium space-x-8 rtl:space-x-reverse">
         <li>
           <a
             routerLink="/home"
@@ -185,7 +193,6 @@
       </ul>
     </div>
 
-    <!-- Nav List for Mobile -->
     <!-- Nav List for Mobile -->
     <div class="md:hidden w-full" [class.hidden]="!showMobileMenu">
       <ul

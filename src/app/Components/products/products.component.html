@@ -1,15 +1,17 @@
 <div class="container m-auto">
+  <!-- Heading -->
   <section>
     <div class="w-full mt-16 products">
       <div class="heading text-center">
         <h3 class="mt-8 font-weight-bolder font-serif text-4xl">
           {{ "homecomponent.mostpurchasedproducts" | translate }}
         </h3>
-        <p class="mb-8 mt-1 text-yellow-50 text-1xl">
+        <p class="mb-8 mt-1 text-1xl">
           {{ "homecomponent.enjoythemostpopularproducts" | translate }}
         </p>
       </div>
 
+      <!-- Search -->
       <div class="input-group m-auto text-center relative">
         <input
           type="search"
@@ -18,12 +20,11 @@
           placeholder="{{ 'homecomponent.searchbyproductname' | translate }}"
         />
         <button class="btn btn-outline-secondary" type="button">
-          <i
-            class="fa-solid fa-magnifying-glass absolute text-white iconSearch"
-          ></i>
+          <i class="fa-solid fa-magnifying-glass iconSearch"></i>
         </button>
       </div>
 
+      <!-- Products Grid -->
       <div
         class="section-content mt-16 grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
       >
@@ -37,8 +38,17 @@
               class="image-container cursor-pointer"
               [routerLink]="['/details', product.Id]"
             >
-              <img src="./assets/images/Product.png" alt="product.title" />
+              @if (hasImages(product)) { @for (unit of product.ItemUnits; track
+              unit.Id) { @for (img of unit.ItemImages; track img.Image) {
+              <img
+                [src]="'data:image/jpeg;base64,' + img.Image"
+                [alt]="product.NameAr"
+              />
+              } } } @else {
+              <img src="assets/images/Product.png" [alt]="product.NameAr" />
+              }
             </div>
+
             <div class="product-body">
               <div
                 [routerLink]="['/details', product.Id]"
@@ -51,15 +61,17 @@
 
                 <div class="brand">
                   <img src="./assets/images/OIP.webp" alt="Brand Logo" />
-                  <span>{{ "products.brandname" | translate}}</span>
+                  <span>{{ "products.brandname" | translate }}</span>
                 </div>
+
                 @for (price of product.ItemUnits.slice(0, 1) || []; track
                 price.Id) {
                 <div class="price">
                   <span class="current-price"> {{ price.Price }} EGP </span>
-                  <span class="old-price"> {{ price.Price + 20 }}EGP </span>
+                  <span class="old-price"> {{ price.Price + 20 }} EGP </span>
                 </div>
                 }
+
                 <div class="rating">
                   @for (num of [1, 2, 3, 4, 5]; track $index) {
                   <ng-container>
@@ -71,7 +83,15 @@
                 </div>
               </div>
 
-              <button class="add-to-cart">🛒 {{ "products.addtocart" | translate}}</button>
+              @for (price of product.ItemUnits.slice(0,1)|| []; track price.Id)
+              {
+              <button
+                class="add-to-cart"
+                (click)="addToCart(product.Id, price.Price, 1)"
+              >
+                🛒 {{ "products.addtocart" | translate }}
+              </button>
+              }
             </div>
           </div>
         </div>
@@ -80,6 +100,7 @@
     </div>
   </section>
 
+  <!-- Pagination -->
   <section>
     <div class="mt-12 flex justify-center align-middle">
       <app-pagination (pageChanged)="pagePagnation($event)"></app-pagination>

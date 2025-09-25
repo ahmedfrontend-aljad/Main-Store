@@ -1,0 +1,53 @@
+<section>
+  <div class="main flex justify-center items-center">
+    <div class="container">
+      <div class="heading">
+        <h1 class="text-main pw-bold">
+          <span>{{ "cart.payment.paymentdetails" | translate }} </span>
+          <i class="fa-solid fa-money-bills text-2xl"></i>
+        </h1>
+      </div>
+      <form class="mt-5">
+        <label for="details">
+          <i class="fa-solid fa-circle-info px-xl"></i>
+          {{ "cart.payment.details" | translate }}
+        </label>
+        <textarea
+          id="details"
+          class="form-control"
+          placeholder="{{ 'cart.payment.enteryourdetails' | translate }}"
+        ></textarea>
+        <br />
+
+        <label for="phone">
+          <i class="fa-solid fa-square-phone px-xl"></i>
+          {{ "cart.payment.phone" | translate }}
+        </label>
+        <input
+          type="tel"
+          id="phone"
+          placeholder=" {{ 'cart.payment.phone' | translate }}"
+          class="form-control"
+          required
+        />
+        <br />
+
+        <label for="city">
+          <i class="fa-solid fa-city px-xl"></i>
+          {{ "cart.payment.city" | translate }}
+        </label>
+        <input
+          type="text"
+          id="city"
+          placeholder=" {{ 'cart.payment.city' | translate }}"
+          class="form-control"
+        />
+        <br />
+
+        <button type="button" class="btn btn-main submit mt-2">
+          {{ "cart.payment.checkout" | translate }}
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

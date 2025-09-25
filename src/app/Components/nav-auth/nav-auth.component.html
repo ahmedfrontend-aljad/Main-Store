@@ -1,16 +1,26 @@
 <nav>
-  <div class="col-12 pt-4 pb-3 px-16 flex justify-between items-center">
+  <div class="col-12 pt-2 pb-2 px-16 flex justify-between items-center">
     <div class="mainlogo">
       <a href="" class="flex items-center gap-1.5">
         <i class="fa-solid fa-cart-shopping fa-2xl iconsColor"></i>
-        <h2 class="text-3xl font-semibold text-white font-serif">TradeCraft</h2>
+        <h2 class="text-3xl font-semibold font-serif">TradeCraft</h2>
       </a>
     </div>
 
     <div
-      class="flex items-center md:order-2 space-x-1 md:space-x-0 rtl:space-x-reverse"
+      class="flex items-center md:order-2 space-x-1 md:space-x-0 rtl:space-x-reverse gap-6"
       id="navbar-language"
     >
+      <!-- Theme Toggle Button -->
+      <button
+        type="button"
+        (click)="toggleTheme()"
+        class="px-4 py-2 rounded-lg ml-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+      >
+        <i class="fa-solid fa-moon dark:hidden"></i>
+        <i class="fa-solid fa-sun hidden dark:inline"></i>
+      </button>
+
       <!-- Dropdown -->
       <div class="relative">
         <button
@@ -44,8 +54,6 @@
         </ul>
         }
       </div>
-
-     
     </div>
   </div>
 </nav>

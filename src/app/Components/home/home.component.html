@@ -7,12 +7,12 @@
     >
       <div class="sidebanner h-full flex flex-col gap-2">
         <img
-          class="w-full h-1/2 object-cover"
+          class="w-full h-1/2 object-cover rounded-lg shadow-banner"
           src="./assets/images/Banners/banner-2.jpeg"
           alt=""
         />
         <img
-          class="w-full h-1/2 object-cover"
+          class="w-full h-1/2 object-cover rounded-lg shadow-banner"
           src="./assets/images/Banners/banner-3.jpg"
           alt=""
         />
@@ -20,7 +20,7 @@
       <div class="Mainbanner mx-1 w-3/4 h-full">
         <img
           src="./assets/images/Banners/mainbanner.jpg"
-          class="h-full w-full object-cover"
+          class="h-full w-full object-cover rounded-lg shadow-banner"
           alt=""
         />
       </div>
@@ -34,7 +34,7 @@
         <h3 class="mt-8 font-weight-bolder font-serif text-4xl">
           {{ "homecomponent.allcategories" | translate }}
         </h3>
-        <p class="mb-8 mt-1 text-yellow-50 text-1xl">
+        <p class="mb-8 mt-1 text-secondary text-1xl">
           {{ "homecomponent.shopbyyourfavoritecategory" | translate }}
         </p>
       </div>
@@ -51,7 +51,7 @@
                 src="./assets/images/Category.png"
                 [alt]="cat.NameAr"
               />
-              <h2 class="m-auto text-center text-white font-serif font-bold">
+              <h2 class="m-auto text-center text-base font-serif font-bold">
                 {{ cat.NameAr }}
               </h2>
             </div>
@@ -69,7 +69,7 @@
         <h3 class="mt-8 font-weight-bolder font-serif text-4xl">
           {{ "homecomponent.bestoffers" | translate }}
         </h3>
-        <p class="mb-8 mt-1 text-yellow-50 text-1xl">
+        <p class="mb-8 mt-1 text-secondary text-1xl">
           {{ "homecomponent.bestoffers!shopnow" | translate }}
         </p>
       </div>
@@ -87,7 +87,7 @@
                 src="./assets/images/Category.png"
                 [alt]="cat.NameAr"
               />
-              <h2 class="m-auto text-center text-white font-serif font-bold">
+              <h2 class="m-auto text-center text-base font-serif font-bold">
                 {{ cat.NameAr }}
               </h2>
             </div>
@@ -105,7 +105,7 @@
         <h3 class="mt-8 font-weight-bolder font-serif text-4xl">
           {{ "homecomponent.mostpurchasedproducts" | translate }}
         </h3>
-        <p class="mb-8 mt-1 text-yellow-50 text-1xl">
+        <p class="mb-8 mt-1 text-secondary text-1xl">
           {{ "homecomponent.enjoythemostpopularproducts" | translate }}
         </p>
       </div>
@@ -119,7 +119,7 @@
         />
         <button class="btn btn-outline-secondary" type="button">
           <i
-            class="fa-solid fa-magnifying-glass absolute text-white iconSearch"
+            class="fa-solid fa-magnifying-glass absolute iconSearch text-base"
           ></i>
         </button>
       </div>
@@ -129,9 +129,11 @@
       >
         @for (product of filteredItems; track product.Id) {
         <div class="flex justify-center">
-          <div class="product-card px-1">
+          <div class="product-card px-1 bg-card rounded-lg shadow-card">
             <div class="wishIcon px-2 text-right py-1">
-              <i class="fa-solid fa-heart fa-heart text-xl cursor-pointer"></i>
+              <i
+                class="fa-solid fa-heart text-xl cursor-pointer text-secondary"
+              ></i>
             </div>
             <div
               class="image-container cursor-pointer"
@@ -145,34 +147,46 @@
                 class="cursor-pointer"
               >
                 <div class="product-title">
-                  <h3>{{ product.NameAr }}</h3>
+                  <h3 class="text-base">{{ product.NameAr }}</h3>
                 </div>
 
                 <div class="brand text-right">
                   <img src="./assets/images/OIP.webp" alt="Brand Logo" />
-                  <span> {{ "products.brandname" | translate }} </span>
+                  <span class="text-muted">
+                    {{ "products.brandname" | translate }}
+                  </span>
                 </div>
                 @for (price of product.ItemUnits.slice(0, 1) || []; track
                 price.Id) {
                 <div class="price">
-                  <span class="current-price"> {{ price.Price }} EGP </span>
-                  <span class="old-price"> {{ price.Price + 20 }}EGP </span>
+                  <span class="current-price text-primary">
+                    {{ price.Price }} EGP
+                  </span>
+                  <span class="old-price text-muted line-through">
+                    {{ price.Price + 20 }}EGP
+                  </span>
                 </div>
                 }
                 <div class="rating">
                   @for (num of [1, 2, 3, 4, 5]; track $index) {
                   <ng-container>
                     @if (num <= math.floor(num)) {
-                    <i class="fa-solid fa-star rating-color"></i>
+                    <i class="fa-solid fa-star text-secondary"></i>
                     }
                   </ng-container>
                   }
                 </div>
               </div>
 
-              <button class="add-to-cart">
+              @for (price of product.ItemUnits.slice(0,1)|| []; track price.Id)
+              {
+              <button
+                class="add-to-cart"
+                (click)="addToCart(product.Id, price.Price, 1)"
+              >
                 🛒 {{ "products.addtocart" | translate }}
               </button>
+              }
             </div>
           </div>
         </div>
@@ -181,5 +195,4 @@
     </div>
   </section>
 </div>
-
 }

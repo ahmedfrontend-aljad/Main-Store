@@ -37,10 +37,15 @@
               class="image-container cursor-pointer"
               [routerLink]="['/details', product.Id]"
             >
+              @if (hasImages(product)) { @for (unit of product.ItemUnits; track
+              unit.Id) { @for (img of unit.ItemImages; track img.Image) {
               <img
-                src="../../../assets/images/Product.png"
-                alt="product.title"
+                [src]="'data:image/jpeg;base64,' + img.Image"
+                [alt]="product.NameAr"
               />
+              } } } @else {
+              <img src="assets/images/Product.png" [alt]="product.NameAr" />
+              }
             </div>
             <div class="product-body">
               <div
@@ -73,9 +78,15 @@
                 </div>
               </div>
 
-              <button class="add-to-cart">
+              @for (price of product.ItemUnits.slice(0,1) || []; track price.Id)
+              {
+              <button
+                class="add-to-cart"
+                (click)="addToCart(price.Id, price.Price, 1)"
+              >
                 🛒 {{ "products.addtocart" | translate }}
               </button>
+              }
             </div>
           </div>
         </div>

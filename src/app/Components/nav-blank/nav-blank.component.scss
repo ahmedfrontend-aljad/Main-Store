@@ -1,16 +1,21 @@
+nav {
+  padding-bottom: 10px;
+}
+
 nav #navbar-language {
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.1019607843);
+  border: 1px solid var(--color-border);
   backdrop-filter: blur(4px);
-  background-color: rgba(255, 255, 255, 0.051);
+  background-color: var(--color-bg);
 }
+
 .userIcon {
-  color: rgba(47, 47, 211, 0.8);
+  color: var(--color-secondary);
   font-size: 1.4rem;
   transition: all 0.5s;
 
   &:hover {
-    color: rgba(7, 7, 229, 1);
+    color: var(--color-primary);
     transform: scale(1.2);
   }
 }
@@ -18,7 +23,7 @@ nav #navbar-language {
 .cart {
   .fa-cart-shopping {
     font-size: 1.4rem;
-    color: var(--primary-green);
+    color: var(--color-primary);
     transition: all 0.5s;
   }
   .cartCounter {
@@ -29,13 +34,14 @@ nav #navbar-language {
     border-radius: 50%;
     font-size: 12px;
     font-weight: bold;
-    color: white;
+    color: #fff;
   }
   &:hover .fa-cart-shopping {
-    color: var(--primary-green-dark);
+    color: var(--color-secondary);
     transform: scale(1.2);
   }
 }
+
 .dropdown {
   position: relative;
 
@@ -44,9 +50,9 @@ nav #navbar-language {
     position: absolute;
     top: 100%;
     width: 130px;
-    background-color: #fff;
+    background-color: var(--color-bg);
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px var(--color-shadow);
     z-index: 1000;
     right: -32px;
     left: auto;
@@ -74,18 +80,18 @@ nav #navbar-language {
   border: none;
   font-size: 15px;
   font-weight: 500;
-  color: #333;
+  color: var(--color-text);
   text-decoration: none;
   background: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .dropdown-menu li:hover,
 .dropdown-menu button:hover,
 .dropdown-menu a.nav-link:hover {
-  background-color: #626262;
-  color: var(--primary-green);
+  background-color: var(--color-border);
+  color: var(--color-primary);
   border-radius: 10px;
 }
 
@@ -102,24 +108,23 @@ nav #navbar-language {
   margin-top: 70px;
 }
 
-/* الموبايل والشاشات الصغيرة */
 @media (max-width: 768px) {
   nav#navbar-language {
     border-radius: 10px !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border: 1px solid var(--color-border) !important;
     backdrop-filter: none !important;
-    background-color: rgba(0, 0, 0, 0.7) !important;
+    background-color: var(--color-bg) !important;
     padding: 10px !important;
   }
 
   .userIcon {
     font-size: 1.2rem !important;
-    color: #007bff !important;
+    color: var(--color-secondary) !important;
   }
 
   .cart .fa-cart-shopping {
     font-size: 1.2rem !important;
-    color: #28a745 !important;
+    color: var(--color-primary) !important;
   }
 
   .cart .cartCounter {

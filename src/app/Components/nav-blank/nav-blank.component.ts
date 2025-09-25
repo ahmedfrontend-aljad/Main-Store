@@ -1,8 +1,15 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, HostListener, inject, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  inject,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MyTranslateService } from '../../Core/Services/my-translate.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { ThemeService } from '../../Core/Services/theme.service';
 
 @Component({
   selector: 'app-nav-blank',
@@ -11,8 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './nav-blank.component.html',
   styleUrls: ['./nav-blank.component.scss'],
 })
-export class NavBlankComponent {
-  // auth states
+export class NavBlankComponent implements OnInit {
   isUserLogged = false;
   isGuest = false;
   isLoggedIn = false;
@@ -28,7 +34,7 @@ export class NavBlankComponent {
   private readonly _Router = inject(Router);
   private readonly _MyTranslateService = inject(MyTranslateService);
 
-  constructor() {
+  constructor(private _themeService: ThemeService) {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
       this.isUserLogged = !!localStorage.getItem('userToken');
       this.isGuest = !!localStorage.getItem('guestToken');
@@ -37,6 +43,14 @@ export class NavBlankComponent {
     }
 
     this.isLoggedIn = this.isUserLogged || this.isGuest;
+  }
+
+  ngOnInit(): void {
+    this._themeService.loadTheme();
+  }
+
+  toggleTheme() {
+    this._themeService.toggleTheme();
   }
 
   //  Mobile Menu

@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NgxSpinnerComponent } from "ngx-spinner";
-import { ScrollTopComponent } from "./Shared/components/scroll-top/scroll-top.component";
+import { NgxSpinnerComponent } from 'ngx-spinner';
+import { ScrollTopComponent } from './Shared/components/scroll-top/scroll-top.component';
+import { ThemeService } from './Core/Services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -11,4 +12,9 @@ import { ScrollTopComponent } from "./Shared/components/scroll-top/scroll-top.co
 })
 export class AppComponent {
   title = 'GadcoEcommerce';
+  private readonly _ThemeService = inject(ThemeService);
+
+  ngOnInit() {
+    this._ThemeService.loadTheme();
+  }
 }

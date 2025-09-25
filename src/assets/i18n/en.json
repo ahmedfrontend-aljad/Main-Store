@@ -47,12 +47,22 @@
       "notamember": "Not a member",
       "registernow": "Register Now"
     },
-
     "register": {
       "registernow": "Register Now",
       "enteryouremail": "Enter Your Email",
       "register": "Register",
       "alreadyamember?": "Already a member ?"
+    },
+    "loginError": "Username or password is incorrect",
+    "loginSuccess": "Login successful",
+    "successTitle": "Success",
+
+    "validation": {
+      "required": "This field is required",
+      "minLength": "Minimum length is {{min}} characters",
+      "maxLength": "Maximum length is {{max}} characters",
+      "email": "Please enter a valid email",
+      "passwordInvalid": "Password must contain at least letters and numbers"
     }
   },
 
@@ -84,5 +94,26 @@
     "totalquentity": "Total Quentity",
     "pice": "pice",
     "createdat:": "Created At :"
+  },
+
+  "cart": {
+    "shoppingcart": "Shopping Cart",
+    "deleteallitems": "Delete All Items",
+    "discountcode": "Discount Code",
+    "apply": "Apply",
+    "carttotal": "Cart Total:",
+    "entercode": "Enter Code",
+    "selectpaymentmethod": "Select Payment Method",
+    "paywithcash": "Pay With Cash",
+    "paywithvisa": "pay With Visa",
+
+    "payment": {
+      "paymentdetails": "Payment details",
+      "details": "Details",
+      "phone": "Phone",
+      "city": "City",
+      "checkout": "Check Out",
+      "enteryourdetails": "Enter your details"
+    }
   }
 }

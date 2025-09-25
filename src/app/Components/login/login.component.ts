@@ -10,11 +10,11 @@ import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription, Unsubscribable } from 'rxjs';
 import { AuthService } from '../../Core/Services/auth.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
-  imports: [RouterLink, ReactiveFormsModule, NgClass , TranslateModule],
+  imports: [RouterLink, ReactiveFormsModule, NgClass, TranslateModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -25,6 +25,8 @@ export class LoginComponent implements OnDestroy {
   private readonly _AuthService = inject(AuthService);
   private readonly _ToastrService = inject(ToastrService);
   private readonly _Router = inject(Router);
+  private readonly _TranslateService = inject(TranslateService);
+
   destoryUserData!: Unsubscribable;
   destoryGustData!: Unsubscribable;
 
@@ -52,14 +54,21 @@ export class LoginComponent implements OnDestroy {
       .subscribe({
         next: (res) => {
           console.log(res);
-          this._ToastrService.success(res.message, 'Login Sucessful');
+          this._ToastrService.success(
+            this._TranslateService.instant('auth.loginSuccess'),
+            this._TranslateService.instant('auth.successTitle')
+          );
           this.isloading = false;
           localStorage.setItem('userToken', res.Obj.AccessToken);
+          console.log(localStorage.getItem('userToken'));
+
           this._Router.navigate(['/home']);
         },
         error: (err) => {
           console.log(err);
-          this._ToastrService.error('Username Or Password Is Incorrect');
+          this._ToastrService.error(
+            this._TranslateService.instant('auth.loginError')
+          );
           this.isloading = false;
         },
       });

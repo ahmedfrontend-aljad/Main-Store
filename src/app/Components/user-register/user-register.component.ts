@@ -10,7 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../Core/Services/auth.service';
 import { passwordValidator } from '../../Shared/validators/password.validator';
 import { Unsubscribable } from 'rxjs';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-register',
@@ -24,7 +24,9 @@ export class UserRegisterComponent implements OnDestroy {
   private readonly _AuthService = inject(AuthService);
   private readonly _ToastrService = inject(ToastrService);
   private readonly _Router = inject(Router);
+  private readonly _TranslateService = inject(TranslateService);
   destoryRegisterData!: Unsubscribable;
+
   registerForm: FormGroup = this._FormBuilder.group({
     userName: [
       null,
@@ -32,21 +34,35 @@ export class UserRegisterComponent implements OnDestroy {
     ],
     email: [null, [Validators.required, Validators.email]],
     password: [null, [Validators.required, passwordValidator()]],
-
-    /* nameAr: [
-      null,
-      [
-        Validators.required,
-        Validators.minLength(2),
-        Validators.maxLength(30),
-        Validators.pattern(/^[\u0600-\u06FF\s]+$/),
-      ],
-    ],
-    phoneNumber: [
-      null,
-      [Validators.required, Validators.pattern(/^\+?\d{10,15}$/)],
-    ],*/
   });
+
+  getErrorMessage(controlName: string): string {
+    const control = this.registerForm.get(controlName);
+    if (control && control.touched && control.errors) {
+      if (control.errors['required']) {
+        return this._TranslateService.instant('auth.validation.required');
+      }
+      if (control.errors['minlength']) {
+        return this._TranslateService.instant('auth.validation.minLength', {
+          min: control.errors['minlength'].requiredLength,
+        });
+      }
+      if (control.errors['maxlength']) {
+        return this._TranslateService.instant('auth.validation.maxLength', {
+          max: control.errors['maxlength'].requiredLength,
+        });
+      }
+      if (control.errors['email']) {
+        return this._TranslateService.instant('auth.validation.email');
+      }
+      if (control.errors['passwordInvalid']) {
+        return this._TranslateService.instant(
+          'auth.validation.passwordInvalid'
+        );
+      }
+    }
+    return '';
+  }
 
   sendResgisterData(): any {
     this.isloading = true;
@@ -54,20 +70,16 @@ export class UserRegisterComponent implements OnDestroy {
       .sendRegisterData(this.registerForm.value)
       .subscribe({
         next: (res) => {
+          this.isloading = false;
           if (res.IsSuccess) {
-            console.log(res);
-            this.isloading = false;
             this._ToastrService.success(res.Message, 'Success');
             this._Router.navigate(['/auth/login']);
           } else {
             this._ToastrService.error(res.Message, 'Failed');
-            this.isloading = false;
           }
         },
         error: (err) => {
-          console.log(err);
           this.isloading = false;
-
           this._ToastrService.error(err.Message, 'Failed');
         },
       });

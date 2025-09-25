@@ -25,6 +25,7 @@ import {
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { provideToastr } from 'ngx-toastr';
 import { routes } from './app.routes';
+import { headersInterceptor } from './Core/Interceptors/headers.interceptor';
 import { spinnerInterceptor } from './Core/Interceptors/spinner.interceptor';
 
 // Factory function
@@ -46,7 +47,10 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch(), withInterceptors([spinnerInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([spinnerInterceptor, headersInterceptor])
+    ),
     provideAnimations(),
     provideToastr(),
     importProvidersFrom(
