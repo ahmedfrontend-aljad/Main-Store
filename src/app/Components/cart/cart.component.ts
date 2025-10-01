@@ -30,11 +30,14 @@ export class CartComponent implements OnInit {
   private readonly _PLATFORM_ID = inject(PLATFORM_ID);
   private readonly _Router = inject(Router);
   totalPrice: number = 0;
+
   ngOnInit(): void {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
       const token = localStorage.getItem('userToken');
       const decoded: any = jwtDecode(token!);
       console.log(decoded);
+      localStorage.setItem('userId', decoded.Id);
+      this.asyncItemsCart();
 
       this._CartService.getLoggedCart(decoded.Id).subscribe({
         next: (res) => {
@@ -64,7 +67,26 @@ export class CartComponent implements OnInit {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
-    }).then((result) => {});
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem('cartItems');
+        this.cardUserItems.set([]);
+        this.totalPrice = 0;
+        this.asyncItemsCart();
+        this._CartService
+          .SyncCartFromLocal({
+            cartItems: [],
+            userId: localStorage.getItem('userId'),
+          })
+          .subscribe({
+            next: (res) => {
+              console.log('✅ Cart cleared on server', res);
+              Swal.fire('Deleted!', 'Your cart has been cleared.', 'success');
+            },
+            error: (err) => console.error(err),
+          });
+      }
+    });
   }
 
   goToPayment(method: 'cash' | 'visa') {
@@ -82,5 +104,21 @@ export class CartComponent implements OnInit {
         (u: ItemUnit) => u.ItemImages && u.ItemImages.length > 0
       ) ?? false
     );
+  }
+
+  data = {
+    cartItems: localStorage.getItem('cartItems'),
+    userId: localStorage.getItem('userId'),
+  };
+
+  asyncItemsCart(): void {
+    this._CartService.SyncCartFromLocal(this.data).subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
   }
 }

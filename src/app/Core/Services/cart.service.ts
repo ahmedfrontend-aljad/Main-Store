@@ -18,14 +18,20 @@ export class CartService {
 
   getLoggedCart(userId: string): Observable<any> {
     return this._HttpClient.get(
-      `${environment.baseUrl}/XtraAndPos_StoreCart/GetCartAsync?userId=${userId}`, 
-      
+      `${environment.baseUrl}/XtraAndPos_StoreCart/GetCartAsync?userId=${userId}`
     );
   }
 
   CartFromLocal(data: object): Observable<any> {
     return this._HttpClient.post(
       `${environment.baseUrl}/SyncCartFromLocalAsync`,
+      data
+    );
+  }
+
+  SyncCartFromLocal(data: any): Observable<any> {
+    return this._HttpClient.post(
+      `${environment.baseUrl}/XtraAndPos_StoreCart/SyncCartFromLocalAsync`,
       data
     );
   }
