@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavAuthComponent } from "../../Components/nav-auth/nav-auth.component";
-import { FooterComponent } from "../../Components/footer/footer.component";
+import { NavAuthComponent } from '../../Components/nav-auth/nav-auth.component';
 
 @Component({
   selector: 'app-auth',
-  imports: [RouterOutlet, NavAuthComponent, FooterComponent],
+  imports: [RouterOutlet, NavAuthComponent],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss',
 })

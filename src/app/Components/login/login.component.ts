@@ -7,10 +7,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription, Unsubscribable } from 'rxjs';
 import { AuthService } from '../../Core/Services/auth.service';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -45,8 +45,21 @@ export class LoginComponent implements OnDestroy {
     password: 'Admin123',
     rememberMe: false,
   };
+  get areRequiredFieldsFilled(): boolean {
+    const userName = this.loginForm.get('userName')?.value;
+    const password = this.loginForm.get('password')?.value;
+    return !!userName && !!password;
+  }
 
   sendLodinData(): any {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      this._ToastrService.error(
+        this._TranslateService.instant('auth.validation.invalidForm')
+      );
+      return;
+    }
+
     this.isloading = true;
 
     this.destoryUserData = this._AuthService

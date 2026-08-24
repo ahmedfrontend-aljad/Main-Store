@@ -1,36 +1,31 @@
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
-export function passwordValidator(): ValidatorFn {
+export function passwordValidator() {
   return (control: AbstractControl): ValidationErrors | null => {
     const value = control.value;
 
     if (!value) {
-      return { required: true };
+      return null;
     }
 
-    const errors: any = {};
+    const errors: ValidationErrors = {}; 
 
     if (value.length < 8) {
-      errors.minLength = 'Password must be at least 8 characters long';
+      errors['minLength'] = true;
     }
-
     if (!/[A-Z]/.test(value)) {
-      errors.uppercase = 'Password must contain at least one uppercase letter';
+      errors['requireUppercase'] = true;
     }
-
     if (!/[a-z]/.test(value)) {
-      errors.lowercase = 'Password must contain at least one lowercase letter';
+      errors['requireLowercase'] = true;
     }
-
     if (!/[0-9]/.test(value)) {
-      errors.number = 'Password must contain at least one number';
+      errors['requireNumber'] = true;
     }
-
     if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-      errors.specialChar =
-        'Password must contain at least one special character';
+      errors['requireSpecialChar'] = true;
     }
 
-    return Object.keys(errors).length ? errors : null;
+    return Object.keys(errors).length > 0 ? errors : null;
   };
 }

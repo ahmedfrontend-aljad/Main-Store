@@ -29,34 +29,52 @@
         class="section-content mt-16 grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
       >
         @for (category of filteredItems; track category.Id) {
-        <div class="flex justify-center">
-          <div
-            class="product-card px-1"
-            [routerLink]="['/catDetails', category.Code]"
-            [state]="{ from: currentUrl }"
-          >
-            <div class="wishIcon px-2 text-right py-1">
-              <i class="fa-solid fa-heart fa-heart text-xl cursor-pointer"></i>
-            </div>
-            <div class="image-container cursor-pointer">
-              <img src="./assets/images/Category.png" alt="product.title" />
-            </div>
-            <div class="product-body text-end">
-              <div class="cursor-pointer">
-                <div class="product-title">
-                  <h3>{{ category.NameAr }}</h3>
-                </div>
+          <div class="flex justify-center">
+            <div
+              class="product-card px-1"
+              [routerLink]="['/catDetails', category.Code]"
+              [state]="{ from: currentUrl }"
+            >
+              <div class="wishIcon px-2 text-right py-1">
+                <i
+                  class="fa-solid fa-heart fa-heart text-xl cursor-pointer"
+                ></i>
+              </div>
+              <div class="image-container cursor-pointer">
+                <img src="./assets/images/Category.png" alt="product.title" />
+              </div>
+              <div class="product-body text-end">
+                <div class="cursor-pointer">
+                  <div class="product-title">
+                    <h3>{{ category.NameAr }}</h3>
+                  </div>
 
-                <div class="brand">
-                  <img src="./assets/images/Category.png" alt="Brand Logo" />
-                  <span>{{ category.BranchName }}</span>
+                  <div class="brand">
+                    <img src="./assets/images/Category.png" alt="Brand Logo" />
+                    <span>{{ category.BranchName }}</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
         }
       </div>
     </div>
   </section>
+
+  <div
+    class="my-9 d-flex justify-content-center"
+    *ngIf="pagination && pagination.TotalCount! > pagination.PageSize!"
+  >
+    <ngb-pagination
+      [collectionSize]="pagination?.TotalCount!"
+      [(page)]="pageNo"
+      [maxSize]="3"
+      [rotate]="true"
+      [boundaryLinks]="true"
+      [pageSize]="pagination?.PageSize!"
+      (pageChange)="page($event)"
+    >
+    </ngb-pagination>
+  </div>
 </div>

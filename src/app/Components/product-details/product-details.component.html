@@ -1,21 +1,38 @@
+@if (detailsProduct) {
 <section class="relative product-detail-section">
   <div class="product-detail">
-    <!-- Image Section -->
     <div class="image-section pt-12">
-      <img
-        src="./assets/images/Product.png"
-        alt="Product Image"
-        class="main-image"
-      />
 
-      <div class="thumbnails">
-        <img src="./assets/images/Product.png" alt="Thumbnail" />
-        <img src="./assets/images/Product.png" alt="Thumbnail" />
-        <img src="./assets/images/Product.png" alt="Thumbnail" />
-      </div>
+      @if (detailsProduct.ItemUnits && 
+           detailsProduct.ItemUnits.length > 0 && 
+           detailsProduct.ItemUnits[0].ItemImages && 
+           detailsProduct.ItemUnits[0].ItemImages.length > 0) {
+        
+        <img
+          [src]="'data:image/png;base64,' + detailsProduct.ItemUnits[0].ItemImages[0].Image"
+          [alt]="detailsProduct.NameAr"
+          class="main-image"
+        />
+
+        <div class="thumbnails">
+          @for (unit of detailsProduct.ItemUnits; track unit.Id) {
+            @for (image of unit.ItemImages; track image.Id) {
+              <img
+                [src]="'data:image/png;base64,' + image.Image"
+                [alt]="detailsProduct.NameAr + ' thumbnail'"
+              />
+            }
+          }
+        </div>
+      } @else {
+        <img
+          src="./assets/images/Product.png"
+          alt="No image available"
+          class="main-image"
+        />
+      }
     </div>
 
-    <!-- Info Section -->
     <div class="info-section pt-12">
       <h2 class="mx-1 font-bold">{{ detailsProduct.NameAr }}</h2>
 
@@ -30,12 +47,12 @@
 
       <ul class="list-unstyled product-meta">
         <li>
-          <strong>{{ "productdet.material" | translate }}: </strong
-          >{{ "productdet.material" | translate }}
+          <strong>{{ "productdet.material" | translate }}: </strong>
+          {{ "productdet.material" | translate }}
         </li>
         <li>
-          <strong>{{ "productdet.blend" | translate }}: </strong
-          >{{ "productdet.blend" | translate }}
+          <strong>{{ "productdet.blend" | translate }}: </strong>
+          {{ "productdet.blend" | translate }}
         </li>
         <li style="width: 300px; display: inline-block; line-height: 1.5">
           <strong>{{ "productdet.category" | translate }}:</strong>
@@ -56,9 +73,9 @@
       <div class="benefits flex flex-col gap-2 my-2">
         <div class="flex align-middle">
           <i class="fas fa-box text-warning me-2"></i>
-          <span class="font-bold"
-            >{{ "productdet.totalquentity" | translate }}:</span
-          >
+          <span class="font-bold">
+            {{ "productdet.totalquentity" | translate }}:
+          </span>
           <p class="font-bold text-muted mx-2 text-green-500">
             {{ detailsProduct.TotalOutQty }} {{ "productdet.pice" | translate }}
           </p>
@@ -66,9 +83,9 @@
 
         <div class="sold flex align-middle">
           <i class="fas fa-shopping-basket text-secondary me-2"></i>
-          <span class="font-bold"
-            >{{ "productdet.createdat" | translate }}:</span
-          >
+          <span class="font-bold">
+            {{ "productdet.createdat" | translate }}:
+          </span>
           <p class="mx-2 font-bold text-muted">
             {{ detailsProduct.CreatedDate | date }}
           </p>
@@ -89,3 +106,8 @@
     <i class="fa-regular fa-circle-xmark"></i>
   </div>
 </section>
+} @else {
+  <div class="flex justify-center items-center h-screen">
+    <p>...جاري تحميل تفاصيل المنتج</p>
+  </div>
+}

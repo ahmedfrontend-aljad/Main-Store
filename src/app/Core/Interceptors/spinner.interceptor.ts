@@ -4,12 +4,24 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs';
 
 export const spinnerInterceptor: HttpInterceptorFn = (req, next) => {
-  const _NgxSpinnerService = inject(NgxSpinnerService);
+  const spinnerService = inject(NgxSpinnerService);
 
-  _NgxSpinnerService.show();
-  return next(req).pipe(
+  const token = localStorage.getItem('userToken');
+  let modifiedReq = req;
+
+  if (token) {
+    modifiedReq = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  spinnerService.show();
+
+  return next(modifiedReq).pipe(
     finalize(() => {
-      _NgxSpinnerService.hide();
+      spinnerService.hide();
     })
   );
 };

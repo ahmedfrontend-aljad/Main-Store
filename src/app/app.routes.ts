@@ -100,10 +100,26 @@ export const routes: Routes = [
       {
         path: 'cart',
         loadComponent: () =>
-          import('./Components/cart/cart.component').then(
+          import('./Components/cart/cart-list/cart.component').then(
             (c) => c.CartComponent
           ),
         title: 'Cart',
+      },
+      {
+        path: 'cart-invoice',
+        loadComponent: () =>
+          import('./Components/cart/cart-invoice/cart-invoice.component').then(
+            (c) => c.CartInvoiceComponent
+          ),
+        title: 'invoice',
+      },
+      {
+        path: 'catDetails/:code',
+        loadComponent: () =>
+          import(
+            './Components/category-details/category-details.component'
+          ).then((c) => c.CategoryDetailsComponent),
+        title: 'Category Products',
       },
       {
         path: 'wishList',
@@ -145,14 +161,7 @@ export const routes: Routes = [
           ),
         title: 'Item Details',
       },
-      {
-        path: 'catDetails/:code',
-        loadComponent: () =>
-          import(
-            './Components/category-details/category-details.component'
-          ).then((c) => c.CategoryDetailsComponent),
-        title: 'Category Products',
-      },
+
       {
         path: 'offers',
         loadComponent: () =>

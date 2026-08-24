@@ -38,7 +38,7 @@ export class UserRegisterComponent implements OnDestroy {
 
   getErrorMessage(controlName: string): string {
     const control = this.registerForm.get(controlName);
-    if (control && control.touched && control.errors) {
+    if (control && (control.touched || control.dirty) && control.errors) {
       if (control.errors['required']) {
         return this._TranslateService.instant('auth.validation.required');
       }
@@ -65,6 +65,10 @@ export class UserRegisterComponent implements OnDestroy {
   }
 
   sendResgisterData(): any {
+    console.log('Form Value:', this.registerForm.value);
+    console.log('Form Valid:', this.registerForm.valid);
+    console.log('Form Errors:', this.registerForm.errors);
+
     this.isloading = true;
     this.destoryRegisterData = this._AuthService
       .sendRegisterData(this.registerForm.value)
@@ -72,6 +76,8 @@ export class UserRegisterComponent implements OnDestroy {
         next: (res) => {
           this.isloading = false;
           if (res.IsSuccess) {
+            console.log(res);
+
             this._ToastrService.success(res.Message, 'Success');
             this._Router.navigate(['/auth/login']);
           } else {
@@ -80,9 +86,15 @@ export class UserRegisterComponent implements OnDestroy {
         },
         error: (err) => {
           this.isloading = false;
+          console.log(err);
+
           this._ToastrService.error(err.Message, 'Failed');
         },
       });
+  }
+  // ... داخل الكلاس UserRegisterComponent
+  get passwordControl() {
+    return this.registerForm.get('password')!;
   }
 
   ngOnDestroy(): void {

@@ -365,11 +365,128 @@ button {
     font-weight: bold;
     width: 100%;
     transform: translateY(150%);
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.4s ease;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease,
+      transform 0.4s ease;
   }
 
   .add-to-cart:hover {
     color: #fff;
     background-color: var(--color-secondary);
+  }
+}
+
+$cyan-primary: #0ea5e9;
+$cyan-light: #e0f2fe;
+$cyan-dark: #0284c7;
+$cyan-border: #bae6fd;
+$cyan-disabled: #cbd5e1;
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  gap: 0.25rem;
+
+  &.pagination-circle {
+    .page-link {
+      border-radius: 50%;
+    }
+  }
+
+  &.pagination-outline {
+    .page-link {
+      border: 1px solid $cyan-border;
+    }
+
+    .page-item {
+      &:hover:not(.disabled),
+      &.active {
+        .page-link {
+          border-color: $cyan-primary;
+        }
+      }
+    }
+  }
+}
+
+.page-item {
+  .page-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    height: 38px;
+    min-width: 38px;
+    padding: 0 12px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: $cyan-dark;
+    background-color: #ffffff;
+    border: 1px solid $cyan-border;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+
+    i, .svg-icon {
+      font-size: 0.85rem;
+      color: $cyan-dark;
+    }
+  }
+
+  &:focus {
+    outline: none;
+    .page-link {
+      color: $cyan-dark;
+      background-color: $cyan-light;
+      box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.25);
+    }
+  }
+
+  &:hover:not(.active):not(.disabled) {
+    .page-link {
+      color: $cyan-primary;
+      background-color: $cyan-light;
+      border-color: $cyan-border;
+
+      i, .svg-icon {
+        color: $cyan-primary;
+      }
+    }
+  }
+
+  &.active {
+    .page-link {
+      color: #ffffff !important;
+      background-color: $cyan-primary !important;
+      border-color: $cyan-primary !important;
+
+      i, .svg-icon {
+        color: #ffffff !important;
+      }
+    }
+  }
+
+  &.disabled {
+    .page-link {
+      color: $cyan-disabled;
+      background-color: #f8fafc;
+      border-color: #e2e8f0;
+      cursor: not-allowed;
+
+      i, .svg-icon {
+        color: $cyan-disabled;
+      }
+    }
+  }
+}
+
+@media (max-width: 991.98px) {
+  .pagination {
+    gap: 0.15rem;
   }
 }

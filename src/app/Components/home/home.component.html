@@ -1,4 +1,3 @@
-@if (allcategories()) {
 <div class="container m-auto">
   <!-- Banners -->
   <section class="w-full mb-14">
@@ -129,49 +128,53 @@
       >
         @for (product of filteredItems; track product.Id) {
         <div class="flex justify-center">
-          <div class="product-card px-1 bg-card rounded-lg shadow-card">
+          <div class="product-card px-1">
             <div class="wishIcon px-2 text-right py-1">
-              <i
-                class="fa-solid fa-heart text-xl cursor-pointer text-secondary"
-              ></i>
+              <i class="fa-solid fa-heart fa-heart text-xl cursor-pointer"></i>
             </div>
             <div
               class="image-container cursor-pointer"
               [routerLink]="['/details', product.Id]"
             >
-              <img src="./assets/images/Product.png" alt="product.title" />
+              @if (hasImages(product)) { @for (unit of product.ItemUnits; track
+              unit.Id) { @for (img of unit.ItemImages; track img.Image) {
+              <img
+                [src]="'data:image/jpeg;base64,' + img.Image"
+                [alt]="product.NameAr"
+              />
+              } } } @else {
+              <img src="assets/images/Product.png" [alt]="product.NameAr" />
+              }
             </div>
-            <div class="product-body text-right">
+
+            <div class="product-body">
               <div
                 [routerLink]="['/details', product.Id]"
+                [state]="{ from: currentUrl }"
                 class="cursor-pointer"
               >
                 <div class="product-title">
-                  <h3 class="text-base">{{ product.NameAr }}</h3>
+                  <h3>{{ product.NameAr }}</h3>
                 </div>
 
-                <div class="brand text-right">
+                <div class="brand">
                   <img src="./assets/images/OIP.webp" alt="Brand Logo" />
-                  <span class="text-muted">
-                    {{ "products.brandname" | translate }}
-                  </span>
+                  <span>{{ "products.brandname" | translate }}</span>
                 </div>
+
                 @for (price of product.ItemUnits.slice(0, 1) || []; track
                 price.Id) {
                 <div class="price">
-                  <span class="current-price text-primary">
-                    {{ price.Price }} EGP
-                  </span>
-                  <span class="old-price text-muted line-through">
-                    {{ price.Price + 20 }}EGP
-                  </span>
+                  <span class="current-price"> {{ price.Price }} EGP </span>
+                  <span class="old-price"> {{ price.Price + 20 }} EGP </span>
                 </div>
                 }
+
                 <div class="rating">
                   @for (num of [1, 2, 3, 4, 5]; track $index) {
                   <ng-container>
                     @if (num <= math.floor(num)) {
-                    <i class="fa-solid fa-star text-secondary"></i>
+                    <i class="fa-solid fa-star rating-color"></i>
                     }
                   </ng-container>
                   }
@@ -195,4 +198,3 @@
     </div>
   </section>
 </div>
-}

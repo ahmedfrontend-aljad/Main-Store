@@ -32,13 +32,21 @@
               class="input-field form-control block w-full px-3 py-2 rounded-md shadow-sm sm:text-sm"
             />
           </div>
-          @if(loginForm.get('userName')?.touched &&
-          loginForm.get('userName')?.errors){
-          <div
-            class="bg-red-100 border border-red-400 text-red-700 px-2 py-1 rounded-md"
-          >
-            @if(loginForm.get('userName')?.getError('required')){
-            <p class=" ">{{ "auth.login.userNameisrequired" | translate }}</p>
+          @if (loginForm.get('userName')?.touched &&
+          loginForm.get('userName')?.invalid) {
+          <div class="error-message">
+            @if (loginForm.get('userName')?.hasError('required')) {
+            <p
+              class="bg-red-100 border border-red-400 text-red-700 px-2 py-1 rounded-md"
+            >
+              {{ "auth.login.userNameisrequired" | translate }}
+            </p>
+            } @if (loginForm.get('userName')?.hasError('minlength')) {
+            <p
+              class="bg-red-100 border border-red-400 text-red-700 px-2 py-1 rounded-md"
+            >
+              {{ "auth.login.userNameMinLength" | translate }}
+            </p>
             }
           </div>
           }
@@ -115,7 +123,11 @@
         <button
           type="button"
           (click)="sendLodinData()"
-          [disabled]="loginForm.invalid || isloading"
+          [disabled]="
+            !loginForm.get('userName')?.value ||
+            !loginForm.get('password')?.value ||
+            isloading
+          "
           class="login-button disabled:bg-gray-400 disabled:cursor-not-allowed disabled:pointer-events-none"
         >
           @if (isloading) { {{ "auth.login.loading..." | translate }} } @else {

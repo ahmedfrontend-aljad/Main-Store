@@ -13,8 +13,11 @@ import jwtDecode from 'jwt-decode';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { Subscription, Unsubscribable } from 'rxjs';
-import { IallCategories } from '../../Core/Interfaces/iall-categories';
+import { catchError, forkJoin, of, Subscription, Unsubscribable } from 'rxjs';
+import {
+  IallCategories,
+  ItemUnit,
+} from '../../Core/Interfaces/iall-categories';
 import { Iproducts } from '../../Core/Interfaces/iproducts';
 import { AllProductsService } from '../../Core/Services/all-products.service';
 import { CartService } from '../../Core/Services/cart.service';
@@ -40,6 +43,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   math: Math = Math;
   destoryAllProducts!: Unsubscribable;
   destoryCategories!: Unsubscribable;
+  isUser: boolean = false;
+  currentUrl: string = '';
 
   constructor(private _spinnerInterceptor: NgxSpinnerService) {}
 
@@ -65,25 +70,42 @@ export class HomeComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
+    this.currentUrl = this._Router.url;
     this._spinnerInterceptor.show();
-    this.subscriptions.add(
-      this._CategoriesService.getAllCategories().subscribe({
-        next: (res) => {
-          let data = res.Obj.ItemGroups;
-          this.allcategories.set(data);
-          this._spinnerInterceptor.hide();
-        },
-        error: (err) => {
-          console.log(err);
-          this._spinnerInterceptor.hide();
-        },
+
+    const categories$ = this._CategoriesService.getAllCategories().pipe(
+      catchError((error) => {
+        console.error('Failed to load categories', error);
+        this._ToastrService.error('فشل تحميل الأقسام');
+        return of(null);
+      })
+    );
+
+    const products$ = this._AllProductsService.getPagedItem(1, 20).pipe(
+      catchError((error) => {
+        console.error('Failed to load products', error);
+        this._ToastrService.error('فشل تحميل المنتجات');
+        return of(null);
       })
     );
 
     this.subscriptions.add(
-      this._AllProductsService.getPagedItem(1, 20).subscribe({
-        next: (res) => this.allProducts.set(res.Obj.PagedResult),
-        error: (err) => console.log(err),
+      forkJoin([categories$, products$]).subscribe({
+        next: ([categoriesResponse, productsResponse]) => {
+          if (categoriesResponse && categoriesResponse.Obj) {
+            this.allcategories.set(categoriesResponse.Obj.ItemGroups);
+          }
+
+          if (productsResponse && productsResponse.Obj) {
+            this.allProducts.set(productsResponse.Obj.PagedResult);
+          }
+
+          this._spinnerInterceptor.hide();
+        },
+        error: (err) => {
+          console.error('A critical error occurred in forkJoin:', err);
+          this._spinnerInterceptor.hide();
+        },
       })
     );
   }
@@ -95,36 +117,62 @@ export class HomeComponent implements OnInit, OnDestroy {
         item.NameEn?.toLowerCase().includes(this.text.toLowerCase())
     );
   }
+  hasImages(product: any): boolean {
+    return (
+      product.ItemUnits?.some(
+        (u: ItemUnit) => u.ItemImages && u.ItemImages.length > 0
+      ) ?? false
+    );
+  }
+  addToCart(productId: number, price: number, quantity: number) {
+    const userToken = localStorage.getItem('userToken');
+    const guestToken = localStorage.getItem('guestToken');
 
-  addToCart(productId: number, price: number, quantity: number = 1): void {
-    const token = localStorage.getItem('userToken');
-    if (!token) {
-      console.error('من فضلك اعد تسجيل الدخول!');
-      localStorage.removeItem('userToken');
-      this._Router.navigate(['/login']);
-      return;
+    if (userToken) {
+      this._spinnerInterceptor.show();
+      try {
+        const decoded: any = jwtDecode(userToken);
+        const userId = decoded.Id;
+        const dataToSend = {
+          ProductId: productId,
+          Price: price,
+          Quantity: quantity,
+          UserId: userId,
+        };
+
+        this._CartService.addToCart(dataToSend).subscribe({
+          next: (response) => {
+            this._spinnerInterceptor.hide();
+            if (response && response.IsSuccess) {
+              this._ToastrService.success(
+                response.Message || 'تمت الإضافة بنجاح!'
+              );
+            } else {
+              this._ToastrService.error(
+                response.Message || 'فشل إضافة المنتج.'
+              );
+            }
+          },
+          error: (err) => {
+            this._spinnerInterceptor.hide();
+            this._ToastrService.error('فشل الاتصال بالخادم.');
+          },
+        });
+      } catch (error) {
+        this._spinnerInterceptor.hide();
+        this._ToastrService.error('جلسة المستخدم غير صالحة.');
+        this._Router.navigate(['/auth/login']);
+      }
+    } else if (guestToken) {
+      this._ToastrService.info('سجل الدخول لإضافة المنتجات للسلة أولاً');
+      setTimeout(() => {
+        localStorage.removeItem('guestToken');
+        this._Router.navigate(['/auth/login']);
+      }, 1500);
+    } else {
+      this._ToastrService.error('يجب تسجيل الدخول أولاً لإضافة منتجات للسلة');
+      this._Router.navigate(['/auth/login']);
     }
-
-    const decoded: any = jwtDecode(token);
-
-    const data = {
-      UserId: decoded.Id,
-      ProductId: productId,
-      Quantity: quantity,
-      Price: price,
-    };
-
-    this._CartService.addToCart(data).subscribe({
-      next: (res) => {
-        this._ToastrService.success(res.Message, 'Added to cart');
-        console.log('Added to cart:', res);
-        console.log(decoded.Id);
-      },
-      error: (err) => {
-        console.error(' Error while adding:', err);
-        this._ToastrService.error(err.Message, ' Error while adding');
-      },
-    });
   }
 
   ngOnDestroy(): void {

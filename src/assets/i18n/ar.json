@@ -35,10 +35,11 @@
       "loginnow": "تسجيل الدخول الآن",
       "username": "اسم المستخدم",
       "password": "كلمة المرور",
+      "userNameMinLength": "يجب أن تكون اسم المستخدم عالاقل 3 حروف على الأقل",
       "userNameisrequired": "اسم المستخدم مطلوب",
       "passwordisrequired": "كلمة المرور مطلوبة",
       "passwordmustbeatleast6characters": "يجب أن تكون كلمة المرور مكونة من 6 أحرف على الأقل",
-      "passwordvalidation": "كلمة المرور يمكن أن تحتوي فقط على أحرف إنجليزية وأرقام وشرطة سفلية (_)",
+      "Passwordcanonlycontainenglishletters,numbers,andunderscores": "كلمة المرور يمكن أن تحتوي فقط على أحرف إنجليزية وأرقام وشرطة سفلية (_)",
       "forgetpassword?": "هل نسيت كلمة المرور ؟",
       "rememberme": "تذكرني",
       "login": "تسجيل الدخول",
@@ -49,6 +50,15 @@
       "placeholders": {
         "username": "أدخل اسم المستخدم",
         "password": "أدخل كلمة المرور"
+      },
+      "validation": {
+        "password": {
+          "minLength": "8 أحرف على الأقل",
+          "requireUppercase": "حرف كبير واحد على الأقل (A-Z)",
+          "requireLowercase": "حرف صغير واحد على الأقل (a-z)",
+          "requireNumber": "رقم واحد على الأقل (0-9)",
+          "requireSpecialChar": "رمز خاص واحد على الأقل (!@#...)"
+        }
       }
     },
 
@@ -85,7 +95,8 @@
     "bestoffers!shopnow": "أفضل العروض! تسوق الآن",
     "mostpurchasedproducts": "المنتجات الأكثر شراءً",
     "enjoythemostpopularproducts": "استمتع بالمنتجات الأكثر رواجًا",
-    "searchbyproductname": "ابحث باسم المنتج..."
+    "searchbyproductname": "ابحث باسم المنتج...",
+    "Shopamongmanyproducts": "تسوق بين العديد من المنتجات"
   },
 
   "productdet": {
@@ -109,6 +120,8 @@
     "selectpaymentmethod": "اختر طريقة الدفع",
     "paywithcash": "الدفع نقدًا",
     "paywithvisa": "الدفع ببطاقة فيزا",
+    "cartisempty": "السله فارغة",
+    "purchaseandpaymentconfirmation": "تأكيد الشراء والدفع",
 
     "payment": {
       "paymentdetails": "تفاصيل الدفع",
@@ -117,6 +130,52 @@
       "city": "المدينة",
       "checkout": "إتمام الدفع",
       "enteryourdetails": "أدخل تفاصيلك"
+    },
+
+    "invoice": {
+      "title": "تفاصيل الدفع",
+      "payinfo": "بيانات الدفع",
+      "clientName": "اسم العميل",
+      "salesManName": "اسم البائع",
+      "invoiceDate": "تاريخ الفاتورة",
+      "banquetDate": "تاريخ الاستلام",
+      "cash": "نقداً",
+      "cashpay": "المبلغ النقدي",
+      "visa": "فيزا",
+      "visapay": "مبلغ الفيزا",
+      "debt": "دين",
+      "remainingamount": "المبلغ المتبقي",
+      "notes": "ملاحظات",
+      "notesPlaceholder": "أضف ملاحظات على الفاتورة...",
+      "reviewTitle": "مراجعة الطلب",
+      "emptyCart": "سلة التسوق فارغة.",
+      "quantity": "الكمية",
+      "price": "السعر",
+      "confirmButton": "تأكيد الفاتوره"
     }
+  },
+  "swal": {
+    "deleteTitle": "هل أنت متأكد؟",
+    "deleteSingleText": "سيتم حذف هذا المنتج من السلة.",
+    "deletedTitle": "تم الحذف!",
+    "deletedText": "تم حذف المنتج بنجاح من السلة.",
+    "deleteErrorTitle": "خطأ أثناء الحذف",
+    "deleteErrorText": "حدث خطأ أثناء حذف المنتج. حاول مرة أخرى.",
+    "deleteText": "سيتم حذف المنتجات من السلة!",
+    "deleteConfirm": "نعم، احذفه!",
+    "paymentTitle": "اختر طريقة الدفع",
+    "paymentText": "كيف تود إتمام عملية الدفع؟",
+    "cash": "دفع كاش",
+    "visa": "دفع فيزا",
+    "cancel": "إلغاء",
+    "done": "تم!",
+    "cashRedirect": "سيتم توجيهك للدفع الكاش.",
+    "visaRedirect": "سيتم توجيهك للدفع بالفيزا.",
+    "clearConfirmTitle": "هل أنت متأكد؟",
+    "clearConfirmText": "سيتم تفريغ سلة التسوق بالكامل!",
+    "clearConfirmButton": "نعم، قم بالتفريغ!",
+    "cancelButton": "إلغاء",
+    "clearedTitle": "تم التفريغ!",
+    "clearedText": "تم تفريغ سلة التسوق بنجاح."
   }
 }

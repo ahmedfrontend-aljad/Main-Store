@@ -1,28 +1,30 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, Unsubscribable } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
+import jwtDecode from 'jwt-decode';
+import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 import { IitemsDetailes } from '../../Core/Interfaces/iitems-detailes';
 import { AllProductsService } from '../../Core/Services/all-products.service';
-import { TranslateModule } from '@ngx-translate/core';
 import { CartService } from '../../Core/Services/cart.service';
-import { ToastrService } from 'ngx-toastr';
-import jwtDecode from 'jwt-decode';
 
 @Component({
   selector: 'app-product-details',
+  standalone: true,
   imports: [DatePipe, TranslateModule],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.scss',
 })
-export class ProductDetailsComponent implements OnInit {
+export class ProductDetailsComponent implements OnInit, OnDestroy {
   private readonly _Router = inject(Router);
   private readonly _ActivatedRoute = inject(ActivatedRoute);
   private readonly _AllProductsService = inject(AllProductsService);
   private readonly _CartService = inject(CartService);
   private readonly _ToastrService = inject(ToastrService);
 
-  detailsProduct!: IitemsDetailes;
+  // تم التعديل: تعريف المتغير ليقبل undefined لحل خطأ TypeScript
+  detailsProduct: IitemsDetailes | undefined;
   productId: string | null = null;
 
   private subscription = new Subscription();
@@ -39,7 +41,7 @@ export class ProductDetailsComponent implements OnInit {
               this.detailsProduct = res.Obj.item;
             },
             error: (err) => {
-              console.log(err);
+              console.error('Error fetching product details:', err);
             },
           });
 
@@ -57,34 +59,46 @@ export class ProductDetailsComponent implements OnInit {
       this._Router.navigate(['/']);
     }
   }
+
   addToCart(productId: number, price: number, quantity: number = 1): void {
     const token = localStorage.getItem('userToken');
     if (!token) {
-      console.error('من فضلك اعد تسجيل الدخول!');
-      localStorage.removeItem('userToken');
+      this._ToastrService.error('من فضلك قم بتسجيل الدخول أولاً!');
       this._Router.navigate(['/login']);
       return;
     }
 
-    const decoded: any = jwtDecode(token);
+    try {
+      const decoded: any = jwtDecode(token);
+      const data = {
+        UserId: decoded.Id,
+        ProductId: productId,
+        Quantity: quantity,
+        Price: price,
+      };
 
-    const data = {
-      UserId: decoded.Id,
-      ProductId: productId,
-      Quantity: quantity,
-      Price: price,
-    };
+      this._CartService.addToCart(data).subscribe({
+        next: (res) => {
+          if (res && res.IsSuccess) {
+            this._ToastrService.success(res.Message || 'تمت الإضافة بنجاح');
+          } else {
+            this._ToastrService.error(res.Message || 'حدث خطأ ما');
+          }
+        },
+        error: (err) => {
+          console.error('Error while adding to cart:', err);
+          this._ToastrService.error('فشل الاتصال بالخادم');
+        },
+      });
+    } catch (error) {
+      this._ToastrService.error(
+        'جلسة المستخدم غير صالحة، يرجى تسجيل الدخول مرة أخرى.'
+      );
+      this._Router.navigate(['/login']);
+    }
+  }
 
-    this._CartService.addToCart(data).subscribe({
-      next: (res) => {
-        this._ToastrService.success(res.Message);
-        console.log('Added to cart:', res);
-        console.log(decoded.Id);
-      },
-      error: (err) => {
-        console.error(' Error while adding:', err);
-        this._ToastrService.error(err.Message);
-      },
-    });
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

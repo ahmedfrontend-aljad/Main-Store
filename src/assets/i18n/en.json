@@ -36,9 +36,10 @@
       "username": "User Name",
       "password": "Password",
       "userNameisrequired": "UserName is required",
+      "userNameMinLength": "Username must be at least 3 characters long.",
       "passwordisrequired": "Password is required",
       "passwordmustbeatleast6characters": "Password must be at least 6 characters",
-      "Passwordcanonlycontainenglishletters,numbers,andunderscores": "Password can only contain english letters,numbers,andunderscores",
+      "Passwordcanonlycontainenglishletters,numbers,andunderscores": "Password can only contain english letters,numbers,and underscores",
       "forgetpassword?": "Forget Password?",
       "rememberme": "Remember Me",
       "login": "Login",
@@ -58,11 +59,13 @@
     "successTitle": "Success",
 
     "validation": {
-      "required": "This field is required",
-      "minLength": "Minimum length is {{min}} characters",
-      "maxLength": "Maximum length is {{max}} characters",
-      "email": "Please enter a valid email",
-      "passwordInvalid": "Password must contain at least letters and numbers"
+      "password": {
+        "minLength": "At least 8 characters",
+        "requireUppercase": "At least one uppercase letter (A-Z)",
+        "requireLowercase": "At least one lowercase letter (a-z)",
+        "requireNumber": "At least one number (0-9)",
+        "requireSpecialChar": "At least one special character (!@#...)"
+      }
     }
   },
 
@@ -81,7 +84,8 @@
     "bestoffers!shopnow": "Best offers! Shop now",
     "mostpurchasedproducts": "Most purchased products",
     "enjoythemostpopularproducts": "Enjoy the most popular products",
-    "searchbyproductname": "Search By Product Name..."
+    "searchbyproductname": "Search By Product Name...",
+    "Shopamongmanyproducts": "Shop among many products"
   },
 
   "productdet": {
@@ -106,6 +110,8 @@
     "selectpaymentmethod": "Select Payment Method",
     "paywithcash": "Pay With Cash",
     "paywithvisa": "pay With Visa",
+    "cartisempty": "Cart Is Empty",
+    "purchaseandpaymentconfirmation": "Purchase And Payment Confirmation",
 
     "payment": {
       "paymentdetails": "Payment details",
@@ -113,7 +119,52 @@
       "phone": "Phone",
       "city": "City",
       "checkout": "Check Out",
-      "enteryourdetails": "Enter your details"
+      "enteryourdetails": "Enter your details",
+      "pay": "pay"
+    },
+    "invoice": {
+      "title": "Payment Details",
+      "payinfo": "Payment Information",
+      "clientName": "Client Name",
+      "salesManName": "Salesman Name",
+      "invoiceDate": "Invoice Date",
+      "banquetDate": "Delivery Date",
+      "cash": "Cash",
+      "cashpay": "Cash Amount",
+      "visa": "Visa",
+      "debt": "Debt",
+      "remainingamount": "Remaining Amount",
+      "notes": "Notes",
+      "notesPlaceholder": "Add notes to the invoice...",
+      "reviewTitle": "Order Review",
+      "emptyCart": "Your cart is empty.",
+      "quantity": "Quantity",
+      "price": "Price",
+      "confirmButton": "Confirm Button"
     }
+  },
+  "swal": {
+    "deleteTitle": "Are you sure?",
+    "deleteSingleText": "This product will be removed from your cart.",
+    "deletedTitle": "Deleted!",
+    "deletedText": "The product has been removed successfully.",
+    "deleteErrorTitle": "Delete failed",
+    "deleteErrorText": "An error occurred while deleting the product. Please try again.",
+    "deleteText": "The product will be removed from the cart!",
+    "deleteConfirm": "Yes, delete it!",
+    "paymentTitle": "Choose Payment Method",
+    "paymentText": "How would you like to complete the payment?",
+    "cash": "Cash Payment",
+    "visa": "Visa Payment",
+    "cancel": "Cancel",
+    "done": "Done!",
+    "cashRedirect": "You will be redirected for cash payment.",
+    "visaRedirect": "You will be redirected for visa payment.",
+    "clearConfirmTitle": "Are you sure?",
+    "clearConfirmText": "Your entire cart will be cleared!",
+    "clearConfirmButton": "Yes, clear it!",
+    "cancelButton": "Cancel",
+    "clearedTitle": "Cleared!",
+    "clearedText": "Your cart has been successfully cleared."
   }
 }

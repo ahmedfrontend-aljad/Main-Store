@@ -1,47 +1,48 @@
-import { isPlatformBrowser } from '@angular/common';
-import {
-  Component,
-  inject,
-  OnInit,
-  PLATFORM_ID,
-  signal,
-  WritableSignal,
-} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 import jwtDecode from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
-import { Unsubscribable } from 'rxjs';
+import { ItemUnit } from '../../Core/Interfaces/iall-categories';
 import { Iproducts } from '../../Core/Interfaces/iproducts';
 import { AllProductsService } from '../../Core/Services/all-products.service';
 import { CartService } from '../../Core/Services/cart.service';
-import { PaginationComponent } from '../../Shared/components/pagination/pagination.component';
-import { ItemUnit } from '../../Core/Interfaces/iall-categories';
+import { LoadingService } from '../../Core/Services/loading.service';
+import { PAGE_SIZE } from '../../Shared/constants/general.constant';
+import { IPagination } from '../../Shared/models/IPagination.model';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [FormsModule, RouterLink, PaginationComponent, TranslateModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    TranslateModule,
+    NgbPaginationModule,
+  ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
 })
 export class ProductsComponent implements OnInit {
+  pageNo = 1;
   text: string = '';
+  pagination!: IPagination;
   math: Math = Math;
+  decoded!: any;
+  totalCount: any;
+  currentUrl: any;
+  allProducts = signal<Iproducts[]>([]);
+
   private readonly _AllProductsService = inject(AllProductsService);
   private readonly _Router = inject(Router);
   private readonly _ToastrService = inject(ToastrService);
-
-  currentUrl: string = '';
   private readonly _CartService = inject(CartService);
   private readonly _PLATFORM_ID = inject(PLATFORM_ID);
-  decoded!: any;
-  allProducts: WritableSignal<Iproducts[]> = signal([]);
-  pageNumber: number = 1;
-  pageSize: number = 50;
-  totalCount: number = 0;
-  destoryAllData!: Unsubscribable;
+  private readonly _LoadingService = inject(LoadingService);
 
   ngOnInit(): void {
     this.currentUrl = this._Router.url;
@@ -57,25 +58,38 @@ export class ProductsComponent implements OnInit {
     return this.allProducts().filter(
       (item) =>
         item.NameAr?.toLowerCase().includes(this.text.toLowerCase()) ||
-        item.NameEn?.toLowerCase().includes(this.text.toLowerCase())
+        item.NameEn?.toLowerCase().includes(this.text.toLowerCase()),
     );
   }
 
   loadItems() {
-    this._AllProductsService
-      .getPagedItem(this.pageNumber, this.pageSize)
-      .subscribe({
-        next: (res) => {
-          this.allProducts.set(res.Obj.PagedResult);
-          this.totalCount = res.Obj.TotalCount;
-          console.log(res);
-        },
-        error: (err) => console.log(err),
-      });
+    this._LoadingService.start();
+
+    this._AllProductsService.getPagedItem(this.pageNo, PAGE_SIZE).subscribe({
+      next: (res) => {
+        this.allProducts.set(res.Obj.PagedResult);
+        this.totalCount = res.Obj.TotalCount;
+        this.setData(res.Obj);
+        console.log(res);
+        this._LoadingService.stop();
+      },
+      error: (err) => {
+        this._LoadingService.stop();
+
+        console.log(err);
+      },
+    });
   }
 
-  pagePagnation(page: number): void {
-    this.pageNumber = page;
+  setData(res: any): void {
+    this.pagination = {
+      PageSize: PAGE_SIZE,
+      TotalCount: res.TotalCount,
+    };
+  }
+
+  page(ev: any): void {
+    this.pageNo = ev;
     this.loadItems();
   }
 
@@ -109,10 +123,11 @@ export class ProductsComponent implements OnInit {
       },
     });
   }
+
   hasImages(product: any): boolean {
     return (
       product.ItemUnits?.some(
-        (u: ItemUnit) => u.ItemImages && u.ItemImages.length > 0
+        (u: ItemUnit) => u.ItemImages && u.ItemImages.length > 0,
       ) ?? false
     );
   }

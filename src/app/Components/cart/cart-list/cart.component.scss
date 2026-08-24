@@ -29,7 +29,10 @@
 .payment-section button:hover {
   background-color: var(--btn-hover-bg);
 }
-
+.disabledButton{
+  color: #eee;
+  
+}
 @media (max-width: 575.98px) {
   .cart-section .card {
     padding: 10px;

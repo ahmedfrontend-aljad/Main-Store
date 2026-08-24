@@ -35,4 +35,25 @@ export class CartService {
       data
     );
   }
+
+  createMoyasarInvoice(data: object): Observable<any> {
+    return this._HttpClient.post(
+      `${environment.baseUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForStore`,
+      data
+    );
+  }
+
+  /*createMoyasarInvoiceOnly(data: any): Observable<any> {
+    return this._HttpClient.post(
+      `${environment.baseUrl}/CreateMoyasarInvoiceOnly`,
+      data
+    );
+  }*/
+
+  moyasarCallback(data: any): Observable<any> {
+    return this._HttpClient.post(
+      `${environment.baseUrl}/MoyasarCallback`,
+      data
+    );
+  }
 }

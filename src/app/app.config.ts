@@ -49,7 +49,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideHttpClient(
       withFetch(),
-      withInterceptors([spinnerInterceptor, headersInterceptor])
+      withInterceptors([ headersInterceptor])
     ),
     provideAnimations(),
     provideToastr(),

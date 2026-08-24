@@ -10,6 +10,7 @@
             {{ "cart.shoppingcart" | translate }}
           </h3>
 
+          @if (isCartHasProducts) {
           <button
             (click)="deleteAllItems()"
             class="border border-red-500 text-red-500 hover:bg-red-50 mt-1 text-sm px-3 py-1 rounded-md"
@@ -17,6 +18,11 @@
             {{ "cart.deleteallitems" | translate }}
             <i class="fa-solid fa-trash-can mx-1"></i>
           </button>
+          }@else {
+          <h3 class="text-3xl font-serif font-bold text-red-600">
+            {{ "cart.cartisempty" | translate }}
+          </h3>
+          }
         </div>
 
         <!-- Cart Item -->
@@ -24,7 +30,6 @@
         <div class="card shadow-sm rounded-xl mb-4 bg-gray-50">
           <div class="p-3">
             <div class="flex flex-col md:flex-row items-center gap-4">
-              <!-- Image -->
               <div class="w-full md:w-2/12 text-center">
                 <img
                   src="./assets/images/Product.png"
@@ -32,7 +37,6 @@
                 />
               </div>
 
-              <!-- Title -->
               <div class="w-full md:w-3/12 text-center md:text-left">
                 <h5 class="font-semibold mb-1">
                   {{ product.ProductName }}
@@ -41,18 +45,21 @@
 
               <!-- Quantity -->
               <div class="w-full md:w-3/12 flex justify-center items-center">
-                <i
-                  class="fa-solid fa-square-minus fa-xl text-red-500 cursor-pointer"
-                ></i>
-                <!-- (click)="UpdateQuantityItem(item.product._id, item.count - 1, 'decrease')" -->
+                <div (click)="updateQuantityItem('minus', product.ProductId)">
+                  <i
+                    class="fa-solid fa-square-minus fa-xl text-red-500 cursor-pointer"
+                  ></i>
+                </div>
+
                 <span class="fw-bold px-3 rounded">
                   {{ product.Quantity }}
                 </span>
 
-                <i
-                  class="fa-solid fa-square-plus fa-xl text-green-500 cursor-pointer"
-                ></i>
-                <!-- (click)="UpdateQuantityItem(item.product._id, item.count + 1, 'increase')" -->
+                <div (click)="updateQuantityItem('plus', product.ProductId)">
+                  <i
+                    class="fa-solid fa-square-plus fa-xl text-green-500 cursor-pointer"
+                  ></i>
+                </div>
               </div>
 
               <!-- Price -->
@@ -63,9 +70,11 @@
               </div>
 
               <!-- Delete -->
-              <div class="w-6/12 md:w-2/12 text-center">
+              <div
+                class="w-6/12 md:w-2/12 text-center"
+                (click)="deleteItem(product.ProductId)"
+              >
                 <i class="fas fa-trash text-red-500 fa-xl cursor-pointer"></i>
-                <!-- (click)="deleteOneItem(item.product._id)" -->
               </div>
             </div>
           </div>
@@ -112,47 +121,28 @@
         </div>
 
         <!-- Checkout -->
+        @if (isCartHasProducts) {
         <div
           data-aos="fade-up"
           data-aos-delay="200"
           class="text-center mt-4 payment-section py-4"
         >
-          <p class="font-bold mb-3">
-            <i class="fa-solid fa-money-bill-wave"></i>
-            {{ "cart.selectpaymentmethod" | translate }}
-          </p>
-
-          <div class="flex justify-center gap-3 flex-wrap">
+          <div class="mt-8">
             <button
-              (click)="goToPayment('cash')"
+              type="submit"
+              (click)="paymentMethods()"
+              class="login-button w-full"
               [disabled]="!isCartHasProducts"
-              class="px-4 py-2 rounded-md flex items-center gap-2 border"
-              [class.border-green-500]="isCartHasProducts"
-              [class.text-green-600]="isCartHasProducts"
-              [class.hover\:bg-green-50]="isCartHasProducts"
-              [class.border-green-300]="!isCartHasProducts"
-              [class.text-green-400]="!isCartHasProducts"
+              [ngClass]="{ disabledButton: !isCartHasProducts }"
             >
-              {{ "cart.paywithcash" | translate }}
-              <i class="fas fa-money-bill-wave"></i>
-            </button>
-
-            <button
-              (click)="goToPayment('visa')"
-              [disabled]="!isCartHasProducts"
-              class="px-4 py-2 rounded-md flex items-center gap-2 border"
-              [class.border-blue-500]="isCartHasProducts"
-              [class.text-blue-600]="isCartHasProducts"
-              [class.hover\:bg-blue-50]="isCartHasProducts"
-              [class.border-blue-300]="!isCartHasProducts"
-              [class.text-blue-400]="!isCartHasProducts"
-            >
-              {{ "cart.paywithvisa" | translate }}
-              <i class="fa-brands fa-cc-visa"></i>
+              {{ "cart.purchaseandpaymentconfirmation" | translate }}
             </button>
           </div>
         </div>
+        }
       </div>
     </div>
   </div>
 </section>
+
+<!--  Payment Overlay  -->

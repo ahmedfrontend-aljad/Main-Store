@@ -15,11 +15,11 @@
 
     <!-- Right Side Buttons -->
     <div
-      class="flex items-center md:order-2 space-x-1 md:space-x-0 rtl:space-x-reverse"
+      class="flex items-center md:order-2 gap-2 space-x-1 md:space-x-0 rtl:space-x-reverse"
     >
       <!-- Guest Login & Register Buttons -->
       @if (isGuest) {
-      <div class="flex gap-3 me-4">
+      <div class="flex gap-3 me-5">
         <button
           (click)="guestLogin()"
           class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700"
@@ -36,10 +36,10 @@
       }
 
       <!-- Theme Toggle Button -->
-      <button 
+      <button
         type="button"
         (click)="toggleTheme()"
-        class="px-4 py-2  mx-6 rounded-lg ml-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+        class="px-4 py-2 mx-6 rounded-lg ml-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
       >
         <i class="fa-solid fa-moon dark:hidden"></i>
         <i class="fa-solid fa-sun hidden dark:inline"></i>
@@ -82,7 +82,6 @@
       <!-- Cart -->
       <div class="cart px-5 cursor-pointer relative" routerLink="/cart">
         <i class="fa-solid fa-cart-shopping" ngSkipHydration></i>
-      
       </div>
 
       <!-- Profile Dropdown -->
