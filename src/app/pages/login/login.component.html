@@ -1,0 +1,79 @@
+<section class="login-section">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <h2 class="login-title font-semibold font-serif">
+        {{ "auth.login.loginnow" | translate }}
+      </h2>
+      <form
+        class="login-form"
+        [formGroup]="loginForm!"
+      >
+        <div class="fv-row">
+          <app-store-input
+            [label]="'auth.login.username'"
+            [placeholder]="'auth.login.placeholders.username'"
+            [control]="loginForm?.get('userName')!"
+          >
+          </app-store-input>
+        </div>
+
+        <div class="fv-row mb-2">
+          <app-store-input
+            [type]="'password'"
+            [label]="'auth.login.password'"
+            [placeholder]="'auth.login.placeholders.password'"
+            [control]="loginForm?.get('password')!"
+          >
+          </app-store-input>
+        </div>
+        <div class="options-row">
+          <label class="flex items-center space-x-2">
+            <input
+              formControlName="rememberMe"
+              type="checkbox"
+              checked
+              class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
+            />
+            <span class="text-sm px-1">
+              {{ "auth.login.rememberme" | translate }}</span
+            >
+          </label>
+
+          <div class="links">
+            <a routerLink="/auth/forgetpassword">
+              {{ "auth.login.forgetpassword?" | translate }}</a
+            >
+          </div>
+        </div>
+
+        <div class="col-12">
+          <app-submit-button
+            [buttonText]="'auth.login.login'"
+            [isDisabled]="loginForm.invalid"
+            (btnClick)="sendLoginData()"
+          >
+          </app-submit-button>
+        </div>
+
+        <hr class="divider" />
+        <button (click)="guestLogin()" type="button" class="btn btn-info">
+          {{ "auth.login.continueasguest" | translate }}
+        </button>
+
+        <p class="text-center">
+          {{ "auth.login.notamember" | translate }}
+          <a
+            type="button"
+            routerLink="/auth/register"
+            class="links text-blue-500"
+          >
+            {{ "auth.login.registernow" | translate }}</a
+          >
+        </p>
+      </form>
+    </div>
+  </div>
+  <div class="image">
+    <img src="./assets/images/Background/Auth.png" class="" alt="" />
+  </div>
+</section>

@@ -14,26 +14,24 @@ export const routes: Routes = [
       {
         path: 'login',
         loadComponent: () =>
-          import('./Components/login/login.component').then(
-            (c) => c.LoginComponent
-          ),
-        title: 'Login',
+          import('./pages/login/login.component').then((c) => c.LoginComponent),
+        title: 'login',
       },
       {
         path: 'register',
         loadComponent: () =>
-          import('./Components/user-register/user-register.component').then(
-            (c) => c.UserRegisterComponent
+          import('./pages/user-register/user-register.component').then(
+            (c) => c.UserRegisterComponent,
           ),
-        title: 'Register',
+        title: 'register',
       },
       {
         path: 'forgetpassword',
         loadComponent: () =>
-          import('./Components/forget-password/forget-password.component').then(
-            (c) => c.ForgetPasswordComponent
+          import('./pages/forget-password/forget-password.component').then(
+            (c) => c.ForgetPasswordComponent,
           ),
-        title: 'Forget Password',
+        title: 'forgetPassword',
       },
     ],
   },
@@ -48,35 +46,32 @@ export const routes: Routes = [
       {
         path: 'home',
         loadComponent: () =>
-          import('./Components/home/home.component').then(
-            (c) => c.HomeComponent
-          ),
-        title: 'Home',
+          import('./pages/home/home.component').then((c) => c.HomeComponent),
+        title: 'home',
       },
       {
         path: 'categories',
         loadComponent: () =>
-          import('./Components/categories/categories.component').then(
-            (c) => c.CategoriesComponent
+          import('./pages/categories/categories.component').then(
+            (c) => c.CategoriesComponent,
           ),
-        title: 'All Categories',
+        title: 'allCategories',
       },
-
       {
         path: 'details/:id',
         loadComponent: () =>
-          import('./Components/product-details/product-details.component').then(
-            (c) => c.ProductDetailsComponent
+          import('./pages/product-details/product-details.component').then(
+            (c) => c.ProductDetailsComponent,
           ),
-        title: 'Item Details',
+        title: 'itemDetails',
       },
       {
         path: 'catDetails/:code',
         loadComponent: () =>
-          import(
-            './Components/category-details/category-details.component'
-          ).then((c) => c.CategoryDetailsComponent),
-        title: 'Category Products',
+          import('./pages/category-details/category-details.component').then(
+            (c) => c.CategoryDetailsComponent,
+          ),
+        title: 'categoryProducts',
       },
     ],
   },
@@ -92,92 +87,88 @@ export const routes: Routes = [
       {
         path: 'home',
         loadComponent: () =>
-          import('./Components/home/home.component').then(
-            (c) => c.HomeComponent
-          ),
-        title: 'Home',
+          import('./pages/home/home.component').then((c) => c.HomeComponent),
+        title: 'home',
       },
       {
         path: 'cart',
         loadComponent: () =>
-          import('./Components/cart/cart-list/cart.component').then(
-            (c) => c.CartComponent
+          import('./pages/cart/cart-list/cart.component').then(
+            (c) => c.CartComponent,
           ),
-        title: 'Cart',
+        title: 'cart',
       },
       {
         path: 'cart-invoice',
         loadComponent: () =>
-          import('./Components/cart/cart-invoice/cart-invoice.component').then(
-            (c) => c.CartInvoiceComponent
+          import('./pages/cart/cart-invoice/cart-invoice.component').then(
+            (c) => c.CartInvoiceComponent,
           ),
         title: 'invoice',
       },
       {
         path: 'catDetails/:code',
         loadComponent: () =>
-          import(
-            './Components/category-details/category-details.component'
-          ).then((c) => c.CategoryDetailsComponent),
-        title: 'Category Products',
+          import('./pages/category-details/category-details.component').then(
+            (c) => c.CategoryDetailsComponent,
+          ),
+        title: 'categoryProducts',
       },
       {
         path: 'wishList',
         loadComponent: () =>
-          import('./Components/wishlist/wishlist.component').then(
-            (c) => c.WishlistComponent
+          import('./pages/wishlist/wishlist.component').then(
+            (c) => c.WishlistComponent,
           ),
-        title: 'Wish List',
+        title: 'wishList',
       },
       {
         path: 'products',
         loadComponent: () =>
-          import('./Components/products/products.component').then(
-            (c) => c.ProductsComponent
+          import('./pages/products/products.component').then(
+            (c) => c.ProductsComponent,
           ),
-        title: 'All Products',
+        title: 'allProducts',
       },
       {
         path: 'categories',
         loadComponent: () =>
-          import('./Components/categories/categories.component').then(
-            (c) => c.CategoriesComponent
+          import('./pages/categories/categories.component').then(
+            (c) => c.CategoriesComponent,
           ),
-        title: 'All Categories',
+        title: 'allCategories',
       },
       {
         path: 'allOrders',
         loadComponent: () =>
-          import('./Components/all-orders/all-orders.component').then(
-            (c) => c.AllOrdersComponent
+          import('./pages/all-orders/all-orders.component').then(
+            (c) => c.AllOrdersComponent,
           ),
-        title: 'All Orders',
+        title: 'allOrders',
       },
       {
         path: 'details/:id',
         loadComponent: () =>
-          import('./Components/product-details/product-details.component').then(
-            (c) => c.ProductDetailsComponent
+          import('./pages/product-details/product-details.component').then(
+            (c) => c.ProductDetailsComponent,
           ),
-        title: 'Item Details',
+        title: 'itemDetails',
       },
-
       {
         path: 'offers',
         loadComponent: () =>
-          import('./Components/offers/offers.component').then(
-            (c) => c.OffersComponent
+          import('./pages/offers/offers.component').then(
+            (c) => c.OffersComponent,
           ),
-        title: 'Offers',
+        title: 'offers',
       },
-
       {
         path: 'payment',
         loadComponent: () =>
-          import('./Components/payment/payment.component').then(
-            (c) => c.PaymentComponent
+          import('./pages/payment/payment.component').then(
+            (c) => c.PaymentComponent,
           ),
-        title: 'Payment',
+        title: 'payment',
       },
     ],
   },
@@ -186,8 +177,9 @@ export const routes: Routes = [
   {
     path: '**',
     loadComponent: () =>
-      import('./Components/notfound/notfound.component').then(
-        (c) => c.NotfoundComponent
+      import('./pages/notfound/notfound.component').then(
+        (c) => c.NotfoundComponent,
       ),
+    title: 'notFound',
   },
 ];

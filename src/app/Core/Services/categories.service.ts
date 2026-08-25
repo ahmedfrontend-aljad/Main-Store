@@ -1,15 +1,15 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../Environments/environment';
-import { AllProductsService } from './all-products.service';
 import { isPlatformBrowser } from '@angular/common';
+import { apiUrl } from '../../Shared/constants/api.constant';
+import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoriesService {
-  constructor(private readonly _HttpClient: HttpClient) {}
+  private readonly _DataService = inject(DataService);
 
   private readonly _PLATFORM_ID = inject(PLATFORM_ID);
   getHeaders(): HttpHeaders {
@@ -27,11 +27,11 @@ export class CategoriesService {
   }
 
   getAllCategories(): Observable<any> {
-    return this._HttpClient.get(
-      `${environment.baseUrl}/XtraAndPos_GeneralLookups/GetStoreItemGroupsAndItemsAndUnits`,
+    return this._DataService.get(
+      `${apiUrl}/XtraAndPos_GeneralLookups/GetStoreItemGroupsAndItemsAndUnits`,
       {
         headers: this.getHeaders(),
-      }
+      },
     );
   }
 }

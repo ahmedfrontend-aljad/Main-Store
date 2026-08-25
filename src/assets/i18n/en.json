@@ -46,13 +46,18 @@
       "loading...": "Loading...",
       "continueasguest": "Continue As Guest",
       "notamember": "Not a member",
-      "registernow": "Register Now"
+      "registernow": "Register Now",
+      "placeholders": {
+        "username": "Enter User Name",
+        "password": "Enter Password"
+      }
     },
     "register": {
       "registernow": "Register Now",
       "enteryouremail": "Enter Your Email",
       "register": "Register",
-      "alreadyamember?": "Already a member ?"
+      "alreadyamember?": "Already a member ?",
+      "email": "Email"
     },
     "loginError": "Username or password is incorrect",
     "loginSuccess": "Login successful",
@@ -166,5 +171,28 @@
     "cancelButton": "Cancel",
     "clearedTitle": "Cleared!",
     "clearedText": "Your cart has been successfully cleared."
-  }
+  },
+  "routes": {
+    "login": "Login",
+    "register": "Register",
+    "forgetPassword": "Forget Password",
+    "home": "Home",
+    "allCategories": "All Categories",
+    "itemDetails": "Item Details",
+    "categoryProducts": "Category Products",
+    "cart": "Cart",
+    "invoice": "Invoice",
+    "wishList": "Wish List",
+    "allProducts": "All Products",
+    "allOrders": "All Orders",
+    "offers": "Offers",
+    "payment": "Payment",
+    "notFound": "Page Not Found"
+  },
+  "fieldIsRequired": "Field Is Required",
+  "resetPassword": "Reset Password",
+  "oldPassword": "Old Password",
+  "newPassword": "New Password",
+  "branchId": "Branch",
+  "restpassword": "Reset Password"
 }

@@ -1,0 +1,15 @@
+<button
+  class="btn btn-primary w-100"
+  type="submit"
+  [disabled]="isDisabled || (_LoadingService.isLoading$ | async)"
+  (click)="onClick($event)"
+>
+  @if (_LoadingService.isLoading$ | async) {
+    <span class="indicator-progress" [style.display]="'block'">
+      {{ "wait" | translate }}
+      <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+    </span>
+  } @else {
+    <span class="indicator-label">{{ buttonText | translate }}</span>
+  }
+</button>

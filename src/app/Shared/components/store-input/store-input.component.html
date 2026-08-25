@@ -1,0 +1,159 @@
+<label
+  class="form-label fs-6 fw-bolder"
+  [class.required]="control.hasValidator(validators.required)"
+  *ngIf="label"
+>
+  {{ label | translate }}
+</label>
+<ng-container [ngSwitch]="type">
+  <!-- Shared Text Input -->
+  <div [class.has-addon]="addon">
+    <input
+      *ngSwitchDefault
+      [type]="type || 'text'"
+      class="form-control"
+      autocomplete="off"
+      [ngClass]="{
+        'is-invalid': control && control.invalid && control.touched,
+      }"
+      [readonly]="readonly"
+      [formControl]="formControl"
+      [placeholder]="placeholder | translate"
+      (input)="getChangedItem($event)"
+    />
+    <span *ngIf="addon" class="addon">{{ addon }}</span>
+  </div>
+
+  <!-- Shared Password Input -->
+  <ng-container *ngSwitchCase="'password'">
+    <div class="has-icon position-relative w-100">
+      <input
+        [type]="passwordVisible ? 'text' : 'password'"
+        class="form-control"
+        autocomplete="off"
+        [ngClass]="{
+          'is-invalid': control && control.invalid && control.touched,
+        }"
+        [readonly]="readonly"
+        [formControl]="formControl"
+        [placeholder]="placeholder | translate"
+        (input)="getChangedItem($event)"
+      />
+
+      <button
+        type="button"
+        *ngIf="formControl?.value"
+        (click)="togglePasswordVisibility($event)"
+        class="btn p-0 border-0 position-absolute eye-icon cursor-pointer"
+        tabindex="-1"
+      >
+        <i
+          class="fa fs-4"
+          [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+        ></i>
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- Shared Date Picker Input -->
+  <ng-container *ngSwitchCase="'datepicker'">
+    <p-calendar
+      #calendar
+      [formControl]="formControl"
+      (onMonthChange)="onMonthChange($event)"
+      [placeholder]="placeholder | translate"
+      [dateFormat]="'dd/mm/yy'"
+      [readonlyInput]="readonly"
+      [style]="{ 'pointer-events': readonly ? 'none' : '' }"
+      [inputStyle]="{ 'background-color': readonly ? '#f0f0f0' : '' }"
+      appendTo="body"
+      [ngClass]="{
+        'ng-invalid ng-dirty': control && control.invalid && control.touched,
+      }"
+      (onSelect)="getChangedItem($event)"
+    ></p-calendar>
+  </ng-container>
+
+  <!-- Shared Phone Number Input -->
+  <ng-container *ngSwitchCase="'phoneNumber'">
+    <ngx-intl-tel-input
+      [cssClass]="'form-control'"
+      [ngClass]="{
+        'is-invalid': control?.status === 'INVALID' && control?.touched,
+      }"
+      [preferredCountries]="preferredCountries"
+      [enableAutoCountrySelect]="true"
+      [enablePlaceholder]="true"
+      customPlaceholder="5XXXXXXXX"
+      [searchCountryFlag]="true"
+      [searchCountryField]="[SearchCountryField.All]"
+      [selectFirstCountry]="false"
+      [selectedCountryISO]="selectedCountry"
+      [maxLength]="15"
+      [separateDialCode]="true"
+      [phoneValidation]="phoneValidation"
+      [numberFormat]="PhoneNumberFormat.International"
+      [formControl]="formControl"
+    ></ngx-intl-tel-input>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'textArea'">
+    <textarea
+      class="form-control"
+      [formControl]="formControl"
+      [placeholder]="placeholder | translate"
+      autocomplete="off"
+      [ngClass]="{
+        'is-invalid': control && control.invalid && control.touched,
+      }"
+      rows="2"
+      (input)="getChangedItem($event)"
+    >
+    </textarea>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'email'">
+    <input
+      type="email"
+      class="form-control"
+      [formControl]="formControl"
+      [placeholder]="placeholder | translate"
+      autocomplete="off"
+      [ngClass]="{
+        'is-invalid': control && control.invalid && control.touched,
+      }"
+      rows="2"
+      (input)="getChangedItem($event)"
+    />
+  </ng-container>
+</ng-container>
+
+<div
+  class="invalid-feedback d-block mt-1"
+  *ngIf="control?.touched && control?.invalid"
+>
+  <p
+    class="text-start text-danger fs-7 m-0"
+    *ngIf="formControl?.hasError('required')"
+  >
+    {{ "fieldIsRequired" | translate }}
+  </p>
+  <p
+    class="text-start text-danger fs-7 m-0"
+    *ngIf="formControl?.hasError('validatePhoneNumber')"
+  >
+    {{ "validPhoneNumber" | translate }}
+  </p>
+  <p
+    class="text-start text-danger fs-7 m-0"
+    *ngIf="formControl?.hasError('pattern')"
+  >
+    {{ patternMessage! | translate }}
+  </p>
+  <p
+    class="text-start text-danger fs-7 m-0"
+    *ngIf="formControl?.hasError('amountLargeThanTotal')"
+  >
+    {{ "amountLargeThanTotal" | translate }}
+  </p>
+</div>

@@ -1,16 +1,16 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../Environments/environment';
 import { isPlatformBrowser } from '@angular/common';
+import { apiUrl } from '../../Shared/constants/api.constant';
+import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AllProductsService {
   private readonly _PLATFORM_ID = inject(PLATFORM_ID);
-
-  constructor(private readonly _HttpClient: HttpClient) {}
+  private readonly _DataService = inject(DataService);
 
   // Get Headers
   getHeaders(): HttpHeaders {
@@ -28,20 +28,20 @@ export class AllProductsService {
   }
 
   getPagedItem(pageNun: number, pagsize: number): Observable<any> {
-    return this._HttpClient.get(
-      `${environment.baseUrl}/XtraAndPOS_Store/GetPagedItems?pageNumber=${pageNun}&pageSize=${pagsize}`,
+    return this._DataService.get(
+      `${apiUrl}/XtraAndPOS_Store/GetPagedItems?pageNumber=${pageNun}&pageSize=${pagsize}`,
       {
         headers: this.getHeaders(),
-      }
+      },
     );
   }
 
   getProductDetails(id: string | null): Observable<any> {
-    return this._HttpClient.get(
-      `${environment.baseUrl}/XtraAndPOS_Store/GetItemById?id=${id}`,
+    return this._DataService.get(
+      `${apiUrl}/XtraAndPOS_Store/GetItemById?id=${id}`,
       {
         headers: this.getHeaders(),
-      }
+      },
     );
   }
 }

@@ -1,59 +1,50 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../Environments/environment';
+import { apiUrl } from '../../Shared/constants/api.constant';
+import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartService {
-  constructor(private readonly _HttpClient: HttpClient) {}
-
+  private readonly _DataService = inject(DataService);
+  
   addToCart(data: object): Observable<any> {
-    return this._HttpClient.post(
-      `${environment.baseUrl}/XtraAndPos_StoreCart/AddToCartAsync`,
-      data
-    );
+    return this._DataService.post(`${apiUrl}/NewStore/Cart/AddToCart`, data);
   }
 
   getLoggedCart(userId: string): Observable<any> {
-    return this._HttpClient.get(
-      `${environment.baseUrl}/XtraAndPos_StoreCart/GetCartAsync?userId=${userId}`
+    return this._DataService.get(
+      `${apiUrl}/XtraAndPos_StoreCart/GetCartAsync?userId=${userId}`,
     );
   }
 
   CartFromLocal(data: object): Observable<any> {
-    return this._HttpClient.post(
-      `${environment.baseUrl}/SyncCartFromLocalAsync`,
-      data
-    );
+    return this._DataService.post(`${apiUrl}/SyncCartFromLocalAsync`, data);
   }
 
   SyncCartFromLocal(data: any): Observable<any> {
-    return this._HttpClient.post(
-      `${environment.baseUrl}/XtraAndPos_StoreCart/SyncCartFromLocalAsync`,
-      data
+    return this._DataService.post(
+      `${apiUrl}/XtraAndPos_StoreCart/SyncCartFromLocalAsync`,
+      data,
     );
   }
 
   createMoyasarInvoice(data: object): Observable<any> {
-    return this._HttpClient.post(
-      `${environment.baseUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForStore`,
-      data
+    return this._DataService.post(
+      `${apiUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForStore`,
+      data,
     );
   }
 
   /*createMoyasarInvoiceOnly(data: any): Observable<any> {
-    return this._HttpClient.post(
-      `${environment.baseUrl}/CreateMoyasarInvoiceOnly`,
+    return this._DataService.post(
+      `${apiUrl}/CreateMoyasarInvoiceOnly`,
       data
     );
   }*/
 
   moyasarCallback(data: any): Observable<any> {
-    return this._HttpClient.post(
-      `${environment.baseUrl}/MoyasarCallback`,
-      data
-    );
+    return this._DataService.post(`${apiUrl}/MoyasarCallback`, data);
   }
 }

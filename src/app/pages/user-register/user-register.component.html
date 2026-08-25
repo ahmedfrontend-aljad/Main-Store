@@ -1,0 +1,61 @@
+<section class="login-section">
+  <div class="login-wrapper">
+    <div class="login-card" style="width: 50%">
+      <h2 class="login-title font-semibold font-serif">
+        {{ "auth.register.registerNewAccount" | translate }}
+      </h2>
+      <form class="login-form" [formGroup]="registerForm" (ngSubmit)="submit()">
+        <!-- Username -->
+        <div class="input-group">
+          <app-store-input
+            [type]="'text'"
+            [control]="this.registerForm.get('userName')!"
+            [placeholder]="'auth.login.placeholders.username'"
+            [label]="'auth.login.username'"
+          >
+          </app-store-input>
+        </div>
+
+        <!-- Email -->
+        <div class="input-group">
+          <app-store-input
+            [control]="this.registerForm.get('email')!"
+            [placeholder]="'auth.register.enteryouremail'"
+            [label]="'auth.register.email'"
+          ></app-store-input>
+        </div>
+
+        <!-- Password -->
+        <div class="input-group">
+          <app-store-input
+            [type]="'password'"
+            [control]="this.registerForm.get('password')!"
+            [placeholder]="'auth.login.password'"
+            [label]="'auth.login.password'"
+          >
+          </app-store-input>
+        </div>
+        <div class="col-12 mt-3">
+          <app-submit-button
+            [buttonText]="'auth.register.registernow'"
+            [isDisabled]="registerForm.invalid"
+            (btnClick)="submit()"
+          >
+          </app-submit-button>
+        </div>
+
+        <hr class="divider" />
+
+        <p class="text-center">
+          {{ "auth.register.alreadyamember?" | translate }}
+          <a routerLink="/auth/login" class="links">
+            {{ "auth.login.loginnow" | translate }}
+          </a>
+        </p>
+      </form>
+    </div>
+  </div>
+  <div class="image">
+    <img src="./assets/images/Background/Auth.png" class="" alt="" />
+  </div>
+</section>

@@ -45,7 +45,7 @@
       "login": "تسجيل الدخول",
       "loading...": "جارٍ التحميل...",
       "continueasguest": "الدخول كزائر",
-      "notamember": "لست عضواً ؟",
+      "notamember": "لست مسجل ؟",
       "registernow": "سجل الآن",
       "placeholders": {
         "username": "أدخل اسم المستخدم",
@@ -63,10 +63,12 @@
     },
 
     "register": {
+      "registerNewAccount": "إنشاء حساب جديد",
       "registernow": "سجّل الآن",
       "enteryouremail": "أدخل بريدك الإلكتروني",
       "register": "تسجيل",
-      "alreadyamember?": "هل أنت عضو بالفعل؟"
+      "alreadyamember?": "هل أنت مسجل بالفعل؟",
+      "email": "الايميل"
     },
     "loginError": "اسم المستخدم أو كلمة المرور غير صحيحة",
     "loginSuccess": "تم تسجيل الدخول بنجاح",
@@ -177,5 +179,30 @@
     "cancelButton": "إلغاء",
     "clearedTitle": "تم التفريغ!",
     "clearedText": "تم تفريغ سلة التسوق بنجاح."
-  }
+  },
+
+  "routes": {
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "forgetPassword": "نسيت كلمة المرور",
+    "home": "الرئيسية",
+    "allCategories": "جميع الأقسام",
+    "itemDetails": "تفاصيل المنتج",
+    "categoryProducts": "منتجات القسم",
+    "cart": "عربة التسوق",
+    "invoice": "الفاتورة",
+    "wishList": "قائمة الرغبات",
+    "allProducts": "جميع المنتجات",
+    "allOrders": "جميع الطلبات",
+    "offers": "العروض",
+    "payment": "الدفع",
+    "notFound": "الصفحة غير موجودة"
+  },
+
+  "fieldIsRequired": "هذا الحقل مطلوب",
+  "resetPassword": "إعادة تعيين كلمة المرور",
+  "oldPassword": "كلمة المرور القديمة",
+  "newPassword": "كلمة المرور الجديدة",
+  "branchId": "الفرع",
+  "restpassword": "تغيير كلمة المرور"
 }

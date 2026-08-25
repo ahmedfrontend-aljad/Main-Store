@@ -1,0 +1,40 @@
+nav {
+  border-radius: 0px 0px 15px 15px;
+  border: 1px solid var(--color-border);
+  backdrop-filter: blur(6px);
+  background: var(--color-bg);
+}
+
+#navbar-language button {
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  transition:
+    background 0.3s,
+    color 0.3s;
+}
+
+#navbar-language ul {
+  background-color: var(--color-bg, #1e1e1e) !important;
+  border: 1px solid var(--color-border, #333333) !important;
+  padding: 0.5rem 15px !important;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+#navbar-language li button {
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  background: none;
+  color: var(--color-text);
+  font-size: 14px;
+  transition:
+    background 0.3s,
+    color 0.3s;
+}
+
+#navbar-language li button:hover {
+  background: var(--color-primary);
+  color: #fff;
+}

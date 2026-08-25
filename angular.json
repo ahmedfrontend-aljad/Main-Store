@@ -20,10 +20,7 @@
             "outputPath": "dist/gadco-ecommerce",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js",
-              "@angular/localize/init"
-            ],
+            "polyfills": ["zone.js", "@angular/localize/init"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -35,10 +32,12 @@
             ],
             "styles": [
               "./node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/ngx-toastr/toastr.css",
               "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
               "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css",
               "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
+
               "src/styles.scss"
             ],
             "scripts": [

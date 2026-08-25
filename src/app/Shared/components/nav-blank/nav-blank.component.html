@@ -1,0 +1,180 @@
+<nav
+  class="navbar navbar-expand-md sticky-top py-2 shadow-sm"
+  [class.mb-4]="!isLoggedIn"
+  [class.mb-5]="isLoggedIn"
+>
+  <div class="container-fluid px-3">
+    <!-- Logo -->
+    <a href="" class="flex items-center gap-1.5">
+      <i class="fa-solid fa-cart-shopping fa-xl iconsColor"></i>
+      <h2 class="text-2xl font-semibold font-serif">Ebtikar Store</h2>
+    </a>
+
+    <!-- Mobile Toggler Button -->
+    <button
+      class="navbar-toggler ms-2 order-md-3"
+      type="button"
+      (click)="toggleMenu()"
+      aria-controls="mainNavbar"
+      [attr.aria-expanded]="showMobileMenu"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navigation Links (Desktop & Mobile) -->
+    <div
+      class="collapse navbar-collapse order-md-1"
+      id="mainNavbar"
+      [class.show]="showMobileMenu"
+    >
+      <ul class="navbar-nav mx-auto mb-2 mb-md-0 gap-md-2 fw-medium">
+        <li class="nav-item">
+          <a
+            routerLink="/home"
+            class="nav-link px-2"
+            routerLinkActive="active text-primary fw-bold border-bottom border-2 border-primary"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="showMobileMenu && toggleMenu()"
+          >
+            {{ "homecom.navbar.home" | translate }}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            routerLink="/products"
+            class="nav-link px-2"
+            routerLinkActive="active text-primary fw-bold border-bottom border-2 border-primary"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="showMobileMenu && toggleMenu()"
+          >
+            {{ "homecom.navbar.products" | translate }}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            routerLink="/categories"
+            class="nav-link px-2"
+            routerLinkActive="active text-primary fw-bold border-bottom border-2 border-primary"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="showMobileMenu && toggleMenu()"
+          >
+            {{ "homecom.navbar.categories" | translate }}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            routerLink="/offers"
+            class="nav-link px-2"
+            routerLinkActive="active text-primary fw-bold border-bottom border-2 border-primary"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="showMobileMenu && toggleMenu()"
+          >
+            {{ "homecom.navbar.offers" | translate }}
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="d-flex align-items-center order-md-2 ms-2 gap-2">
+      <!-- Guest Login & Register Buttons -->
+      @if (isGuest) {
+        <div class="d-flex gap-2 me-2">
+          <button (click)="guestLogin()" class="btn btn-primary btn-sm">
+            {{ "homecom.navbar.login" | translate }}
+          </button>
+          <button (click)="guestRegister()" class="btn btn-success btn-sm">
+            {{ "homecom.navbar.register" | translate }}
+          </button>
+        </div>
+      }
+
+      <!-- Cart Icon -->
+      @if (isUserLogged) {
+        <div
+          class="cart cursor-pointer px-2 position-relative"
+          routerLink="/cart"
+        >
+          <i class="fa-solid fa-cart-shopping fs-5" ngSkipHydration></i>
+        </div>
+      }
+
+      <!-- Theme Toggle Button -->
+      <button
+        type="button"
+        (click)="toggleTheme()"
+        class="btn btn-link p-1 px-2 border-0 theme-toggle-btn"
+      >
+        <i
+          class="fa-solid fs-5"
+          [class.fa-sun]="isDarkMode"
+          [class.fa-moon]="!isDarkMode"
+        ></i>
+      </button>
+
+      <!-- Language Dropdown -->
+      <div class="dropdown position-relative">
+        <button
+          type="button"
+          (click)="toggleLangDropdown()"
+          class="btn btn-outline-secondary btn-sm dropdown-toggle d-flex align-items-center gap-1"
+        >
+          {{ selectedLanguage }}
+        </button>
+
+        @if (showLangDropdown) {
+          <ul
+            class="dropdown-menu show position-absolute end-0 start-auto mt-1 shadow-sm"
+            style="min-width: 100px"
+          >
+            <li>
+              <button class="dropdown-item" (click)="changeLang('en')">
+                English
+              </button>
+            </li>
+            <li>
+              <button class="dropdown-item" (click)="changeLang('ar')">
+                عربي
+              </button>
+            </li>
+          </ul>
+        }
+      </div>
+      <!-- User Profile Dropdown -->
+      <div class="dropdown">
+        <button
+          class="btn btn-link userIcon user-toggle p-1"
+          type="button"
+          (click)="toggleDropdown()"
+        >
+          <i class="fas fa-user fs-5"></i>
+        </button>
+
+        <ul class="dropdown-menu user-dropdown" [class.show]="showDropdown">
+          @if (isUserLogged) {
+            <li>
+              <a class="dropdown-item" [routerLink]="['/allOrders']">
+                <i class="fa-solid fa-box" ngSkipHydration></i>
+                <span>{{
+                  "homecom.navbar.profile.allorders" | translate
+                }}</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" routerLink="/wishList">
+                <i class="fa-solid fa-shield-heart" ngSkipHydration></i>
+                <span>{{ "homecom.navbar.profile.wishlist" | translate }}</span>
+              </a>
+            </li>
+          }
+          <li>
+            <button class="dropdown-item" (click)="signout()">
+              <i class="fas fa-sign-out-alt" ngSkipHydration></i>
+              <span>{{ "homecom.navbar.profile.signout" | translate }}</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -1,5 +1,4 @@
 import {
-  HttpClient,
   provideHttpClient,
   withFetch,
   withInterceptors,
@@ -22,15 +21,15 @@ import {
   TranslateHttpLoader,
   TranslateHttpLoaderConfig,
 } from '@ngx-translate/http-loader';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { provideToastr } from 'ngx-toastr';
+
 import { routes } from './app.routes';
 import { headersInterceptor } from './Core/Interceptors/headers.interceptor';
-import { spinnerInterceptor } from './Core/Interceptors/spinner.interceptor';
 
 // Factory function
 export function translateLoaderFactory(): TranslateLoader {
-  const http = inject(HttpClient);
   inject(TRANSLATE_HTTP_LOADER_CONFIG);
   return new TranslateHttpLoader();
 }
@@ -47,13 +46,11 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(
-      withFetch(),
-      withInterceptors([ headersInterceptor])
-    ),
+    provideHttpClient(withFetch(), withInterceptors([headersInterceptor])),
     provideAnimations(),
     provideToastr(),
     importProvidersFrom(
+      BsDropdownModule,
       NgxSpinnerModule,
       TranslateModule.forRoot({
         loader: {
@@ -62,7 +59,7 @@ export const appConfig: ApplicationConfig = {
           deps: [],
         },
         fallbackLang: 'ar',
-      })
+      }),
     ),
 
     {

@@ -1,0 +1,103 @@
+nav {
+  padding-bottom: 10px;
+}
+
+.userIcon {
+  color: var(--color-secondary);
+  font-size: 1.4rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: var(--color-primary);
+    transform: scale(1.1);
+  }
+}
+
+.cart {
+  .fa-cart-shopping {
+    font-size: 1.4rem;
+    color: var(--color-primary);
+    transition: all 0.3s ease;
+  }
+
+  &:hover .fa-cart-shopping {
+    color: var(--color-secondary);
+    transform: scale(1.1);
+  }
+}
+
+.dropdown {
+  position: relative !important;
+
+  .dropdown-menu {
+    border-radius: 10px;
+    background-color: var(--color-bg) !important;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 12px var(--color-shadow);
+    padding: 0px;
+    margin-top: 8px !important;
+    z-index: 1050;
+    position: absolute !important;
+    top: 100% !important;
+
+    inset-inline-end: 0 !important;
+    inset-inline-start: auto !important;
+
+    li,
+    button,
+    a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      width: 100%;
+      border: none;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text) !important;
+      text-decoration: none;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 6px;
+      transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+      white-space: nowrap;
+
+      &:hover,
+      &:focus {
+        background-color: var(--color-border) !important;
+        color: var(--color-primary) !important;
+      }
+    }
+
+    i {
+      font-size: 15px;
+      min-width: 18px;
+      text-align: center;
+    }
+  }
+}
+
+
+@media (max-width: 768px) {
+  .userIcon {
+    font-size: 1.2rem !important;
+  }
+
+  .cart .fa-cart-shopping {
+    font-size: 1.2rem !important;
+  }
+
+  .cart .cartCounter {
+    top: -8px !important;
+    left: 8px !important;
+    font-size: 10px !important;
+    padding: 0px 4px !important;
+  }
+
+  .dropdown .dropdown-menu {
+    min-width: 140px !important;
+    font-size: 13px !important;
+  }
+}

@@ -1,0 +1,15 @@
+.login-card {
+  width: 70% !important;
+  padding: 25px 30px;
+}
+.login-form {
+  gap: 8px !important;
+}
+.login-button {
+  padding: 6px !important;
+}
+@media (max-width: 768px) {
+  .login-wrapper {
+    width: 100% !important;
+  }
+}
