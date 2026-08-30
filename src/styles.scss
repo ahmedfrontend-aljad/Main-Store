@@ -28,21 +28,23 @@
   --btn-hover-bg: #2c974b;
 }
 
+
 body {
   background: var(--color-bg);
   color: var(--color-text);
+  overflow-x: hidden;
 }
 
 button {
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .bg-primary {
   background: var(--color-primary);
   color: #fff;
   &:hover {
-    background: #218838;
+    background: var(--btn-hover-bg);
   }
 }
 
@@ -59,6 +61,7 @@ button {
   color: var(--color-muted);
 }
 
+
 .form-control {
   background: var(--color-bg);
   color: var(--color-text);
@@ -67,6 +70,9 @@ button {
   padding: 8px 12px;
   width: 100%;
   margin-top: 5px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 
   &:focus {
     border-color: var(--color-primary);
@@ -89,14 +95,20 @@ button {
 
   &:hover {
     text-decoration: underline;
-    color: var(--link-hover);
+    color: var(--color-secondary);
   }
 }
 
 .login-section {
   display: flex;
-  height: 100%;
+  min-height: 92vh;
+  width: 100%;
   overflow: hidden;
+
+  @media (max-width: 767.98px) {
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 
 .image {
@@ -112,6 +124,10 @@ button {
     height: auto;
     border-radius: 10px;
   }
+
+  @media (max-width: 991.98px) {
+    display: none;
+  }
 }
 
 .login-wrapper {
@@ -120,6 +136,11 @@ button {
   justify-content: center;
   align-items: center;
   overflow: auto;
+  padding: 1rem;
+
+  @media (max-width: 575.98px) {
+    padding: 0.75rem;
+  }
 }
 
 .login-card {
@@ -130,6 +151,21 @@ button {
   border-radius: 25px;
   padding: 40px 30px;
   box-shadow: 0 6px 10px var(--color-shadow);
+
+  @media (max-width: 1199.98px) {
+    width: 80%;
+  }
+
+  @media (max-width: 991.98px) {
+    width: 90%;
+    padding: 30px 20px;
+  }
+
+  @media (max-width: 575.98px) {
+    width: 100%;
+    padding: 24px 16px;
+    border-radius: 16px;
+  }
 }
 
 .login-title {
@@ -138,6 +174,11 @@ button {
   font-size: 36px;
   margin-bottom: 25px;
   font-family: serif;
+
+  @media (max-width: 767.98px) {
+    font-size: 28px;
+    margin-bottom: 18px;
+  }
 }
 
 .login-form {
@@ -153,6 +194,8 @@ button {
   font-size: 14px;
   margin-top: 6px;
   color: var(--color-text);
+  flex-wrap: wrap;
+  gap: 8px;
 
   a {
     color: var(--color-secondary);
@@ -169,6 +212,8 @@ button {
   border: 0.5px solid var(--color-border);
 }
 
+
+
 .product-card {
   background: var(--color-bg);
   border: 1px solid var(--color-border);
@@ -177,28 +222,45 @@ button {
   box-shadow: 0px 2px 8px var(--color-shadow);
   transition: all 0.3s ease;
   width: 100%;
-  height: 400px;
+  min-height: 380px;
   position: relative;
   padding: 5px 0px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  .out-of-stock-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #dc3545;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 4px;
+    z-index: 5;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-6px);
+      .image-container img {
+        transform: scale(1.08);
+      }
+      .add-to-cart {
+        transform: translateY(0);
+      }
+    }
+  }
 
-  &:hover {
-    transform: translateY(-6px);
-    .image-container img {
-      transform: scale(1.1);
-    }
-    .add-to-cart {
-      transform: translateY(0);
-    }
+  @media (max-width: 575.98px) {
+    min-height: 340px;
   }
 }
 
 .image-container {
   overflow: hidden;
   position: relative;
-  max-height: 400px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -207,19 +269,32 @@ button {
   img {
     width: 100%;
     height: 180px;
+    object-fit: contain;
     margin: auto;
     transition: transform 0.4s ease;
+
+    @media (max-width: 575.98px) {
+      height: 140px;
+    }
   }
 }
 
 .product-body {
   padding: 12px 16px;
 
+  @media (max-width: 575.98px) {
+    padding: 8px 10px;
+  }
+
   .product-title {
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 6px;
     color: var(--color-text);
+
+    @media (max-width: 575.98px) {
+      font-size: 0.9rem;
+    }
   }
 
   .brand {
@@ -278,13 +353,34 @@ button {
       background-color 0.3s ease,
       color 0.3s ease,
       transform 0.4s ease;
+    &:disabled,
+    &.disabled-btn {
+      background-color: #e9ecef !important;
+      color: #6c757d !important;
+      border: 1px solid #ced4da !important;
+      cursor: not-allowed !important;
+      opacity: 0.8;
+      box-shadow: none !important;
 
+      &:hover {
+        background-color: #e9ecef !important;
+        color: #6c757d !important;
+      }
+    }
     &:hover {
       color: #fff;
       background-color: var(--color-secondary);
     }
+
+    @media (hover: none), (max-width: 991.98px) {
+      transform: translateY(0);
+      margin-top: 6px;
+      padding: 5px 10px;
+      font-size: 12px;
+    }
   }
 }
+
 
 .required:after {
   content: "*";
@@ -342,7 +438,9 @@ button {
     }
 
     ngb-datepicker {
-      padding: 1rem !important;
+      padding: 0.5rem !important;
+      max-width: 100%;
+      overflow-x: auto;
     }
 
     .ngb-dp-arrow {
@@ -372,7 +470,7 @@ button {
       align-items: center !important;
       justify-content: center !important;
       border-radius: 5px !important;
-      font-size: 1rem !important;
+      font-size: 0.9rem !important;
       font-weight: 600 !important;
       color: #7e8299 !important;
 
@@ -397,7 +495,7 @@ button {
       justify-content: center !important;
       font-weight: 500 !important;
       color: var(--color-text, #3f4254) !important;
-      font-size: 1rem !important;
+      font-size: 0.9rem !important;
     }
 
     .ngb-dp-header {
@@ -418,6 +516,9 @@ button {
 
     .country-dropdown {
       max-width: 300px;
+      @media (max-width: 575.98px) {
+        max-width: 100%;
+      }
       [dir="rtl"] & {
         direction: ltr;
       }
@@ -435,7 +536,7 @@ button {
       outline: none;
     }
 
-    /* PrimeNG Controls Dark Mode Support */
+    /* PrimeNG Controls Dark Mode & Responsive Support */
     p-inputnumber,
     .p-inputnumber {
       display: block !important;
@@ -447,7 +548,7 @@ button {
       display: block;
       width: 100% !important;
       padding: 0.775rem 1rem;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 500;
       line-height: 1.5;
       background: var(--color-bg, var(--bs-body-bg));
@@ -506,6 +607,7 @@ button {
   }
 }
 
+
 header,
 nav,
 .navbar {
@@ -548,7 +650,7 @@ nav,
   }
 }
 
-/* --- Theme Toggle Button --- */
+/* Theme Toggle Button */
 .theme-toggle-btn {
   color: var(--color-text) !important;
   transition:
@@ -566,4 +668,11 @@ nav,
   &:hover {
     transform: rotate(20deg) scale(1.1);
   }
+}
+
+.nav-link {
+  color: var(--btn-hover-bg);
+}
+.navbar-brand{
+  color: var(--color-secondary);
 }

@@ -22,6 +22,7 @@ import { Iproducts } from '../../Core/Interfaces/iproducts';
 import { AllProductsService } from '../../Core/Services/all-products.service';
 import { CartService } from '../../Core/Services/cart.service';
 import { CategoriesService } from '../../Core/Services/categories.service';
+import { LoadingService } from '../../Core/Services/loading.service';
 
 @Component({
   selector: 'app-home',
@@ -36,6 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private readonly _Router = inject(Router);
   private readonly _CartService = inject(CartService);
   private readonly _ToastrService = inject(ToastrService);
+  private readonly _LoadingService = inject(LoadingService);
   allProducts: WritableSignal<Iproducts[]> = signal([]);
   allcategories: WritableSignal<IallCategories[]> = signal([]);
   private subscriptions = new Subscription();
@@ -78,15 +80,15 @@ export class HomeComponent implements OnInit, OnDestroy {
         console.error('Failed to load categories', error);
         this._ToastrService.error('فشل تحميل الأقسام');
         return of(null);
-      })
+      }),
     );
 
-    const products$ = this._AllProductsService.getPagedItem(1, 20).pipe(
+    const products$ = this._AllProductsService.getPagedItem(1, 10).pipe(
       catchError((error) => {
         console.error('Failed to load products', error);
         this._ToastrService.error('فشل تحميل المنتجات');
         return of(null);
-      })
+      }),
     );
 
     this.subscriptions.add(
@@ -106,7 +108,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           console.error('A critical error occurred in forkJoin:', err);
           this._spinnerInterceptor.hide();
         },
-      })
+      }),
     );
   }
 
@@ -114,17 +116,23 @@ export class HomeComponent implements OnInit, OnDestroy {
     return this.allProducts().filter(
       (item) =>
         item.NameAr?.toLowerCase().includes(this.text.toLowerCase()) ||
-        item.NameEn?.toLowerCase().includes(this.text.toLowerCase())
+        item.NameEn?.toLowerCase().includes(this.text.toLowerCase()),
     );
   }
   hasImages(product: any): boolean {
     return (
       product.ItemUnits?.some(
-        (u: ItemUnit) => u.ItemImages && u.ItemImages.length > 0
+        (u: ItemUnit) => u.ItemImages && u.ItemImages.length > 0,
       ) ?? false
     );
   }
+
   addToCart(productId: number, price: number, quantity: number) {
+    const product = this.filteredItems.find((item) => item.Id === productId);
+    if (product && this.isOutOfStock(product)) {
+      this._ToastrService.warning('هذا المنتج غير متوفر حالياً');
+      return;
+    }
     const userToken = localStorage.getItem('userToken');
     const guestToken = localStorage.getItem('guestToken');
 
@@ -145,11 +153,11 @@ export class HomeComponent implements OnInit, OnDestroy {
             this._spinnerInterceptor.hide();
             if (response && response.IsSuccess) {
               this._ToastrService.success(
-                response.Message || 'تمت الإضافة بنجاح!'
+                response.Message || 'تمت الإضافة بنجاح!',
               );
             } else {
               this._ToastrService.error(
-                response.Message || 'فشل إضافة المنتج.'
+                response.Message || 'فشل إضافة المنتج.',
               );
             }
           },
@@ -173,6 +181,34 @@ export class HomeComponent implements OnInit, OnDestroy {
       this._ToastrService.error('يجب تسجيل الدخول أولاً لإضافة منتجات للسلة');
       this._Router.navigate(['/auth/login']);
     }
+  }
+
+  getProductImage(product: any): string | null {
+    if (product?.ItemUnits && product.ItemUnits.length > 0) {
+      for (const unit of product.ItemUnits) {
+        if (unit.ItemImages && unit.ItemImages.length > 0) {
+          for (const img of unit.ItemImages) {
+            if (img && img.Image) {
+              return img.Image;
+            }
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
+  getAvailableStock(product: any): number {
+    if (product?.ItemUnits?.length > 0) {
+      const unit = product.ItemUnits[0];
+      return unit.Quantity ?? unit.Stock ?? unit.AvailableQuantity ?? 0;
+    }
+    return 0;
+  }
+
+  isOutOfStock(product: any): boolean {
+    return this.getAvailableStock(product) <= 0;
   }
 
   ngOnDestroy(): void {

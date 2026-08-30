@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { apiUrl } from '../../Shared/constants/api.constant';
+import { apiUrl, StoreUrl } from '../../Shared/constants/api.constant';
 import { DataService } from './data.service';
 
 @Injectable({
@@ -8,43 +8,28 @@ import { DataService } from './data.service';
 })
 export class CartService {
   private readonly _DataService = inject(DataService);
-  
-  addToCart(data: object): Observable<any> {
-    return this._DataService.post(`${apiUrl}/NewStore/Cart/AddToCart`, data);
-  }
 
   getLoggedCart(userId: string): Observable<any> {
     return this._DataService.get(
-      `${apiUrl}/XtraAndPos_StoreCart/GetCartAsync?userId=${userId}`,
+      `${apiUrl}/NewStore/Cart/GetCart?userId=${userId}`,
     );
   }
 
-  CartFromLocal(data: object): Observable<any> {
-    return this._DataService.post(`${apiUrl}/SyncCartFromLocalAsync`, data);
+  SyncCartFromLocal(data: {
+    cartItems: any[];
+    userId: string;
+  }): Observable<any> {
+    return this._DataService.post(`${apiUrl}/NewStore/Cart/SyncCart`, data);
   }
 
-  SyncCartFromLocal(data: any): Observable<any> {
-    return this._DataService.post(
-      `${apiUrl}/XtraAndPos_StoreCart/SyncCartFromLocalAsync`,
-      data,
+  clearCart(userId: string): Observable<any> {
+    return this._DataService.delete(
+      `${apiUrl}/NewStore/Cart/ClearCart?userId=${userId}`,
     );
   }
 
-  createMoyasarInvoice(data: object): Observable<any> {
-    return this._DataService.post(
-      `${apiUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForStore`,
-      data,
-    );
+  addToCart(data: object): Observable<any> {
+    return this._DataService.post(`${StoreUrl}/Cart/AddToCart`, data);
   }
 
-  /*createMoyasarInvoiceOnly(data: any): Observable<any> {
-    return this._DataService.post(
-      `${apiUrl}/CreateMoyasarInvoiceOnly`,
-      data
-    );
-  }*/
-
-  moyasarCallback(data: any): Observable<any> {
-    return this._DataService.post(`${apiUrl}/MoyasarCallback`, data);
-  }
 }

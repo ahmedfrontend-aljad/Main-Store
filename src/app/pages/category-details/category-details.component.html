@@ -1,97 +1,138 @@
-<div class="container m-auto">
+<div class="container m-auto px-4 sm:px-6">
   <section>
-    <div class="w-full mt-16 products">
+    <div class="w-full mt-8 md:mt-16 products">
+      <!-- Heading Section -->
       <div class="heading text-center">
-        <h3 class="mt-8 font-weight-bolder font-serif text-4xl">
+        <h3
+          class="font-weight-bolder font-serif text-2xl sm:text-3xl md:text-4xl text-base"
+        >
           {{ "homecomponent.mostpurchasedproducts" | translate }}
         </h3>
-        <p class="mb-8 mt-1 text-yellow-50 text-1xl">
+        <p class="mb-6 md:mb-8 mt-2 text-muted text-sm sm:text-base">
           {{ "homecomponent.enjoythemostpopularproducts" | translate }}
         </p>
       </div>
 
-      <div class="input-group m-auto text-center relative">
+      <!-- Search Input Group -->
+      <div class="search-wrapper m-auto relative">
         <input
           type="search"
           [(ngModel)]="text"
-          class="form-control"
-          placeholder="{{ 'homecomponent.searchbyproductname' | translate }}"
+          class="form-control search-input"
+          [placeholder]="'homecomponent.searchbyproductname' | translate"
         />
-        <button class="btn btn-outline-secondary" type="button">
-          <i
-            class="fa-solid fa-magnifying-glass absolute text-white iconSearch"
-          ></i>
+        <button class="search-btn" type="button" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
         </button>
       </div>
 
+      <!-- Products Grid -->
       <div
-        class="section-content mt-16 grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
+        class="section-content mt-10 md:mt-16 grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
       >
-        @for (product of itemsInCategories(); track product.Id) {
-        <div class="flex justify-center">
-          <div class="product-card px-1">
-            <div class="wishIcon px-2 text-right py-1">
-              <i class="fa-solid fa-heart fa-heart text-xl cursor-pointer"></i>
-            </div>
-            <div
-              class="image-container cursor-pointer"
-              [routerLink]="['/details', product.Id]"
-            >
-              @if (hasImages(product)) { @for (unit of product.ItemUnits; track
-              unit.Id) { @for (img of unit.ItemImages; track img.Image) {
-              <img
-                [src]="'data:image/jpeg;base64,' + img.Image"
-                [alt]="product.NameAr"
-              />
-              } } } @else {
-              <img src="assets/images/Product.png" [alt]="product.NameAr" />
-              }
-            </div>
-            <div class="product-body">
-              <div
-                [routerLink]="['/details', product.Id]"
-                [state]="{ from: currentUrl }"
-                class="cursor-pointer"
-              >
-                <div class="product-title">
-                  <h3>{{ product.NameAr }}</h3>
-                </div>
-
-                <div class="brand">
-                  <img src="./assets/images/OIP.webp" alt="Brand Logo" />
-                  <span>{{ "products.brandname" | translate }}</span>
-                </div>
-
-                <div class="price">
-                  <span class="current-price"> {{ product.price }} EGP </span>
-                  <span class="old-price"> {{ product.price + 20 }} EGP </span>
-                </div>
-
-                <div class="rating">
-                  @for (num of [1, 2, 3, 4, 5]; track $index) {
-                  <ng-container>
-                    @if (num <= math.floor(num)) {
-                    <i class="fa-solid fa-star rating-color"></i>
-                    }
-                  </ng-container>
-                  }
-                </div>
+        @for (product of filteredItems; track product.Id) {
+          <div class="flex justify-center w-full">
+            <div class="product-card px-1">
+              <!-- Wishlist Icon -->
+              <div class="wishIcon px-2 text-end py-1">
+                <i
+                  class="fa-solid fa-heart text-lg sm:text-xl cursor-pointer"
+                ></i>
               </div>
 
-              @for (price of product.ItemUnits.slice(0,1) || []; track price.Id)
-              {
-              <button
-                class="add-to-cart"
-                (click)="addToCart(price.Id, price.Price, 1)"
+              <!-- Product Image -->
+              <div
+                class="image-container cursor-pointer"
+                [routerLink]="['/details', product.Id]"
               >
-                🛒 {{ "products.addtocart" | translate }}
-              </button>
-              }
+                @if (hasImages(product)) {
+                  <img
+                    [src]="'data:image/jpeg;base64,' + getProductImage(product)"
+                    [alt]="product.NameAr || product.NameEn"
+                  />
+                } @else {
+                  <img
+                    src="assets/images/Product.png"
+                    [alt]="product.NameAr || 'Product Image'"
+                  />
+                }
+              </div>
+
+              <!-- Product Details -->
+              <div class="product-body">
+                <div
+                  [routerLink]="['/details', product.Id]"
+                  [state]="{ from: currentUrl }"
+                  class="cursor-pointer"
+                >
+                  <div class="product-title">
+                    <h3 class="truncate">{{ product.NameAr }}</h3>
+                  </div>
+
+                  <div class="brand">
+                    <img src="./assets/images/OIP.webp" alt="Brand Logo" />
+                    <span class="truncate">{{
+                      product.Category || ("products.brandname" | translate)
+                    }}</span>
+                  </div>
+
+                  <!-- Price Section -->
+                  <div class="price">
+                    <span class="current-price">
+                      {{ getProductPrice(product) }} EGP
+                    </span>
+                    @if (getProductPrice(product) > 0) {
+                      <span class="old-price">
+                        {{ getProductPrice(product) + 20 }} EGP
+                      </span>
+                    }
+                  </div>
+
+                  <!-- Rating Section -->
+                  <div class="rating">
+                    @for (num of [1, 2, 3, 4, 5]; track $index) {
+                      <i class="fa-solid fa-star rating-color"></i>
+                    }
+                  </div>
+                </div>
+
+                <!-- Add to Cart Button -->
+                @if (product.ItemUnits && product.ItemUnits.length > 0) {
+                  <button
+                    class="add-to-cart mt-2"
+                    (click)="
+                      addToCart(
+                        product.ItemUnits[0].Id,
+                        product.ItemUnits[0].Price,
+                        1,
+                        product
+                      )
+                    "
+                  >
+                    🛒 {{ "products.addtocart" | translate }}
+                  </button>
+                }
+              </div>
             </div>
           </div>
-        </div>
         }
       </div>
     </div>
   </section>
+  
+  <!-- Pagination -->
+  @if (pagination && pagination.TotalCount! > pagination.PageSize!) {
+    <div class="my-9 flex justify-center">
+      <ngb-pagination
+        [collectionSize]="pagination.TotalCount!"
+        [(page)]="pageNo"
+        [maxSize]="3"
+        [rotate]="true"
+        [boundaryLinks]="true"
+        [pageSize]="pageSize"
+        (pageChange)="page($event)"
+      >
+      </ngb-pagination>
+    </div>
+  }
 </div>

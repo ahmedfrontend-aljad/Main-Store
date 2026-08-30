@@ -112,6 +112,7 @@
     "pice": "قطعة",
     "createdat": "تاريخ الإضافة:"
   },
+
   "cart": {
     "shoppingcart": "عربة التسوق",
     "deleteallitems": "حذف جميع العناصر",
@@ -128,32 +129,39 @@
     "payment": {
       "paymentdetails": "تفاصيل الدفع",
       "details": "التفاصيل",
+      "enteryourdetails": "أدخل التفاصيل الخاصة بك",
       "phone": "رقم الهاتف",
       "city": "المدينة",
       "checkout": "إتمام الدفع",
-      "enteryourdetails": "أدخل تفاصيلك"
+      "errors": {
+        "detailsRequired": "برجاء إدخال التفاصيل",
+        "phoneInvalid": "رقم الهاتف غير صحيح",
+        "cityRequired": "برجاء إدخال المدينة"
+      }
     },
 
     "invoice": {
-      "title": "تفاصيل الدفع",
-      "payinfo": "بيانات الدفع",
+      "title": "تفاصيل الفاتورة",
       "clientName": "اسم العميل",
-      "salesManName": "اسم البائع",
+      "salesManName": "اسم المندوب",
       "invoiceDate": "تاريخ الفاتورة",
-      "banquetDate": "تاريخ الاستلام",
+      "banquetDate": "تاريخ المنسك",
+      "payinfo": "معلومات الدفع",
       "cash": "نقداً",
       "cashpay": "المبلغ النقدي",
       "visa": "فيزا",
       "visapay": "مبلغ الفيزا",
-      "debt": "دين",
+      "visaTrxNo": "رقم عملية الفيزا (Transaction No.)",
+      "visaTrxNoPlaceholder": "أدخل رقم العملية",
+      "debt": "المتبقي / المديونية",
       "remainingamount": "المبلغ المتبقي",
-      "notes": "ملاحظات",
-      "notesPlaceholder": "أضف ملاحظات على الفاتورة...",
-      "reviewTitle": "مراجعة الطلب",
-      "emptyCart": "سلة التسوق فارغة.",
+      "notes": "الملاحظات",
+      "notesPlaceholder": "أدخل أية ملاحظات إضافية",
+      "reviewTitle": "مراجعة المنتجات",
+      "emptyCart": "السلة فارغة",
       "quantity": "الكمية",
       "price": "السعر",
-      "confirmButton": "تأكيد الفاتوره"
+      "confirmButton": "تأكيد الفاتورة"
     }
   },
   "swal": {
@@ -204,5 +212,24 @@
   "oldPassword": "كلمة المرور القديمة",
   "newPassword": "كلمة المرور الجديدة",
   "branchId": "الفرع",
-  "restpassword": "تغيير كلمة المرور"
+  "restpassword": "تغيير كلمة المرور",
+
+  "productDetails": {
+    "noImage": "لا توجد صورة متاحة",
+    "code": "الكود",
+    "supplier": "المورد",
+    "per": "لكل",
+    "selectUnit": "اختر الوحدة",
+    "remainingStock": "المخزون المتبقي",
+    "availableItems": "قطعة متاحة",
+    "totalSales": "إجمالي المبيعات",
+    "itemsCount": "قطعة",
+    "maxOrderLimit": "الحد الأقصى للطلب",
+    "description": "الوصف",
+    "howToUse": "طريقة الاستخدام",
+    "specifications": "المواصفات",
+    "createdDate": "تاريخ الإضافة",
+    "loading": "...جاري تحميل تفاصيل المنتج"
+  }
+  ,"notAvaliableRightNow":"غير متاح حاليا"
 }

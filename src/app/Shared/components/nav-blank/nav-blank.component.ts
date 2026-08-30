@@ -21,10 +21,9 @@ import { ThemeService } from '../../../Core/Services/theme.service';
 export class NavBlankComponent implements OnInit {
   isUserLogged = false;
   isGuest = false;
-  isLoggedIn = false;
 
-  showDropdown = false; 
-  showMobileMenu = false; 
+  showDropdown = false;
+  showMobileMenu = false;
   showLangDropdown = false;
   isDarkMode = false;
   selectedLanguage = 'English';
@@ -36,13 +35,19 @@ export class NavBlankComponent implements OnInit {
 
   constructor() {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
-      this.isUserLogged = !!localStorage.getItem('userToken');
-      this.isGuest = !!localStorage.getItem('guestToken');
+      const token = localStorage.getItem('userToken');
+
+      if (token) {
+        this.isUserLogged = true;
+        this.isGuest = false;
+      } else {
+        this.isUserLogged = false;
+        this.isGuest = true;
+      }
+
       const savedLang = localStorage.getItem('lang') || 'en';
       this.selectedLanguage = savedLang === 'ar' ? 'عربي' : 'English';
     }
-
-    this.isLoggedIn = this.isUserLogged || this.isGuest;
   }
 
   ngOnInit(): void {
@@ -78,19 +83,11 @@ export class NavBlankComponent implements OnInit {
 
   // Guest actions
   guestLogin(): void {
-    if (isPlatformBrowser(this._PLATFORM_ID)) {
-      localStorage.removeItem('guestToken');
-      this.isGuest = false;
-      this._Router.navigate(['/auth/login']);
-    }
+    this._Router.navigate(['/auth/login']);
   }
 
   guestRegister(): void {
-    if (isPlatformBrowser(this._PLATFORM_ID)) {
-      localStorage.removeItem('guestToken');
-      this.isGuest = false;
-      this._Router.navigate(['/auth/register']);
-    }
+    this._Router.navigate(['/auth/register']);
   }
 
   // Sign out
@@ -99,9 +96,8 @@ export class NavBlankComponent implements OnInit {
       localStorage.removeItem('userToken');
       localStorage.removeItem('guestToken');
       this.isUserLogged = false;
-      this.isGuest = false;
-      this.isLoggedIn = false;
-      this._Router.navigate(['/auth/login']);
+      this.isGuest = true; 
+      this._Router.navigate(['/home']);
     }
   }
 

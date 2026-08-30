@@ -121,7 +121,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
           if (res?.Obj?.AccessToken) {
             localStorage.setItem('guestToken', res.Obj.AccessToken);
-            this._Router.navigate(['/guest/home']);
+            this._Router.navigate(['/home']);
           } else {
             console.error('Guest Login Error:', res);
           }

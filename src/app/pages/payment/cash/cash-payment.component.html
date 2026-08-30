@@ -1,0 +1,109 @@
+<section
+  class="payment-section flex justify-center items-center w-full min-h-[calc(100vh-80px)] py-6 sm:py-10 px-4"
+>
+  <div class="payment-card w-full max-w-xl">
+    <!-- Heading -->
+    <div class="heading text-center md:text-start mb-6">
+      <h1
+        class="text-main font-bold flex items-center justify-center md:justify-start gap-2 text-xl sm:text-2xl md:text-3xl"
+      >
+        <span>{{ "cart.payment.paymentdetails" | translate }}</span>
+        <i class="fa-solid fa-money-bills text-2xl sm:text-3xl"></i>
+      </h1>
+    </div>
+
+    <!-- Form Container -->
+    <form
+      [formGroup]="paymentForm"
+      (ngSubmit)="submitCashOrder()"
+      class="payment-form flex flex-col gap-4"
+    >
+      <!-- Details Field -->
+      <div class="form-group flex flex-col gap-1.5">
+        <label
+          for="details"
+          class="flex items-center gap-2 text-sm sm:text-base font-semibold"
+        >
+          <i class="fa-solid fa-circle-info"></i>
+          <span>{{ "cart.payment.details" | translate }}</span>
+        </label>
+        <textarea
+          id="details"
+          formControlName="details"
+          rows="3"
+          class="form-control"
+          [placeholder]="'cart.payment.enteryourdetails' | translate"
+        ></textarea>
+        @if (
+          paymentForm.get("details")?.touched &&
+          paymentForm.get("details")?.invalid
+        ) {
+          <small class="text-red-500 text-xs">{{
+            "cart.payment.errors.detailsRequired" | translate
+          }}</small>
+        }
+      </div>
+
+      <!-- Phone Field -->
+      <div class="form-group flex flex-col gap-1.5">
+        <label
+          for="phone"
+          class="flex items-center gap-2 text-sm sm:text-base font-semibold"
+        >
+          <i class="fa-solid fa-square-phone"></i>
+          <span>{{ "cart.payment.phone" | translate }}</span>
+        </label>
+        <input
+          type="tel"
+          id="phone"
+          formControlName="phone"
+          [placeholder]="'cart.payment.phone' | translate"
+          class="form-control"
+        />
+        @if (
+          paymentForm.get("phone")?.touched && paymentForm.get("phone")?.invalid
+        ) {
+          <small class="text-red-500 text-xs">{{
+            "cart.payment.errors.phoneInvalid" | translate
+          }}</small>
+        }
+      </div>
+
+      <!-- City Field -->
+      <div class="form-group flex flex-col gap-1.5">
+        <label
+          for="city"
+          class="flex items-center gap-2 text-sm sm:text-base font-semibold"
+        >
+          <i class="fa-solid fa-city"></i>
+          <span>{{ "cart.payment.city" | translate }}</span>
+        </label>
+        <input
+          type="text"
+          id="city"
+          formControlName="city"
+          [placeholder]="'cart.payment.city' | translate"
+          class="form-control"
+        />
+        @if (
+          paymentForm.get("city")?.touched && paymentForm.get("city")?.invalid
+        ) {
+          <small class="text-red-500 text-xs">{{
+            "cart.payment.errors.cityRequired" | translate
+          }}</small>
+        }
+      </div>
+
+      <!-- Submit Button -->
+      <div class="mt-2">
+        <button
+          type="submit"
+          [disabled]="paymentForm.invalid"
+          class="submit-btn w-full py-3 px-6 text-sm sm:text-base font-semibold rounded-lg transition-all duration-300 disabled:opacity-50"
+        >
+          {{ "cart.payment.checkout" | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

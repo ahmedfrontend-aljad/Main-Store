@@ -1,39 +1,27 @@
-<div class="container m-auto">
-  <!-- Banners -->
-  <section class="w-full mb-14">
-    <div
-      class="banners flex justify-center text-center m-auto gap-3 h-72 flex-a"
-    >
-      <div class="sidebanner h-full flex flex-col gap-2">
-        <img
-          class="w-full h-1/2 object-cover rounded-lg shadow-banner"
-          src="./assets/images/Banners/banner-2.jpeg"
-          alt=""
-        />
-        <img
-          class="w-full h-1/2 object-cover rounded-lg shadow-banner"
-          src="./assets/images/Banners/banner-3.jpg"
-          alt=""
-        />
-      </div>
-      <div class="Mainbanner mx-1 w-3/4 h-full">
+<div class="container">
+  <!-- Banners Section -->
+  <section class="w-full mb-8 md:mb-14">
+    <div class="banners w-full h-48 md:h-72">
+      <div class="Mainbanner w-full h-full">
         <img
           src="./assets/images/Banners/mainbanner.jpg"
           class="h-full w-full object-cover rounded-lg shadow-banner"
-          alt=""
+          alt="Main Banner"
         />
       </div>
     </div>
   </section>
 
   <!-- Categories slider -->
-  <section class="w-full mb-14 mt-9">
+  <section class="w-full mb-10 md:mb-14 mt-4 md:mt-9">
     <div class="px-1">
       <div class="heading">
-        <h3 class="mt-8 font-weight-bolder font-serif text-4xl">
+        <h3
+          class="mt-4 md:mt-8 font-weight-bolder font-serif text-2xl md:text-4xl"
+        >
           {{ "homecomponent.allcategories" | translate }}
         </h3>
-        <p class="mb-8 mt-1 text-secondary text-1xl">
+        <p class="mb-4 md:mb-8 mt-1 text-secondary text-sm md:text-base">
           {{ "homecomponent.shopbyyourfavoritecategory" | translate }}
         </p>
       </div>
@@ -46,7 +34,7 @@
                 [routerLink]="['/catDetails', cat.Code]"
               >
                 <img
-                  class="rounded-lg h-36 mb-2"
+                  class="rounded-lg h-36 mb-2 object-cover w-full"
                   src="./assets/images/Category.png"
                   [alt]="cat.NameAr"
                 />
@@ -62,13 +50,15 @@
   </section>
 
   <!-- Offers -->
-  <section>
+  <section class="mb-10 md:mb-14">
     <div class="w-full">
       <div class="heading">
-        <h3 class="mt-8 font-weight-bolder font-serif text-4xl">
+        <h3
+          class="mt-4 md:mt-8 font-weight-bolder font-serif text-2xl md:text-4xl"
+        >
           {{ "homecomponent.bestoffers" | translate }}
         </h3>
-        <p class="mb-8 mt-1 text-secondary text-1xl">
+        <p class="mb-4 md:mb-8 mt-1 text-secondary text-sm md:text-base">
           {{ "homecomponent.bestoffers!shopnow" | translate }}
         </p>
       </div>
@@ -82,7 +72,7 @@
                 [routerLink]="['/catDetails', cat.Code]"
               >
                 <img
-                  class="rounded-lg h-36 mb-2"
+                  class="rounded-lg h-36 mb-2 object-cover w-full"
                   src="./assets/images/Category.png"
                   [alt]="cat.NameAr"
                 />
@@ -99,12 +89,14 @@
 
   <!-- Most purchased Products -->
   <section>
-    <div class="w-full mt-16">
+    <div class="w-full mt-8 md:mt-16">
       <div class="heading text-center">
-        <h3 class="mt-8 font-weight-bolder font-serif text-4xl">
+        <h3
+          class="mt-4 md:mt-8 font-weight-bolder font-serif text-2xl md:text-4xl"
+        >
           {{ "homecomponent.mostpurchasedproducts" | translate }}
         </h3>
-        <p class="mb-8 mt-1 text-secondary text-1xl">
+        <p class="mb-6 md:mb-8 mt-1 text-secondary text-sm md:text-base">
           {{ "homecomponent.enjoythemostpopularproducts" | translate }}
         </p>
       </div>
@@ -122,81 +114,82 @@
       </div>
 
       <div
-        class="section-content mt-16 grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
+        class="section-content mt-16 grid gap-1 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
       >
         @for (product of filteredItems; track product.Id) {
           <div class="flex justify-center">
-            <div class="product-card px-1">
+            <div class="product-card px-1 position-relative">
+              <!-- Out of Stock Badge -->
+              @if (isOutOfStock(product)) {
+                <span class="out-of-stock-badge">
+                  {{ "unAvaliable" | translate }}
+                </span>
+              }
+
+              <!-- Wishlist Icon -->
               <div class="wishIcon px-2 text-right py-1">
-                <i
-                  class="fa-solid fa-heart fa-heart text-xl cursor-pointer"
-                ></i>
+                <i class="fa-solid fa-heart text-xl cursor-pointer"></i>
               </div>
+
+              <!-- Product Image -->
               <div
                 class="image-container cursor-pointer"
                 [routerLink]="['/details', product.Id]"
               >
-                @if (hasImages(product)) {
-                  @for (unit of product.ItemUnits; track unit.Id) {
-                    @for (img of unit.ItemImages; track img.Image) {
-                      <img
-                        [src]="'data:image/jpeg;base64,' + img.Image"
-                        [alt]="product.NameAr"
-                      />
-                    }
-                  }
+                @if (getProductImage(product)) {
+                  <img
+                    [src]="'data:image/jpeg;base64,' + getProductImage(product)"
+                    [alt]="product.NameAr"
+                  />
                 } @else {
                   <img src="assets/images/Product.png" [alt]="product.NameAr" />
                 }
               </div>
 
+              <!-- Product Body -->
               <div class="product-body">
                 <div
                   [routerLink]="['/details', product.Id]"
                   [state]="{ from: currentUrl }"
                   class="cursor-pointer"
                 >
+                  <!-- Title -->
                   <div class="product-title">
                     <h3>{{ product.NameAr }}</h3>
                   </div>
 
-                  <div class="brand">
-                    <img src="./assets/images/OIP.webp" alt="Brand Logo" />
-                    <span>{{ "products.brandname" | translate }}</span>
-                  </div>
+                  <!-- Description (Optional) -->
+                  @if (product.Description) {
+                    <p class="text-xs text-gray-500 my-1 line-clamp-2">
+                      {{ product.Description }}
+                    </p>
+                  }
 
-                  @for (
-                    price of product.ItemUnits.slice(0, 1) || [];
-                    track price.Id
-                  ) {
-                    <div class="price">
-                      <span class="current-price"> {{ price.Price }} EGP </span>
-                      <span class="old-price">
-                        {{ price.Price + 20 }} EGP
+                  <!-- Real Price from First Unit -->
+                  @if (product.ItemUnits && product.ItemUnits.length > 0) {
+                    <div class="price my-2">
+                      <span class="current-price">
+                        {{ product.ItemUnits[0].Price }} EGP
                       </span>
                     </div>
                   }
-
-                  <div class="rating">
-                    @for (num of [1, 2, 3, 4, 5]; track $index) {
-                      <ng-container>
-                        @if (num <= math.floor(num)) {
-                          <i class="fa-solid fa-star rating-color"></i>
-                        }
-                      </ng-container>
-                    }
-                  </div>
                 </div>
 
-                @for (
-                  price of product.ItemUnits.slice(0, 1) || [];
-                  track price.Id
-                ) {
+                <!-- Add To Cart Button -->
+                @if (product.ItemUnits && product.ItemUnits.length > 0) {
                   <button
                     class="add-to-cart"
-                    (click)="addToCart(product.Id, price.Price, 1)"
+                    [disabled]="isOutOfStock(product)"
+                    [class.disabled-btn]="isOutOfStock(product)"
+                    (click)="
+                      addToCart(product.Id, product.ItemUnits[0].Price, 1)
+                    "
                   >
-                    🛒 {{ "products.addtocart" | translate }}
+                    @if (isOutOfStock(product)) {
+                      🚫{{ "notAvaliableRightNow" | translate }}
+                    } @else {
+                      🛒 {{ "products.addtocart" | translate }}
+                    }
                   </button>
                 }
               </div>

@@ -42,6 +42,7 @@ export class NavAuthComponent {
   ngOnInit(): void {
     this._themeService.loadTheme();
     this.updateThemeState();
+    console.log('Nav Auth');
   }
 
   toggleTheme(): void {

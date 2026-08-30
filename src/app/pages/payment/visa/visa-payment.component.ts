@@ -11,22 +11,27 @@ import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import jwtDecode from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
+import { switchMap, catchError, finalize, EMPTY } from 'rxjs';
 import { Icart } from '../../../Core/Interfaces/icart';
 import { CartService } from '../../../Core/Services/cart.service';
+import { PaymentService } from '../../../Core/Services/payment.service';
+import { LoadingService } from '../../../Core/Services/loading.service';
 
 @Component({
   selector: 'app-cart-invoice',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, TranslateModule],
-  templateUrl: './cart-invoice.component.html',
-  styleUrl: './cart-invoice.component.scss',
+  templateUrl: './visa-payment.component.html',
+  styleUrl: './visa-payment.component.scss',
 })
 export class CartInvoiceComponent implements OnInit {
   private readonly _formBuilder = inject(FormBuilder);
   private readonly _cartService = inject(CartService);
+  private readonly _PaymentService = inject(PaymentService);
   private readonly _toastr = inject(ToastrService);
   private readonly _translate = inject(TranslateService);
   private readonly _router = inject(Router);
+  private readonly _loadingService = inject(LoadingService);
 
   cartproducts: Icart[] = [];
   InvoiceForm!: FormGroup;
@@ -64,7 +69,7 @@ export class CartInvoiceComponent implements OnInit {
           this.totalPrice = res.Obj.TotalPrice;
           this.populateFormWithCartData();
         } else {
-          this._toastr.info('Your cart is empty.');
+          this._toastr.info(this._translate.instant('cart.invoice.emptyCart'));
           this.cartproducts = [];
           this.totalPrice = 0;
         }
@@ -112,7 +117,7 @@ export class CartInvoiceComponent implements OnInit {
     });
   }
 
-  initInvoiceForm() {
+  initInvoiceForm(): void {
     this.InvoiceForm = this._formBuilder.group({
       clienName: ['', Validators.required],
       salesManId: [0],
@@ -173,7 +178,7 @@ export class CartInvoiceComponent implements OnInit {
 
   populateFormWithCartData(): void {
     const saleInvoiceDetails = this.InvoiceForm.get(
-      'saleInvoiceDetails'
+      'saleInvoiceDetails',
     ) as FormArray;
     saleInvoiceDetails.clear();
 
@@ -193,7 +198,7 @@ export class CartInvoiceComponent implements OnInit {
     if (this.InvoiceForm.invalid) {
       this.InvoiceForm.markAllAsTouched();
       this._toastr.error(
-        this._translate.instant('cart.invoice.validationError')
+        this._translate.instant('cart.invoice.validationError'),
       );
       return;
     }
@@ -215,26 +220,47 @@ export class CartInvoiceComponent implements OnInit {
     formValue.paymentType =
       formValue.cash > 0 && formValue.visa > 0 ? 3 : formValue.visa > 0 ? 2 : 1;
 
-    console.log(
-      'Final Payload Sent to Server (After DEBT Correction):',
-      JSON.stringify(formValue, null, 2)
-    );
+    let createdInvoiceId: string = '';
+    this._loadingService.start();
 
-    this._cartService.createMoyasarInvoice(formValue).subscribe({
-      next: (res) => {
-        this._toastr.success(
-          this._translate.instant('cart.invoice.successMsg')
-        );
-        this._router.navigate(['/order-success']);
-      },
-      error: (err) => {
-        console.error('Error creating invoice:', err);
-        console.error('Error Body:', err.error);
-        const errorMsg =
-          err?.error?.Message ||
-          this._translate.instant('cart.invoice.errorMsg');
-        this._toastr.error(errorMsg);
-      },
-    });
+    const invoiceRequest$ =
+      this._PaymentService.createVisaPaymentInvoice(formValue);
+
+    invoiceRequest$
+      .pipe(
+        switchMap((res) => {
+          createdInvoiceId =
+            res?.Obj?.InvoiceId || res?.invoiceId || res?.Id || res?.Obj?.Id;
+          return this._PaymentService.postAndMarkPaid(createdInvoiceId);
+        }),
+
+        switchMap(() => {
+          return this._cartService.clearCart(this.userId!);
+        }),
+
+        catchError((err) => {
+          console.error('Invoice Creation Flow Error:', err);
+          const errorMsg =
+            err?.error?.Message ||
+            this._translate.instant('cart.invoice.errorMsg');
+          this._toastr.error(errorMsg);
+          return EMPTY;
+        }),
+
+        finalize(() => {
+          this._loadingService.stop();
+        }),
+      )
+      .subscribe({
+        next: () => {
+          this._toastr.success(
+            this._translate.instant('cart.invoice.successMsg'),
+          );
+          localStorage.removeItem('cartItems');
+          this._router.navigate(['/order-success'], {
+            queryParams: { invoiceId: createdInvoiceId },
+          });
+        },
+      });
   }
 }

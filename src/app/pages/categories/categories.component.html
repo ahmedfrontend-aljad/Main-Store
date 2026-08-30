@@ -1,68 +1,78 @@
-<div class="container m-auto">
-  <section>
-    <div class="w-full mt-16">
-      <div class="heading text-center">
-        <h3 class="mt-8 font-weight-bolder font-serif text-4xl">
-          {{ "homecom.allcategories" | translate }}
-        </h3>
-        <p class="mb-8 mt-1 text-yellow-50 text-1xl">
-          {{ "homecom.shopbyyourfavoritecategory" | translate }}
-        </p>
-      </div>
-
-      <div class="input-group m-auto text-center relative">
-        <input
-          type="search"
-          [(ngModel)]="text"
-          class="form-control"
-          placeholder=" {{ 'homecom.searchbycategoryname...' | translate }}
-        "
-        />
-        <button class="btn btn-outline-secondary" type="button">
-          <i
-            class="fa-solid fa-magnifying-glass absolute text-white iconSearch"
-          ></i>
-        </button>
-      </div>
-
-      <div
-        class="section-content mt-16 grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
+<div class="container m-auto px-4 sm:px-6">
+  <section class="w-full mt-8 md:mt-16">
+    <!-- Header Section -->
+    <div class="heading text-center">
+      <h3
+        class="font-weight-bolder font-serif text-2xl sm:text-3xl md:text-4xl text-base"
       >
-        @for (category of filteredItems; track category.Id) {
-          <div class="flex justify-center">
-            <div
-              class="product-card px-1"
-              [routerLink]="['/catDetails', category.Code]"
-              [state]="{ from: currentUrl }"
-            >
-              <div class="wishIcon px-2 text-right py-1">
-                <i
-                  class="fa-solid fa-heart fa-heart text-xl cursor-pointer"
-                ></i>
-              </div>
-              <div class="image-container cursor-pointer">
-                <img src="./assets/images/Category.png" alt="product.title" />
-              </div>
-              <div class="product-body text-end">
-                <div class="cursor-pointer">
-                  <div class="product-title">
-                    <h3>{{ category.NameAr }}</h3>
-                  </div>
+        {{ "homecom.allcategories" | translate }}
+      </h3>
+      <p class="mb-6 md:mb-8 mt-2 text-muted text-sm sm:text-base">
+        {{ "homecom.shopbyyourfavoritecategory" | translate }}
+      </p>
+    </div>
 
-                  <div class="brand">
-                    <img src="./assets/images/Category.png" alt="Brand Logo" />
-                    <span>{{ category.BranchName }}</span>
-                  </div>
+    <!-- Search Input Group -->
+    <div class="search-wrapper m-auto relative">
+      <input
+        type="search"
+        [(ngModel)]="text"
+        class="form-control search-input"
+        [placeholder]="'homecom.searchbycategoryname...' | translate"
+      />
+      <button class="search-btn" type="button" aria-label="Search">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      </button>
+    </div>
+
+    <!-- Categories Grid -->
+    <div
+      class="section-content mt-10 md:mt-16 grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
+    >
+      @for (category of filteredItems; track category.Id) {
+        <div class="flex justify-center w-full">
+          <div
+            class="product-card category-card"
+            [routerLink]="['/catDetails', category.Code]"
+            [state]="{ from: currentUrl }"
+          >
+            <!-- Wishlist Icon -->
+            <div class="wishIcon">
+              <i
+                class="fa-solid fa-heart text-lg sm:text-xl cursor-pointer"
+              ></i>
+            </div>
+
+            <!-- Image Container -->
+            <div class="image-container cursor-pointer">
+              <img
+                src="./assets/images/Category.png"
+                [alt]="category.NameAr || 'Category Image'"
+              />
+            </div>
+
+            <!-- Card Content -->
+            <div class="product-body text-end">
+              <div class="cursor-pointer">
+                <div class="product-title">
+                  <h3>{{ category.NameAr }}</h3>
+                </div>
+
+                <div class="brand">
+                  <img src="./assets/images/Category.png" alt="Brand Logo" />
+                  <span class="truncate">{{ category.BranchName }}</span>
                 </div>
               </div>
             </div>
           </div>
-        }
-      </div>
+        </div>
+      }
     </div>
   </section>
+
+  <!-- Pagination -->
   @if (pagination && pagination.TotalCount! > pagination.PageSize!) {
-    <div class="my-9 d-flex justify-content-center">
+    <div class="my-8 md:my-12 flex justify-center pagination-wrapper">
       <ngb-pagination
         [collectionSize]="pagination.TotalCount!"
         [(page)]="pageNo"

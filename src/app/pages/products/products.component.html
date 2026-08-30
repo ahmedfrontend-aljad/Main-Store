@@ -23,6 +23,7 @@
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
       </div>
+
       <!-- Products Grid -->
       <div
         class="section-content mt-16 grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
@@ -30,76 +31,77 @@
         @for (product of filteredItems; track product.Id) {
           <div class="flex justify-center">
             <div class="product-card px-1">
+              <!-- Out of Stock Badge -->
+              @if (isOutOfStock(product)) {
+                <span class="out-of-stock-badge">
+                  {{ "unAvaliable" | translate }}
+                </span>
+              }
+
+              <!-- Wishlist Icon -->
               <div class="wishIcon px-2 text-right py-1">
-                <i
-                  class="fa-solid fa-heart fa-heart text-xl cursor-pointer"
-                ></i>
+                <i class="fa-solid fa-heart text-xl cursor-pointer"></i>
               </div>
+
+              <!-- Product Image -->
               <div
                 class="image-container cursor-pointer"
                 [routerLink]="['/details', product.Id]"
               >
-                @if (hasImages(product)) {
-                  @for (unit of product.ItemUnits; track unit.Id) {
-                    @for (img of unit.ItemImages; track img.Image) {
-                      <img
-                        [src]="'data:image/jpeg;base64,' + img.Image"
-                        [alt]="product.NameAr"
-                      />
-                    }
-                  }
+                @if (getProductImage(product)) {
+                  <img
+                    [src]="'data:image/jpeg;base64,' + getProductImage(product)"
+                    [alt]="product.NameAr"
+                  />
                 } @else {
                   <img src="assets/images/Product.png" [alt]="product.NameAr" />
                 }
               </div>
 
+              <!-- Product Body -->
               <div class="product-body">
                 <div
                   [routerLink]="['/details', product.Id]"
                   [state]="{ from: currentUrl }"
                   class="cursor-pointer"
                 >
+                  <!-- Title -->
                   <div class="product-title">
                     <h3>{{ product.NameAr }}</h3>
                   </div>
 
-                  <div class="brand">
-                    <img src="./assets/images/OIP.webp" alt="Brand Logo" />
-                    <span>{{ "products.brandname" | translate }}</span>
-                  </div>
+                  <!-- Description (Optional) -->
+                  @if (product.Description) {
+                    <p class="text-xs text-gray-500 my-1 line-clamp-2">
+                      {{ product.Description }}
+                    </p>
+                  }
 
-                  @for (
-                    price of product.ItemUnits.slice(0, 1) || [];
-                    track price.Id
-                  ) {
-                    <div class="price">
-                      <span class="current-price"> {{ price.Price }} EGP </span>
-                      <span class="old-price">
-                        {{ price.Price + 20 }} EGP
+                  <!-- Real Price from First Unit -->
+                  @if (product.ItemUnits && product.ItemUnits.length > 0) {
+                    <div class="price my-2">
+                      <span class="current-price">
+                        {{ product.ItemUnits[0].Price }} EGP
                       </span>
                     </div>
                   }
-
-                  <div class="rating">
-                    @for (num of [1, 2, 3, 4, 5]; track $index) {
-                      <ng-container>
-                        @if (num <= math.floor(num)) {
-                          <i class="fa-solid fa-star rating-color"></i>
-                        }
-                      </ng-container>
-                    }
-                  </div>
                 </div>
 
-                @for (
-                  price of product.ItemUnits.slice(0, 1) || [];
-                  track price.Id
-                ) {
+                <!-- Add To Cart Button -->
+                @if (product.ItemUnits && product.ItemUnits.length > 0) {
                   <button
                     class="add-to-cart"
-                    (click)="addToCart(product.Id, price.Price, 1)"
+                    [disabled]="isOutOfStock(product)"
+                    [class.disabled-btn]="isOutOfStock(product)"
+                    (click)="
+                      addToCart(product.Id, product.ItemUnits[0].Price, 1)
+                    "
                   >
-                    🛒 {{ "products.addtocart" | translate }}
+                    @if (isOutOfStock(product)) {
+                      🚫{{ "notAvaliableRightNow" | translate }}
+                    } @else {
+                      🛒 {{ "products.addtocart" | translate }}
+                    }
                   </button>
                 }
               </div>
@@ -119,7 +121,7 @@
         [maxSize]="3"
         [rotate]="true"
         [boundaryLinks]="true"
-        [pageSize]="pagination.PageSize!"
+        [pageSize]="pageSize!"
         (pageChange)="page($event)"
       >
       </ngb-pagination>

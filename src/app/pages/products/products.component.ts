@@ -36,7 +36,7 @@ export class ProductsComponent implements OnInit {
   totalCount: any;
   currentUrl: any;
   allProducts = signal<Iproducts[]>([]);
-
+  pageSize = PAGE_SIZE;
   private readonly _AllProductsService = inject(AllProductsService);
   private readonly _Router = inject(Router);
   private readonly _ToastrService = inject(ToastrService);
@@ -48,8 +48,13 @@ export class ProductsComponent implements OnInit {
     this.currentUrl = this._Router.url;
     if (isPlatformBrowser(this._PLATFORM_ID)) {
       const token = localStorage.getItem('userToken');
-      this.decoded = jwtDecode(token!);
-      console.log(this.decoded);
+      if (token) {
+        try {
+          this.decoded = jwtDecode(token);
+        } catch (e) {
+          console.error('Invalid token format', e);
+        }
+      }
     }
     this.loadItems();
   }
@@ -70,13 +75,11 @@ export class ProductsComponent implements OnInit {
         this.allProducts.set(res.Obj.PagedResult);
         this.totalCount = res.Obj.TotalCount;
         this.setData(res.Obj);
-        console.log(res);
         this._LoadingService.stop();
       },
       error: (err) => {
         this._LoadingService.stop();
-
-        console.log(err);
+        console.error(err);
       },
     });
   }
@@ -93,42 +96,70 @@ export class ProductsComponent implements OnInit {
     this.loadItems();
   }
 
+  getProductImage(product: any): string | null {
+    if (product?.ItemUnits && product.ItemUnits.length > 0) {
+      for (const unit of product.ItemUnits) {
+        if (unit.ItemImages && unit.ItemImages.length > 0) {
+          for (const img of unit.ItemImages) {
+            if (img && img.Image) {
+              return img.Image;
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  getAvailableStock(product: any): number {
+    if (product?.ItemUnits?.length > 0) {
+      const unit = product.ItemUnits[0];
+      return unit.Quantity ?? unit.Stock ?? unit.AvailableQuantity ?? 0;
+    }
+    return 0;
+  }
+
+  isOutOfStock(product: any): boolean {
+    return this.getAvailableStock(product) <= 0;
+  }
+
   addToCart(productId: number, price: number, quantity: number = 1): void {
+    const product = this.filteredItems.find((item) => item.Id === productId);
+    if (product && this.isOutOfStock(product)) {
+      this._ToastrService.warning('هذا المنتج غير متوفر حالياً');
+      return;
+    }
+
     const token = localStorage.getItem('userToken');
     if (!token) {
-      console.error('من فضلك اعد تسجيل الدخول!');
+      this._ToastrService.error('من فضلك اعد تسجيل الدخول!');
       localStorage.removeItem('userToken');
       this._Router.navigate(['/login']);
       return;
     }
 
-    const decoded: any = jwtDecode(token);
+    try {
+      const decoded: any = jwtDecode(token);
 
-    const data = {
-      UserId: decoded.Id,
-      ProductId: productId,
-      Quantity: quantity,
-      Price: price,
-    };
+      const data = {
+        UserId: decoded.Id,
+        ProductId: productId,
+        Quantity: quantity,
+        Price: price,
+      };
 
-    this._CartService.addToCart(data).subscribe({
-      next: (res) => {
-        this._ToastrService.success(res.Message);
-        console.log('Added to cart:', res);
-        console.log(decoded.Id);
-      },
-      error: (err) => {
-        console.error(' Error while adding:', err);
-        this._ToastrService.error(err.Message);
-      },
-    });
-  }
-
-  hasImages(product: any): boolean {
-    return (
-      product.ItemUnits?.some(
-        (u: ItemUnit) => u.ItemImages && u.ItemImages.length > 0,
-      ) ?? false
-    );
+      this._CartService.addToCart(data).subscribe({
+        next: (res) => {
+          this._ToastrService.success(res.Message || 'تمت الإضافة بنجاح');
+        },
+        error: (err) => {
+          console.error('Error while adding:', err);
+          this._ToastrService.error(err.Message || 'حدث خطأ في الإضافة');
+        },
+      });
+    } catch (error) {
+      this._ToastrService.error('جلسة تسجيل الدخول انتهت');
+      this._Router.navigate(['/login']);
+    }
   }
 }

@@ -57,7 +57,8 @@
       "enteryouremail": "Enter Your Email",
       "register": "Register",
       "alreadyamember?": "Already a member ?",
-      "email": "Email"
+      "email": "Email",
+      "registerNewAccount": "Register New Account"
     },
     "loginError": "Username or password is incorrect",
     "loginSuccess": "Login successful",
@@ -119,33 +120,40 @@
     "purchaseandpaymentconfirmation": "Purchase And Payment Confirmation",
 
     "payment": {
-      "paymentdetails": "Payment details",
+      "paymentdetails": "Payment Details",
       "details": "Details",
-      "phone": "Phone",
-      "city": "City",
-      "checkout": "Check Out",
       "enteryourdetails": "Enter your details",
-      "pay": "pay"
+      "phone": "Phone Number",
+      "city": "City",
+      "checkout": "Checkout",
+      "errors": {
+        "detailsRequired": "Please enter details",
+        "phoneInvalid": "Invalid phone number",
+        "cityRequired": "Please enter city"
+      }
     },
     "invoice": {
-      "title": "Payment Details",
-      "payinfo": "Payment Information",
+      "title": "Invoice Details",
       "clientName": "Client Name",
       "salesManName": "Salesman Name",
       "invoiceDate": "Invoice Date",
-      "banquetDate": "Delivery Date",
+      "banquetDate": "Event Date",
+      "payinfo": "Payment Information",
       "cash": "Cash",
       "cashpay": "Cash Amount",
       "visa": "Visa",
-      "debt": "Debt",
+      "visapay": "Visa Amount",
+      "visaTrxNo": "Visa Transaction No.",
+      "visaTrxNoPlaceholder": "Enter transaction number",
+      "debt": "Remaining / Debt",
       "remainingamount": "Remaining Amount",
       "notes": "Notes",
-      "notesPlaceholder": "Add notes to the invoice...",
-      "reviewTitle": "Order Review",
-      "emptyCart": "Your cart is empty.",
+      "notesPlaceholder": "Enter any additional notes",
+      "reviewTitle": "Products Review",
+      "emptyCart": "Cart is empty",
       "quantity": "Quantity",
       "price": "Price",
-      "confirmButton": "Confirm Button"
+      "confirmButton": "Confirm Invoice"
     }
   },
   "swal": {
@@ -194,5 +202,26 @@
   "oldPassword": "Old Password",
   "newPassword": "New Password",
   "branchId": "Branch",
-  "restpassword": "Reset Password"
+  "restpassword": "Reset Password",
+
+  "productDetails": {
+    "noImage": "No image available",
+    "code": "Code",
+    "supplier": "Supplier",
+    "currency": "EGP",
+    "per": "Per",
+    "selectUnit": "Select Unit",
+    "remainingStock": "Remaining Stock",
+    "availableItems": "items available",
+    "totalSales": "Total Sales",
+    "itemsCount": "items",
+    "maxOrderLimit": "Max Order Limit",
+    "description": "Description",
+    "howToUse": "How to Use",
+    "specifications": "Specifications",
+    "createdDate": "Created Date",
+    "loading": "Loading product details..."
+  },
+
+  "notAvaliableRightNow": "Not Available"
 }

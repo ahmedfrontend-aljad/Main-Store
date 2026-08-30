@@ -3,14 +3,13 @@ import { authLoginGuard } from './Core/Guards/auth-login.guard';
 import { blankGuard } from './Core/Guards/blank.guard';
 
 export const routes: Routes = [
-  // Auth Layout (Login & Register)
   {
     path: 'auth',
     loadComponent: () =>
       import('./Layouts/auth/auth.component').then((c) => c.AuthComponent),
     canActivate: [authLoginGuard],
     children: [
-      { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
+      { path: '', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'login',
         loadComponent: () =>
@@ -36,91 +35,18 @@ export const routes: Routes = [
     ],
   },
 
-  // Guest Layout
-  {
-    path: 'guest',
-    loadComponent: () =>
-      import('./Layouts/guest/guest.component').then((c) => c.GuestComponent),
-    children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-      {
-        path: 'home',
-        loadComponent: () =>
-          import('./pages/home/home.component').then((c) => c.HomeComponent),
-        title: 'home',
-      },
-      {
-        path: 'categories',
-        loadComponent: () =>
-          import('./pages/categories/categories.component').then(
-            (c) => c.CategoriesComponent,
-          ),
-        title: 'allCategories',
-      },
-      {
-        path: 'details/:id',
-        loadComponent: () =>
-          import('./pages/product-details/product-details.component').then(
-            (c) => c.ProductDetailsComponent,
-          ),
-        title: 'itemDetails',
-      },
-      {
-        path: 'catDetails/:code',
-        loadComponent: () =>
-          import('./pages/category-details/category-details.component').then(
-            (c) => c.CategoryDetailsComponent,
-          ),
-        title: 'categoryProducts',
-      },
-    ],
-  },
-
-  // Blank Layout (Protected Pages)
   {
     path: '',
     loadComponent: () =>
       import('./Layouts/blank/blank.component').then((c) => c.BlankComponent),
-    canActivate: [blankGuard],
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
+
       {
         path: 'home',
         loadComponent: () =>
           import('./pages/home/home.component').then((c) => c.HomeComponent),
         title: 'home',
-      },
-      {
-        path: 'cart',
-        loadComponent: () =>
-          import('./pages/cart/cart-list/cart.component').then(
-            (c) => c.CartComponent,
-          ),
-        title: 'cart',
-      },
-      {
-        path: 'cart-invoice',
-        loadComponent: () =>
-          import('./pages/cart/cart-invoice/cart-invoice.component').then(
-            (c) => c.CartInvoiceComponent,
-          ),
-        title: 'invoice',
-      },
-      {
-        path: 'catDetails/:code',
-        loadComponent: () =>
-          import('./pages/category-details/category-details.component').then(
-            (c) => c.CategoryDetailsComponent,
-          ),
-        title: 'categoryProducts',
-      },
-      {
-        path: 'wishList',
-        loadComponent: () =>
-          import('./pages/wishlist/wishlist.component').then(
-            (c) => c.WishlistComponent,
-          ),
-        title: 'wishList',
       },
       {
         path: 'products',
@@ -139,12 +65,12 @@ export const routes: Routes = [
         title: 'allCategories',
       },
       {
-        path: 'allOrders',
+        path: 'offers',
         loadComponent: () =>
-          import('./pages/all-orders/all-orders.component').then(
-            (c) => c.AllOrdersComponent,
+          import('./pages/offers/offers.component').then(
+            (c) => c.OffersComponent,
           ),
-        title: 'allOrders',
+        title: 'offers',
       },
       {
         path: 'details/:id',
@@ -155,25 +81,62 @@ export const routes: Routes = [
         title: 'itemDetails',
       },
       {
-        path: 'offers',
+        path: 'catDetails/:code',
         loadComponent: () =>
-          import('./pages/offers/offers.component').then(
-            (c) => c.OffersComponent,
+          import('./pages/category-details/category-details.component').then(
+            (c) => c.CategoryDetailsComponent,
           ),
-        title: 'offers',
+        title: 'categoryProducts',
+      },
+
+      {
+        path: 'cart',
+        canActivate: [blankGuard],
+        loadComponent: () =>
+          import('./pages/cart/cart.component').then(
+            (c) => c.CartComponent,
+          ),
+        title: 'cart',
+      },
+      {
+        path: 'cart-invoice',
+        canActivate: [blankGuard],
+        loadComponent: () =>
+          import('./pages/payment/visa/visa-payment.component').then(
+            (c) => c.CartInvoiceComponent,
+          ),
+        title: 'invoice',
+      },
+      {
+        path: 'wishList',
+        canActivate: [blankGuard],
+        loadComponent: () =>
+          import('./pages/wishlist/wishlist.component').then(
+            (c) => c.WishlistComponent,
+          ),
+        title: 'wishList',
+      },
+      {
+        path: 'allOrders',
+        canActivate: [blankGuard],
+        loadComponent: () =>
+          import('./pages/all-orders/all-orders.component').then(
+            (c) => c.AllOrdersComponent,
+          ),
+        title: 'allOrders',
       },
       {
         path: 'payment',
+        canActivate: [blankGuard],
         loadComponent: () =>
-          import('./pages/payment/payment.component').then(
-            (c) => c.PaymentComponent,
+          import('./pages/payment/cash/cash-payment.component').then(
+            (c) => c.CashPaymentComponent,
           ),
         title: 'payment',
       },
     ],
   },
 
-  // Not Found
   {
     path: '**',
     loadComponent: () =>

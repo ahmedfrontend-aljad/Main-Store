@@ -4,9 +4,9 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
       <div>
-        <label for="clienName" class="block text-sm font-medium text-muted">{{
-          "cart.invoice.clientName" | translate
-        }}</label>
+        <label for="clienName" class="block text-sm font-medium text-muted">
+          {{ "cart.invoice.clientName" | translate }}
+        </label>
         <input
           id="clienName"
           type="text"
@@ -17,8 +17,8 @@
       </div>
       <div>
         <label for="salesManName" class="block text-sm font-medium text-muted">
-          {{ "cart.invoice.salesManName" | translate }}</label
-        >
+          {{ "cart.invoice.salesManName" | translate }}
+        </label>
         <input
           id="salesManName"
           type="text"
@@ -28,9 +28,9 @@
         />
       </div>
       <div>
-        <label for="docDate" class="block text-sm font-medium text-muted">{{
-          "cart.invoice.invoiceDate" | translate
-        }}</label>
+        <label for="docDate" class="block text-sm font-medium text-muted">
+          {{ "cart.invoice.invoiceDate" | translate }}
+        </label>
         <input
           id="docDate"
           type="date"
@@ -39,9 +39,9 @@
         />
       </div>
       <div>
-        <label for="banquetDate" class="block text-sm font-medium text-muted">{{
-          "cart.invoice.banquetDate" | translate
-        }}</label>
+        <label for="banquetDate" class="block text-sm font-medium text-muted">
+          {{ "cart.invoice.banquetDate" | translate }}
+        </label>
         <input
           id="banquetDate"
           type="date"
@@ -56,6 +56,7 @@
     >
       {{ "cart.invoice.payinfo" | translate }}
     </h3>
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <div>
         <label for="cash" class="block text-sm font-medium text-muted">
@@ -63,42 +64,56 @@
         </label>
         <input
           id="cash"
-          type="tel"
+          type="number"
           formControlName="cash"
           class="form-control w-full mt-1"
           placeholder="{{ 'cart.invoice.cashpay' | translate }}"
         />
       </div>
       <div>
-        <label for="visa" class="block text-sm font-medium text-muted">{{
-          "cart.invoice.visa" | translate
-        }}</label>
+        <label for="visa" class="block text-sm font-medium text-muted">
+          {{ "cart.invoice.visa" | translate }}
+        </label>
         <input
           id="visa"
-          type="tel"
+          type="number"
           formControlName="visa"
           class="form-control w-full mt-1"
           placeholder="{{ 'cart.invoice.visapay' | translate }}"
         />
       </div>
       <div>
-        <label for="debt" class="block text-sm font-medium text-muted">{{
-          "cart.invoice.debt" | translate
-        }}</label>
+        <label for="visaTrxNo" class="block text-sm font-medium text-muted">
+          {{ "cart.invoice.visaTrxNo" | translate }}
+        </label>
         <input
-          id="debt"
-          type="tel"
-          formControlName="debt"
+          id="visaTrxNo"
+          type="text"
+          formControlName="visaTrxNo"
           class="form-control w-full mt-1"
-          placeholder="{{ 'cart.invoice.remainingamount' | translate }}"
+          placeholder="{{ 'cart.invoice.visaTrxNoPlaceholder' | translate }}"
         />
       </div>
     </div>
 
     <div class="mb-6">
+      <label for="debt" class="block text-sm font-medium text-muted">
+        {{ "cart.invoice.debt" | translate }}
+      </label>
+      <input
+        id="debt"
+        type="number"
+        formControlName="debt"
+        readonly
+        class="form-control w-full mt-1 bg-gray-100 cursor-not-allowed"
+        placeholder="{{ 'cart.invoice.remainingamount' | translate }}"
+      />
+    </div>
+
+    <div class="mb-6">
       <label for="notes" class="block text-sm font-medium text-muted">
-        {{ "cart.invoice.notes" | translate }}</label
-      >
+        {{ "cart.invoice.notes" | translate }}
+      </label>
       <textarea
         id="notes"
         formControlName="notes"
@@ -133,14 +148,15 @@
               {{ "cart.invoice.quantity" | translate }}:
               {{ item.Quantity }} &times;
               {{ "cart.invoice.price" | translate }}:
-              {{ item.Price | currency : "SAR" }}
+              {{ item.Price | currency: "SAR" }}
             </p>
           </div>
           <p class="font-bold text-primary">
-            {{ item.Quantity * item.Price | currency : "SAR" }}
+            {{ item.Quantity * item.Price | currency: "SAR" }}
           </p>
         </div>
       </div>
+
       <!-- Total -->
       <div class="card shadow-sm rounded-xl mb-4">
         <div class="flex justify-between items-center p-4">
@@ -151,7 +167,7 @@
             </h5>
           </div>
           <span class="text-lg font-bold">
-            {{ totalPrice | currency : "GBP" }}
+            {{ totalPrice | currency: "SAR" }}
           </span>
         </div>
       </div>

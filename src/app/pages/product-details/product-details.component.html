@@ -1,113 +1,200 @@
 @if (detailsProduct) {
-<section class="relative product-detail-section">
-  <div class="product-detail">
-    <div class="image-section pt-12">
+  <section class="relative product-detail-section p-4">
+    <div class="product-detail grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="image-section pt-4">
+        @if (selectedImage) {
+          <img
+            [src]="'data:image/png;base64,' + selectedImage"
+            [alt]="detailsProduct.NameAr"
+            class="main-image w-full h-96 object-contain rounded-lg border"
+          />
+        } @else {
+          <img
+            src="./assets/images/Product.png"
+            [alt]="'productDetails.noImage' | translate"
+            class="main-image w-full h-96 object-contain rounded-lg border"
+          />
+        }
 
-      @if (detailsProduct.ItemUnits && 
-           detailsProduct.ItemUnits.length > 0 && 
-           detailsProduct.ItemUnits[0].ItemImages && 
-           detailsProduct.ItemUnits[0].ItemImages.length > 0) {
-        
-        <img
-          [src]="'data:image/png;base64,' + detailsProduct.ItemUnits[0].ItemImages[0].Image"
-          [alt]="detailsProduct.NameAr"
-          class="main-image"
-        />
-
-        <div class="thumbnails">
-          @for (unit of detailsProduct.ItemUnits; track unit.Id) {
-            @for (image of unit.ItemImages; track image.Id) {
-              <img
-                [src]="'data:image/png;base64,' + image.Image"
-                [alt]="detailsProduct.NameAr + ' thumbnail'"
-              />
+        @if (detailsProduct.ItemUnits && detailsProduct.ItemUnits.length > 0) {
+          <div class="thumbnails flex gap-2 mt-4 overflow-x-auto">
+            @for (unit of detailsProduct.ItemUnits; track unit.Id) {
+              @for (image of unit.ItemImages; track $index) {
+                @if (image?.Image) {
+                  <img
+                    [src]="'data:image/png;base64,' + image.Image"
+                    [alt]="detailsProduct.NameAr"
+                    (click)="changeMainImage(image.Image)"
+                    class="w-16 h-16 object-cover border rounded cursor-pointer hover:border-primary"
+                    [class.border-primary]="selectedImage === image.Image"
+                  />
+                }
+              }
             }
+          </div>
+        }
+      </div>
+
+      <div class="info-section pt-4 flex flex-col gap-3">
+        <div class="flex justify-between items-center">
+          <h2 class="text-2xl font-bold">{{ detailsProduct.NameAr }}</h2>
+          @if (detailsProduct.Code) {
+            <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+              {{ "productDetails.code" | translate }}: {{ detailsProduct.Code }}
+            </span>
           }
         </div>
-      } @else {
-        <img
-          src="./assets/images/Product.png"
-          alt="No image available"
-          class="main-image"
-        />
-      }
-    </div>
 
-    <div class="info-section pt-12">
-      <h2 class="mx-1 font-bold">{{ detailsProduct.NameAr }}</h2>
-
-      <div class="flex align-middle my-2">
-        <span class="text-muted font-bold small mx-1">By:</span>
-        <img
-          src="./assets/images/Offers/offer-2.jpeg"
-          width="60px"
-          alt="Brand"
-        />
-      </div>
-
-      <ul class="list-unstyled product-meta">
-        <li>
-          <strong>{{ "productdet.material" | translate }}: </strong>
-          {{ "productdet.material" | translate }}
-        </li>
-        <li>
-          <strong>{{ "productdet.blend" | translate }}: </strong>
-          {{ "productdet.blend" | translate }}
-        </li>
-        <li style="width: 300px; display: inline-block; line-height: 1.5">
-          <strong>{{ "productdet.category" | translate }}:</strong>
-          <span>{{ "productdet.categoryname" | translate }}</span>
-        </li>
-      </ul>
-
-      <p class="my-2">
-        Fully Description Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Quam, sunt?
-      </p>
-
-      <div class="flex align-middle justify-start my-2">
-        <p class="old-price">{{ "productdet.OldPriceEGP" | translate }}</p>
-        <p class="price mx-2">{{ "productdet.priceEGP" | translate }}</p>
-      </div>
-
-      <div class="benefits flex flex-col gap-2 my-2">
-        <div class="flex align-middle">
-          <i class="fas fa-box text-warning me-2"></i>
-          <span class="font-bold">
-            {{ "productdet.totalquentity" | translate }}:
-          </span>
-          <p class="font-bold text-muted mx-2 text-green-500">
-            {{ detailsProduct.TotalOutQty }} {{ "productdet.pice" | translate }}
-          </p>
+        <div class="flex items-center gap-4 text-sm text-gray-600">
+          @if (detailsProduct.SupplierName) {
+            <div>
+              <strong>{{ "productDetails.supplier" | translate }}:</strong>
+              {{ detailsProduct.SupplierName }}
+            </div>
+          }
         </div>
 
-        <div class="sold flex align-middle">
-          <i class="fas fa-shopping-basket text-secondary me-2"></i>
-          <span class="font-bold">
-            {{ "productdet.createdat" | translate }}:
+        <div class="flex items-center gap-3 my-2">
+          <span class="text-3xl font-extrabold text-primary">
+            {{ selectedUnit?.Price ?? 0 }}
+            EGP
           </span>
-          <p class="mx-2 font-bold text-muted">
-            {{ detailsProduct.CreatedDate | date }}
-          </p>
+          @if (selectedUnit?.UnitName) {
+            <span
+              class="text-sm bg-blue-50 text-blue-600 px-2 py-1 rounded border border-blue-200"
+            >
+              {{ "productDetails.per" | translate }}
+              {{ selectedUnit?.UnitName }}
+            </span>
+          }
         </div>
+
+        @if (detailsProduct.ItemUnits && detailsProduct.ItemUnits.length > 1) {
+          <div class="my-2">
+            <label class="block text-sm font-bold mb-1"
+              >{{ "productDetails.selectUnit" | translate }}:</label
+            >
+            <div class="flex gap-2">
+              @for (unit of detailsProduct.ItemUnits; track unit.Id) {
+                <button
+                  type="button"
+                  (click)="selectUnit(unit)"
+                  class="px-3 py-1 text-sm border rounded"
+                  [class.bg-primary]="selectedUnit?.Id === unit.Id"
+                  [class.text-white]="selectedUnit?.Id === unit.Id"
+                >
+                  {{ unit.UnitName }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        <div
+          class="inventory-status bg-gray-50 p-3 rounded-lg border my-2 flex flex-col gap-2"
+        >
+          <div class="flex items-center justify-between text-sm">
+            <span class="font-bold"
+              >{{ "productDetails.remainingStock" | translate }}:</span
+            >
+            @if (detailsProduct.Balance > 0) {
+              <span class="font-bold text-green-600">
+                {{ detailsProduct.Balance }}
+                {{ "productDetails.availableItems" | translate }}
+              </span>
+            } @else {
+              <span class="font-bold text-red-600">
+                {{ "unAvaliable" | translate }}
+              </span>
+            }
+          </div>
+
+          @if (detailsProduct.TotalOutQty) {
+            <div
+              class="flex items-center justify-between text-sm text-gray-500"
+            >
+              <span>{{ "productDetails.totalSales" | translate }}:</span>
+              <span
+                >{{ detailsProduct.TotalOutQty }}
+                {{ "productDetails.itemsCount" | translate }}</span
+              >
+            </div>
+          }
+
+          @if (detailsProduct.MaxLimit) {
+            <div class="text-xs text-amber-600">
+              ⚠️ {{ "productDetails.maxOrderLimit" | translate }}:
+              {{ detailsProduct.MaxLimit }}
+              {{ "productDetails.itemsCount" | translate }}
+            </div>
+          }
+        </div>
+
+        @if (detailsProduct.Description || detailsProduct.ProductDescription) {
+          <div class="my-2">
+            <h4 class="font-bold text-md mb-1">
+              {{ "productDetails.description" | translate }}:
+            </h4>
+            <p class="text-gray-600 text-sm leading-relaxed">
+              {{
+                detailsProduct.Description || detailsProduct.ProductDescription
+              }}
+            </p>
+          </div>
+        }
+
+        @if (detailsProduct.HowToUse) {
+          <div class="my-1">
+            <h4 class="font-bold text-md mb-1">
+              {{ "productDetails.howToUse" | translate }}:
+            </h4>
+            <p class="text-gray-600 text-sm leading-relaxed">
+              {{ detailsProduct.HowToUse }}
+            </p>
+          </div>
+        }
+
+        @if (detailsProduct.Specifications) {
+          <div class="my-1">
+            <h4 class="font-bold text-md mb-1">
+              {{ "productDetails.specifications" | translate }}:
+            </h4>
+            <p class="text-gray-600 text-sm">
+              {{ detailsProduct.Specifications }}
+            </p>
+          </div>
+        }
+
+        <div class="text-xs text-gray-400 mt-2">
+          {{ "productDetails.createdDate" | translate }}:
+          {{ detailsProduct.CreatedDate | date: "mediumDate" }}
+        </div>
+
+        <button
+          class="add-to-cart btn btn-primary mt-4 py-2 px-6 rounded-lg text-white font-bold flex items-center justify-center gap-2"
+          [disabled]="detailsProduct.Balance <= 0"
+          [class.opacity-50]="detailsProduct.Balance <= 0"
+          (click)="addToCart(detailsProduct.Id, selectedUnit?.Price ?? 0)"
+        >
+          <i class="fas fa-shopping-cart"></i>
+          @if (detailsProduct.Balance > 0) {
+            {{ "products.addtocart" | translate }}
+          } @else {
+            🚫 {{ "notAvaliableRightNow" | translate }}
+          }
+        </button>
       </div>
-
-      <button
-        class="add-to-cart"
-        (click)="addToCart(detailsProduct.Id, detailsProduct.valueOfProfit)"
-      >
-        <i class="fas fa-shopping-cart me-2"></i>
-        {{ "products.addtocart" | translate }}
-      </button>
     </div>
-  </div>
 
-  <div class="backIcon absolute cursor-pointer" (click)="selected()">
-    <i class="fa-regular fa-circle-xmark"></i>
-  </div>
-</section>
+    <div
+      class="backIcon absolute top-2 right-2 cursor-pointer text-2xl text-gray-500 hover:text-black"
+      (click)="selected()"
+    >
+      <i class="fa-regular fa-circle-xmark"></i>
+    </div>
+  </section>
 } @else {
   <div class="flex justify-center items-center h-screen">
-    <p>...جاري تحميل تفاصيل المنتج</p>
+    <p>{{ "productDetails.loading" | translate }}</p>
   </div>
 }
