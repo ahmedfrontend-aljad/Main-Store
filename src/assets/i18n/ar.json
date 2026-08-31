@@ -230,6 +230,8 @@
     "specifications": "المواصفات",
     "createdDate": "تاريخ الإضافة",
     "loading": "...جاري تحميل تفاصيل المنتج"
-  }
-  ,"notAvaliableRightNow":"غير متاح حاليا"
+  },
+  "notAvaliableRightNow": "غير متاح حاليا",
+  "ALL_ORDERS": "جميع الطلبات",
+  "unAvaliable": "غير متاح"
 }

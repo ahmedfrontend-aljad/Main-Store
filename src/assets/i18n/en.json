@@ -223,5 +223,6 @@
     "loading": "Loading product details..."
   },
 
-  "notAvaliableRightNow": "Not Available"
+  "notAvaliableRightNow": "Not Available",
+  "ALL_ORDERS":"ALL ORDERS"
 }
