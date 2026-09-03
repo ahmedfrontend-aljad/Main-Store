@@ -13,7 +13,14 @@ import jwtDecode from 'jwt-decode';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { catchError, forkJoin, of, Subscription, Unsubscribable } from 'rxjs';
+import {
+  catchError,
+  forkJoin,
+  of,
+  Subscription,
+  switchMap,
+  Unsubscribable,
+} from 'rxjs';
 import {
   IallCategories,
   ItemUnit,
@@ -23,6 +30,7 @@ import { AllProductsService } from '../../Core/Services/all-products.service';
 import { CartService } from '../../Core/Services/cart.service';
 import { CategoriesService } from '../../Core/Services/categories.service';
 import { LoadingService } from '../../Core/Services/loading.service';
+import { GuestAuthService } from '../../Core/Services/guest-auth.service';
 
 @Component({
   selector: 'app-home',
@@ -37,7 +45,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private readonly _Router = inject(Router);
   private readonly _CartService = inject(CartService);
   private readonly _ToastrService = inject(ToastrService);
-  private readonly _LoadingService = inject(LoadingService);
+  private readonly GuestAuthService = inject(GuestAuthService);
   allProducts: WritableSignal<Iproducts[]> = signal([]);
   allcategories: WritableSignal<IallCategories[]> = signal([]);
   private subscriptions = new Subscription();
@@ -75,40 +83,46 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.currentUrl = this._Router.url;
     this._spinnerInterceptor.show();
 
-    const categories$ = this._CategoriesService.getAllCategories().pipe(
-      catchError((error) => {
-        console.error('Failed to load categories', error);
-        this._ToastrService.error('فشل تحميل الأقسام');
-        return of(null);
-      }),
-    );
-
-    const products$ = this._AllProductsService.getPagedItem(1, 10).pipe(
-      catchError((error) => {
-        console.error('Failed to load products', error);
-        this._ToastrService.error('فشل تحميل المنتجات');
-        return of(null);
-      }),
-    );
-
     this.subscriptions.add(
-      forkJoin([categories$, products$]).subscribe({
-        next: ([categoriesResponse, productsResponse]) => {
-          if (categoriesResponse && categoriesResponse.Obj) {
-            this.allcategories.set(categoriesResponse.Obj.ItemGroups);
-          }
+      this.GuestAuthService.ensureGuestToken()
+        .pipe(
+          switchMap(() => {
+            const categories$ = this._CategoriesService.getAllCategories().pipe(
+              catchError((error) => {
+                console.error('Failed to load categories', error);
+                this._ToastrService.error('فشل تحميل الأقسام');
+                return of(null);
+              }),
+            );
 
-          if (productsResponse && productsResponse.Obj) {
-            this.allProducts.set(productsResponse.Obj.PagedResult);
-          }
+            const products$ = this._AllProductsService.getPagedItem(1, 10).pipe(
+              catchError((error) => {
+                console.error('Failed to load products', error);
+                this._ToastrService.error('فشل تحميل المنتجات');
+                return of(null);
+              }),
+            );
 
-          this._spinnerInterceptor.hide();
-        },
-        error: (err) => {
-          console.error('A critical error occurred in forkJoin:', err);
-          this._spinnerInterceptor.hide();
-        },
-      }),
+            return forkJoin([categories$, products$]);
+          }),
+        )
+        .subscribe({
+          next: ([categoriesResponse, productsResponse]) => {
+            if (categoriesResponse?.Obj) {
+              this.allcategories.set(categoriesResponse.Obj.ItemGroups);
+            }
+
+            if (productsResponse?.Obj) {
+              this.allProducts.set(productsResponse.Obj.PagedResult);
+            }
+
+            this._spinnerInterceptor.hide();
+          },
+          error: (err) => {
+            console.error('A critical error occurred in initialization:', err);
+            this._spinnerInterceptor.hide();
+          },
+        }),
     );
   }
 

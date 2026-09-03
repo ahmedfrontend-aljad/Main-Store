@@ -7,15 +7,10 @@ export const blankGuard: CanActivateFn = (route, state) => {
   const platformId = inject(PLATFORM_ID);
 
   if (isPlatformBrowser(platformId)) {
-    const Token = localStorage.getItem('userToken'); 
-    const gusttoken = localStorage.getItem('guestToken'); 
+    const userToken = localStorage.getItem('userToken');
 
-    if (Token) {
+    if (userToken) {
       return true;
-    }
-
-    if (gusttoken) {
-      return router.createUrlTree(['/guest/home']);
     }
 
     return router.createUrlTree(['/auth/login']);

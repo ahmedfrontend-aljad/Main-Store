@@ -7,9 +7,9 @@ export const authLoginGuard: CanActivateFn = (route, state) => {
   const platformId = inject(PLATFORM_ID);
 
   if (isPlatformBrowser(platformId)) {
-    const Token = localStorage.getItem('userToken');
+    const userToken = localStorage.getItem('userToken');
 
-    if (Token) {
+    if (userToken) {
       return router.createUrlTree(['/home']);
     }
 
