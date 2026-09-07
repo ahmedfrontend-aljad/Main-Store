@@ -250,39 +250,10 @@ export class CartComponent implements OnInit, OnDestroy {
     }
   }
 
-  async paymentMethods(): Promise<void> {
-    const trans = await firstValueFrom(
-      this._TranslateService.get([
-        'swal.paymentTitle',
-        'swal.paymentText',
-        'swal.cash',
-        'swal.visa',
-        'swal.cancel',
-      ]),
-    );
-
-    Swal.fire({
-      title: trans['swal.paymentTitle'],
-      text: trans['swal.paymentText'],
-      icon: 'question',
-      showDenyButton: true,
-      showCancelButton: true,
-      confirmButtonText: trans['swal.cash'],
-      denyButtonText: trans['swal.visa'],
-      cancelButtonText: trans['swal.cancel'],
-      confirmButtonColor: '#28a745',
-      denyButtonColor: '#007bff',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.goToPayment('cash');
-      } else if (result.isDenied) {
-        this._Router.navigate(['/cart-invoice']);
-      }
-    });
-  }
-
-  goToPayment(method: 'cash' | 'visa'): void {
-    this._Router.navigate(['/payment'], { queryParams: { method } });
+  goToPayment(): void {
+    this._LoadingService.start();
+    this._Router.navigate(['/payment']);
+    this._LoadingService.stop();
   }
 
   recalculateTotalPrice(): void {

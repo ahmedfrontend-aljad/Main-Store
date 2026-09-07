@@ -25,6 +25,7 @@
     "@ng-bootstrap/ng-bootstrap": "^18.0.0",
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
+    "@primeng/themes": "^21.0.4",
     "@primeuix/themes": "^3.0.0",
     "bootstrap": "^5.3.8",
     "flowbite": "^3.1.2",

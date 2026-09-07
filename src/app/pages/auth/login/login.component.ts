@@ -4,15 +4,17 @@ import {
   FormGroup,
   Validators,
   ReactiveFormsModule,
+  FormsModule,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription, Unsubscribable } from 'rxjs';
-import { AuthService } from '../../Core/Services/auth.service';
-import { StoreInputComponent } from '../../Shared/components/store-input/store-input.component';
-import { SubmitButtonComponent } from '../../Shared/components/submit-button/submit-button.component';
-import { LoadingService } from '../../Core/Services/loading.service';
+import { AuthService } from '../../../Core/Services/auth.service';
+import { StoreInputComponent } from '../../../Shared/components/store-input/store-input.component';
+import { SubmitButtonComponent } from '../../../Shared/components/submit-button/submit-button.component';
+import { LoadingService } from '../../../Core/Services/loading.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +24,8 @@ import { LoadingService } from '../../Core/Services/loading.service';
     TranslateModule,
     StoreInputComponent,
     SubmitButtonComponent,
+    CommonModule,
+    FormsModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',

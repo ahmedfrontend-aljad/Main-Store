@@ -9,16 +9,9 @@ import { DataService } from './data.service';
 export class PaymentService {
   private readonly _DataService = inject(DataService);
 
-  createVisaPaymentInvoice(data: any): Observable<any> {
+  createPaymentInvoice(body: any): Observable<any> {
     return this._DataService.post(
-      `${apiUrl}/NewStore/Order/CreateVisaInvoice`,
-      data,
-    );
-  }
-
-  postAndMarkPaid(invoiceId: string): Observable<any> {
-    return this._DataService.post(
-      `${apiUrl}/NewStore/Order/PostAndMarkPaid?invoiceId=${invoiceId}`,
+      `${apiUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForMobile`,
       {},
     );
   }

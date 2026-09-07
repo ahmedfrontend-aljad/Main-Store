@@ -1,0 +1,152 @@
+<div class="login-wrapper">
+  <div class="login-card" [formGroup]="InvoiceForm">
+    <h2 class="login-title">{{ "cart.invoice.title" | translate }}</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+      <div>
+        <app-store-input
+          [control]="$any(InvoiceForm.get('clienName'))"
+          [placeholder]="'cart.invoice.clientName'"
+          [label]="'cart.invoice.clientName'"
+          [type]="'text'"
+        >
+        </app-store-input>
+      </div>
+
+      <div>
+        <app-store-input
+          [control]="$any(InvoiceForm.get('docDate'))"
+          [placeholder]="'cart.invoice.invoiceDate'"
+          [label]="'cart.invoice.invoiceDate'"
+          [type]="'text'"
+        >
+        </app-store-input>
+      </div>
+    </div>
+
+    <h3
+      class="text-lg font-semibold text-primary border-b border-border mb-2 pb-2"
+    >
+      {{ "cart.invoice.payinfo" | translate }}
+    </h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+      <div class="mb-4">
+        <label for="paymentTypeMethod" class="font-medium">
+          {{ "cart.invoice.paymentMethod" | translate }}
+        </label>
+        <select
+          formControlName="paymentTypeMethod"
+          class="form-select w-full p-1 mt-2 border rounded"
+        >
+          <option value="1">
+            {{ "cart.invoice.cashOnDelivery" | translate }}
+          </option>
+          <option value="2">{{ "cart.invoice.visa" | translate }}</option>
+        </select>
+      </div>
+
+      <div *ngIf="selectedPaymentMethod === '1'">
+        <app-store-input
+          [control]="$any(InvoiceForm.get('cash'))"
+          [placeholder]="'cart.invoice.cash'"
+          [label]="'cart.invoice.cash'"
+          [type]="'text'"
+        >
+        </app-store-input>
+      </div>
+
+      <div *ngIf="selectedPaymentMethod === '2'">
+        <app-store-input
+          [control]="$any(InvoiceForm.get('visa'))"
+          [placeholder]="'cart.invoice.visa'"
+          [label]="'cart.invoice.visa'"
+          [type]="'text'"
+        >
+        </app-store-input>
+      </div>
+
+      <div *ngIf="selectedPaymentMethod === '2'">
+        <app-store-input
+          [control]="$any(InvoiceForm.get('visaTrxNo'))"
+          [placeholder]="'cart.invoice.visaTrxNo'"
+          [label]="'cart.invoice.visaTrxNo'"
+          [type]="'text'"
+        >
+        </app-store-input>
+      </div>
+    </div>
+
+    <div class="mb-2">
+      <label for="notes" class="block text-sm font-medium">
+        {{ "cart.invoice.notes" | translate }}
+      </label>
+      <textarea
+        id="notes"
+        formControlName="notes"
+        class="form-control w-full mt-1 border rounded p-2"
+        rows="3"
+        placeholder="{{ 'cart.invoice.notesPlaceholder' | translate }}"
+      ></textarea>
+    </div>
+
+    <div class="space-y-4 mb-2">
+      <h3
+        class="text-lg font-semibold text-primary border-b border-border mb-4 pb-2"
+      >
+        {{ "cart.invoice.reviewTitle" | translate }}
+      </h3>
+
+      <div
+        *ngIf="cartproducts.length === 0"
+        class="p-4 text-center border rounded-lg bg-gray-50"
+      >
+        <p>{{ "cart.invoice.emptyCart" | translate }}</p>
+      </div>
+
+      <div *ngIf="cartproducts.length > 0" class="space-y-3">
+        <div
+          *ngFor="let item of cartproducts"
+          class="flex justify-between items-center p-3 border rounded-lg shadow-sm"
+        >
+          <div>
+            <p class="font-semibold text-base">{{ item.ProductName }}</p>
+            <p class="text-sm">
+              {{ "cart.invoice.quantity" | translate }}:
+              {{ item.Quantity }} &times;
+              {{ "cart.invoice.price" | translate }}:
+              {{ item.Price | currency: "SAR" }}
+            </p>
+          </div>
+          <p class="font-bold text-primary">
+            {{ item.Quantity * item.Price | currency: "SAR" }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Total -->
+      <div class="card shadow-sm rounded-xl mb-2">
+        <div class="flex justify-between items-center p-1">
+          <div class="flex items-center">
+            <i class="fas fa-money-bill-wave fa-2x text-green-600 mx-2"></i>
+            <h5 class="mb-0 font-semibold">
+              {{ "cart.carttotal" | translate }}
+            </h5>
+          </div>
+          <span class="text-lg font-bold">
+            {{ totalPrice | currency: "SAR" }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <app-submit-button
+        [buttonText]="'cart.invoice.confirmButton'"
+        [isDisabled]="InvoiceForm.invalid"
+        (btnClick)="createInvoice()"
+      >
+      </app-submit-button>
+    </div>
+  </div>
+</div>

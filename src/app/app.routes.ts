@@ -13,13 +13,15 @@ export const routes: Routes = [
       {
         path: 'login',
         loadComponent: () =>
-          import('./pages/login/login.component').then((c) => c.LoginComponent),
+          import('./pages/auth/login/login.component').then(
+            (c) => c.LoginComponent,
+          ),
         title: 'login',
       },
       {
         path: 'register',
         loadComponent: () =>
-          import('./pages/user-register/user-register.component').then(
+          import('./pages/auth/user-register/user-register.component').then(
             (c) => c.UserRegisterComponent,
           ),
         title: 'register',
@@ -93,20 +95,10 @@ export const routes: Routes = [
         path: 'cart',
         canActivate: [blankGuard],
         loadComponent: () =>
-          import('./pages/cart/cart.component').then(
-            (c) => c.CartComponent,
-          ),
+          import('./pages/cart/cart.component').then((c) => c.CartComponent),
         title: 'cart',
       },
-      {
-        path: 'cart-invoice',
-        canActivate: [blankGuard],
-        loadComponent: () =>
-          import('./pages/payment/visa/visa-payment.component').then(
-            (c) => c.CartInvoiceComponent,
-          ),
-        title: 'invoice',
-      },
+
       {
         path: 'wishList',
         canActivate: [blankGuard],
@@ -129,10 +121,19 @@ export const routes: Routes = [
         path: 'payment',
         canActivate: [blankGuard],
         loadComponent: () =>
-          import('./pages/payment/cash/cash-payment.component').then(
-            (c) => c.CashPaymentComponent,
+          import('./pages/payment/payment.component').then(
+            (c) => c.paymentComponent,
           ),
         title: 'payment',
+      },
+      {
+        path: 'profile',
+        canActivate: [blankGuard],
+        loadComponent: () =>
+          import('./pages/profile/profile.component').then(
+            (c) => c.ProfileComponent,
+          ),
+        title: 'profile',
       },
     ],
   },

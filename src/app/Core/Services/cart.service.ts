@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { apiUrl, StoreUrl } from '../../Shared/constants/api.constant';
+import { apiUrl } from '../../Shared/constants/api.constant';
 import { DataService } from './data.service';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class CartService {
 
   getLoggedCart(userId: string): Observable<any> {
     return this._DataService.get(
-      `${apiUrl}/NewStore/Cart/GetCart?userId=${userId}`,
+      `${apiUrl}/XtraAndPos_StoreCart/GetCartAsync?userId=${userId}`,
     );
   }
 
@@ -19,7 +19,10 @@ export class CartService {
     cartItems: any[];
     userId: string;
   }): Observable<any> {
-    return this._DataService.post(`${apiUrl}/NewStore/Cart/SyncCart`, data);
+    return this._DataService.post(
+      `${apiUrl}/XtraAndPos_StoreCart/SyncCartFromLocalAsync`,
+      data,
+    );
   }
 
   clearCart(userId: string): Observable<any> {
@@ -29,7 +32,9 @@ export class CartService {
   }
 
   addToCart(data: object): Observable<any> {
-    return this._DataService.post(`${StoreUrl}/Cart/AddToCart`, data);
+    return this._DataService.post(
+      `${apiUrl}/XtraAndPos_StoreCart/AddToCartAsync`,
+      data,
+    );
   }
-
 }

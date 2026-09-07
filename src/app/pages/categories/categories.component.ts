@@ -26,7 +26,7 @@ import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 export class CategoriesComponent implements OnInit, OnDestroy {
   text: string = '';
   currentUrl: string = '';
-  pageNo = 0;
+  pageNo = 1;
   pageSize = PAGE_SIZE;
   allCategories: WritableSignal<IallCategories[]> = signal([]);
   private readonly subscription = new Subscription();

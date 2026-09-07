@@ -6,7 +6,7 @@
         <h3
           class="font-weight-bolder font-serif text-2xl sm:text-3xl md:text-4xl text-base"
         >
-          {{ "homecomponent.mostpurchasedproducts" | translate }}
+          {{ "homecomponent.Shopamongmanyproducts" | translate }}
         </h3>
         <p class="mb-6 md:mb-8 mt-2 text-muted text-sm sm:text-base">
           {{ "homecomponent.enjoythemostpopularproducts" | translate }}
@@ -28,16 +28,21 @@
 
       <!-- Products Grid -->
       <div
-        class="section-content mt-10 md:mt-16 grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
+        class="section-content mt-16 grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
       >
         @for (product of filteredItems; track product.Id) {
-          <div class="flex justify-center w-full">
+          <div class="flex justify-center">
             <div class="product-card px-1">
+              <!-- Out of Stock Badge -->
+              @if (isOutOfStock(product)) {
+                <span class="out-of-stock-badge">
+                  {{ "unAvaliable" | translate }}
+                </span>
+              }
+
               <!-- Wishlist Icon -->
-              <div class="wishIcon px-2 text-end py-1">
-                <i
-                  class="fa-solid fa-heart text-lg sm:text-xl cursor-pointer"
-                ></i>
+              <div class="wishIcon px-2 text-right py-1">
+                <i class="fa-solid fa-heart text-xl cursor-pointer"></i>
               </div>
 
               <!-- Product Image -->
@@ -45,71 +50,60 @@
                 class="image-container cursor-pointer"
                 [routerLink]="['/details', product.Id]"
               >
-                @if (hasImages(product)) {
+                @if (getProductImage(product)) {
                   <img
                     [src]="'data:image/jpeg;base64,' + getProductImage(product)"
-                    [alt]="product.NameAr || product.NameEn"
+                    [alt]="product.NameAr"
                   />
                 } @else {
-                  <img
-                    src="assets/images/Product.png"
-                    [alt]="product.NameAr || 'Product Image'"
-                  />
+                  <img src="assets/images/Product.png" [alt]="product.NameAr" />
                 }
               </div>
 
-              <!-- Product Details -->
+              <!-- Product Body -->
               <div class="product-body">
                 <div
                   [routerLink]="['/details', product.Id]"
                   [state]="{ from: currentUrl }"
                   class="cursor-pointer"
                 >
+                  <!-- Title -->
                   <div class="product-title">
-                    <h3 class="truncate">{{ product.NameAr }}</h3>
+                    <h3>{{ product.NameAr }}</h3>
                   </div>
 
-                  <div class="brand">
-                    <img src="./assets/images/OIP.webp" alt="Brand Logo" />
-                    <span class="truncate">{{
-                      product.Category || ("products.brandname" | translate)
-                    }}</span>
-                  </div>
+                  <!-- Description (Optional) -->
+                  @if (product.Description) {
+                    <p class="text-xs text-gray-500 my-1 line-clamp-2">
+                      {{ product.Description }}
+                    </p>
+                  }
 
-                  <!-- Price Section -->
-                  <div class="price">
-                    <span class="current-price">
-                      {{ getProductPrice(product) }} EGP
-                    </span>
-                    @if (getProductPrice(product) > 0) {
-                      <span class="old-price">
-                        {{ getProductPrice(product) + 20 }} EGP
+                  <!-- Real Price from First Unit -->
+                  @if (product.ItemUnits && product.ItemUnits.length > 0) {
+                    <div class="price my-2">
+                      <span class="current-price">
+                        {{ product.ItemUnits[0].Price }} EGP
                       </span>
-                    }
-                  </div>
-
-                  <!-- Rating Section -->
-                  <div class="rating">
-                    @for (num of [1, 2, 3, 4, 5]; track $index) {
-                      <i class="fa-solid fa-star rating-color"></i>
-                    }
-                  </div>
+                    </div>
+                  }
                 </div>
 
-                <!-- Add to Cart Button -->
+                <!-- Add To Cart Button -->
                 @if (product.ItemUnits && product.ItemUnits.length > 0) {
                   <button
-                    class="add-to-cart mt-2"
+                    class="add-to-cart"
+                    [disabled]="isOutOfStock(product)"
+                    [class.disabled-btn]="isOutOfStock(product)"
                     (click)="
-                      addToCart(
-                        product.ItemUnits[0].Id,
-                        product.ItemUnits[0].Price,
-                        1,
-                        product
-                      )
+                      addToCart(product.Id, product.ItemUnits[0].Price, 1)
                     "
                   >
-                    🛒 {{ "products.addtocart" | translate }}
+                    @if (isOutOfStock(product)) {
+                      🚫{{ "notAvaliableRightNow" | translate }}
+                    } @else {
+                      🛒 {{ "products.addtocart" | translate }}
+                    }
                   </button>
                 }
               </div>
@@ -119,7 +113,7 @@
       </div>
     </div>
   </section>
-  
+
   <!-- Pagination -->
   @if (pagination && pagination.TotalCount! > pagination.PageSize!) {
     <div class="my-9 flex justify-center">

@@ -11,7 +11,8 @@
       "profile": {
         "allorders": "All Orders",
         "wishlist": "Wish List",
-        "signout": "SignOut"
+        "signout": "SignOut",
+        "profile": "Profile"
       },
       "openmainmenu": "Open main menu"
     },
@@ -126,6 +127,8 @@
       "phone": "Phone Number",
       "city": "City",
       "checkout": "Checkout",
+      "branch": " Branch",
+
       "errors": {
         "detailsRequired": "Please enter details",
         "phoneInvalid": "Invalid phone number",
@@ -153,7 +156,9 @@
       "emptyCart": "Cart is empty",
       "quantity": "Quantity",
       "price": "Price",
-      "confirmButton": "Confirm Invoice"
+      "confirmButton": "Confirm Invoice",
+      "cashOnDelivery": "Cash On Delivery",
+      "paymentMethod": "Payment Method"
     }
   },
   "swal": {
@@ -178,7 +183,8 @@
     "clearConfirmButton": "Yes, clear it!",
     "cancelButton": "Cancel",
     "clearedTitle": "Cleared!",
-    "clearedText": "Your cart has been successfully cleared."
+    "clearedText": "Your cart has been successfully cleared.",
+    "confirmPayment": "pay Now"
   },
   "routes": {
     "login": "Login",
@@ -224,5 +230,22 @@
   },
 
   "notAvaliableRightNow": "Not Available",
-  "ALL_ORDERS":"ALL ORDERS"
+  "ALL_ORDERS": "ALL ORDERS",
+  "toDate": "To Date",
+  "fromDate": "From Date",
+  "apply": "Apply",
+  "clear": "Clear",
+  "defaultUser": "User",
+  "activeStatus": "Active Account",
+  "inactiveStatus": "Inactive",
+  "editButton": "Edit Profile",
+  "cancel": "Cancel",
+  "saveButton": "Save Changes",
+  "userIdLabel": "Account ID",
+  "userNameLabel": "Username",
+  "userNameError": "Username is required (at least 3 characters)",
+  "emailLabel": "Email Address",
+  "emailPlaceholder": "No registered email",
+  "emailError": "Please enter a valid email address",
+  "roleGroupLabel": "Role Group ID"
 }

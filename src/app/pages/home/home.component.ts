@@ -15,10 +15,12 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import {
   catchError,
+  firstValueFrom,
   forkJoin,
   of,
   Subscription,
   switchMap,
+  tap,
   Unsubscribable,
 } from 'rxjs';
 import {
@@ -29,8 +31,10 @@ import { Iproducts } from '../../Core/Interfaces/iproducts';
 import { AllProductsService } from '../../Core/Services/all-products.service';
 import { CartService } from '../../Core/Services/cart.service';
 import { CategoriesService } from '../../Core/Services/categories.service';
-import { LoadingService } from '../../Core/Services/loading.service';
+import { DataService } from '../../Core/Services/data.service';
 import { GuestAuthService } from '../../Core/Services/guest-auth.service';
+import { StoreUrl } from '../../Shared/constants/api.constant';
+import { PAGE_SIZE } from '../../Shared/constants/general.constant';
 
 @Component({
   selector: 'app-home',
@@ -46,6 +50,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private readonly _CartService = inject(CartService);
   private readonly _ToastrService = inject(ToastrService);
   private readonly GuestAuthService = inject(GuestAuthService);
+  private readonly _DataService = inject(DataService);
   allProducts: WritableSignal<Iproducts[]> = signal([]);
   allcategories: WritableSignal<IallCategories[]> = signal([]);
   private subscriptions = new Subscription();
@@ -55,6 +60,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   destoryCategories!: Unsubscribable;
   isUser: boolean = false;
   currentUrl: string = '';
+  pageNo = 1;
+  bannersData: any;
 
   constructor(private _spinnerInterceptor: NgxSpinnerService) {}
 
@@ -82,7 +89,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.currentUrl = this._Router.url;
     this._spinnerInterceptor.show();
-
+    this.getBanners();
     this.subscriptions.add(
       this.GuestAuthService.ensureGuestToken()
         .pipe(
@@ -223,6 +230,28 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   isOutOfStock(product: any): boolean {
     return this.getAvailableStock(product) <= 0;
+  }
+
+  getBanners() {
+    const body = {
+      pageNumber: this.pageNo,
+      pageSize: PAGE_SIZE,
+      searchValue: '',
+    };
+    firstValueFrom(
+      this._DataService.post(`${StoreUrl}/Banner/GetPaged`, body).pipe(
+        tap((res) => {
+          if (res?.IsSuccess) {
+            this.bannersData = res.Obj.PagedResult;
+            console.log(res);
+          } else {
+            console.error(res);
+          }
+        }),
+      ),
+    ).catch((error) => {
+      console.error(error);
+    });
   }
 
   ngOnDestroy(): void {

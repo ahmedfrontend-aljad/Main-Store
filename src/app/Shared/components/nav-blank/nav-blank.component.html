@@ -150,6 +150,18 @@
                 <li>
                   <a
                     class="dropdown-item"
+                    [routerLink]="['/profile']"
+                    (click)="showMobileMenu && toggleMenu()"
+                  >
+                    <i class="fas fa-user" ngSkipHydration></i>
+                    <span>{{
+                      "homecom.navbar.profile.profile" | translate
+                    }}</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
                     [routerLink]="['/allOrders']"
                     (click)="showMobileMenu && toggleMenu()"
                   >

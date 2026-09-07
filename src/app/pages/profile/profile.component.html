@@ -1,0 +1,115 @@
+<div
+  class="max-w-4xl mx-auto my-8 p-6 bg-white rounded-xl shadow-md border border-gray-100 dir-rtl"
+>
+  <!-- Header Section -->
+  <div class="flex items-center justify-between pb-6 border-b border-gray-200">
+    <div class="flex items-center gap-4">
+      <div
+        class="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl font-bold"
+      >
+        {{ profileData?.UserName?.charAt(0)?.toUpperCase() || "U" }}
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">
+          {{ profileData?.UserName || ("defaultUser" | translate) }}
+        </h1>
+        <span
+          class="inline-block mt-1 px-3 py-1 text-xs font-semibold rounded-full"
+          [ngClass]="
+            profileData?.Active
+              ? 'bg-green-100 text-green-700'
+              : 'bg-red-100 text-red-700'
+          "
+        >
+          {{
+            (profileData?.Active ? "activeStatus" : "inactiveStatus")
+              | translate
+          }}
+        </span>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      (click)="toggleEditMode()"
+      class="px-4 py-2 text-sm font-medium rounded-lg border transition-colors"
+      [ngClass]="
+        isEditMode
+          ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
+          : 'bg-blue-600 text-white hover:bg-blue-700'
+      "
+    >
+      {{ (isEditMode ? "cancel" : "editButton") | translate }}
+    </button>
+  </div>
+
+  <!-- Profile Form -->
+  <form
+    [formGroup]="profileForm"
+    (ngSubmit)="updateProfile()"
+    class="mt-6 space-y-6"
+  >
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- User ID (Read-only or disabled) -->
+      <app-store-input
+        *ngIf="profileForm.get('userId')"
+        [control]="$any(profileForm.get('userId'))"
+        [placeholder]="'userIdLabel'"
+        [label]="'userIdLabel'"
+        [type]="'text'"
+      >
+      </app-store-input>
+
+      <!-- User Name -->
+      <app-store-input
+        *ngIf="profileForm.get('userName')"
+        [control]="$any(profileForm.get('userName'))"
+        [placeholder]="'UserName'"
+        [label]="'userNameLabel'"
+        [type]="'text'"
+      >
+      </app-store-input>
+
+      <!-- Email -->
+      <app-store-input
+        *ngIf="profileForm.get('email')"
+        [control]="$any(profileForm.get('email'))"
+        [placeholder]="'emailPlaceholder'"
+        [label]="'emailLabel'"
+        [type]="'email'"
+      >
+      </app-store-input>
+
+      <!-- Role Group ID -->
+      <app-store-input
+        *ngIf="profileForm.get('RoleGroupId')"
+        [control]="$any(profileForm.get('RoleGroupId'))"
+        [placeholder]="'RoleGroupId'"
+        [label]="'roleGroupLabel'"
+        [type]="'number'"
+      >
+      </app-store-input>
+    </div>
+
+    <!-- Action Buttons -->
+    <div
+      *ngIf="isEditMode"
+      class="flex justify-end gap-3 pt-4 border-t border-gray-200"
+    >
+      <button
+        type="button"
+        (click)="toggleEditMode()"
+        class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+      >
+        {{ "cancel" | translate }}
+      </button>
+      <button
+        type="submit"
+        [disabled]="profileForm.invalid"
+        class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {{ "saveButton" | translate }}
+      </button>
+    </div>
+  </form>
+</div>

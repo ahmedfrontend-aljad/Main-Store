@@ -79,7 +79,7 @@
     <ngx-intl-tel-input
       [cssClass]="'form-control'"
       [ngClass]="{
-        'is-invalid': control?.status === 'INVALID' && control?.touched,
+        'is-invalid': control.status === 'INVALID' && control.touched,
       }"
       [preferredCountries]="preferredCountries"
       [enableAutoCountrySelect]="true"

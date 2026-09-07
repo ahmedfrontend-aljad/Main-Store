@@ -3,10 +3,16 @@ import { RouterOutlet } from '@angular/router';
 import { NgxSpinnerComponent } from 'ngx-spinner';
 import { ThemeService } from './Core/Services/theme.service';
 import { ScrollTopComponent } from './Shared/components/scroll-top-model/scroll-top.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NgxSpinnerComponent, ScrollTopComponent],
+  imports: [
+    RouterOutlet,
+    NgxSpinnerComponent,
+    ScrollTopComponent,
+    TranslateModule,
+  ],
   templateUrl: './app.component.html',
 })
 export class AppComponent {

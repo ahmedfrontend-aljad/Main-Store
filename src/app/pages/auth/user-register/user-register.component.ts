@@ -9,11 +9,11 @@ import { Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { Unsubscribable } from 'rxjs';
-import { AuthService } from '../../Core/Services/auth.service';
-import { LoadingService } from '../../Core/Services/loading.service';
-import { StoreInputComponent } from '../../Shared/components/store-input/store-input.component';
-import { SubmitButtonComponent } from '../../Shared/components/submit-button/submit-button.component';
-import { passwordValidator } from '../../Shared/validators/password.validator';
+import { AuthService } from '../../../Core/Services/auth.service';
+import { LoadingService } from '../../../Core/Services/loading.service';
+import { StoreInputComponent } from '../../../Shared/components/store-input/store-input.component';
+import { SubmitButtonComponent } from '../../../Shared/components/submit-button/submit-button.component';
+import { passwordValidator } from '../../../Shared/validators/password.validator';
 
 @Component({
   selector: 'app-user-register',

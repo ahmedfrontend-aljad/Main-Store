@@ -24,9 +24,10 @@ import {
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { provideToastr } from 'ngx-toastr';
-
+import Aura from '@primeng/themes/aura';
 import { routes } from './app.routes';
 import { headersInterceptor } from './Core/Interceptors/headers.interceptor';
+import { providePrimeNG } from 'primeng/config';
 
 // Factory function
 export function translateLoaderFactory(): TranslateLoader {
@@ -49,6 +50,14 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch(), withInterceptors([headersInterceptor])),
     provideAnimations(),
     provideToastr(),
+    providePrimeNG({
+      theme: {
+        preset: Aura,
+        options: {
+          darkModeSelector: '[data-theme="dark"]',
+        },
+      },
+    }),
     importProvidersFrom(
       BsDropdownModule,
       NgxSpinnerModule,

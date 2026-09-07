@@ -9,9 +9,10 @@
       "register": "تسجيل جديد",
 
       "profile": {
-        "allorders": "جميع الطلبات",
-        "wishlist": "قائمة الرغبات",
-        "signout": "تسجيل الخروج"
+        "allorders": "طلباتي",
+        "wishlist": "المفضلة",
+        "signout": "تسجيل الخروج",
+        "profile": "الملف الشخصي"
       },
       "openmainmenu": "افتح القائمة الرئيسية"
     },
@@ -132,6 +133,7 @@
       "enteryourdetails": "أدخل التفاصيل الخاصة بك",
       "phone": "رقم الهاتف",
       "city": "المدينة",
+      "branch": " الفرع",
       "checkout": "إتمام الدفع",
       "errors": {
         "detailsRequired": "برجاء إدخال التفاصيل",
@@ -145,13 +147,12 @@
       "clientName": "اسم العميل",
       "salesManName": "اسم المندوب",
       "invoiceDate": "تاريخ الفاتورة",
-      "banquetDate": "تاريخ المنسك",
       "payinfo": "معلومات الدفع",
       "cash": "نقداً",
       "cashpay": "المبلغ النقدي",
       "visa": "فيزا",
       "visapay": "مبلغ الفيزا",
-      "visaTrxNo": "رقم عملية الفيزا (Transaction No.)",
+      "visaTrxNo": "رقم الفيزا",
       "visaTrxNoPlaceholder": "أدخل رقم العملية",
       "debt": "المتبقي / المديونية",
       "remainingamount": "المبلغ المتبقي",
@@ -161,7 +162,9 @@
       "emptyCart": "السلة فارغة",
       "quantity": "الكمية",
       "price": "السعر",
-      "confirmButton": "تأكيد الفاتورة"
+      "confirmButton": "تأكيد الفاتورة",
+      "cashOnDelivery": " الدفع عند الاستلام",
+      "paymentMethod": "طريقة الدفع "
     }
   },
   "swal": {
@@ -186,7 +189,8 @@
     "clearConfirmButton": "نعم، قم بالتفريغ!",
     "cancelButton": "إلغاء",
     "clearedTitle": "تم التفريغ!",
-    "clearedText": "تم تفريغ سلة التسوق بنجاح."
+    "clearedText": "تم تفريغ سلة التسوق بنجاح.",
+    "confirmPayment": "ادفع الآن"
   },
 
   "routes": {
@@ -199,9 +203,9 @@
     "categoryProducts": "منتجات القسم",
     "cart": "عربة التسوق",
     "invoice": "الفاتورة",
-    "wishList": "قائمة الرغبات",
+    "wishList": "المفضلة",
     "allProducts": "جميع المنتجات",
-    "allOrders": "جميع الطلبات",
+    "allOrders": "طلباتي",
     "offers": "العروض",
     "payment": "الدفع",
     "notFound": "الصفحة غير موجودة"
@@ -232,6 +236,24 @@
     "loading": "...جاري تحميل تفاصيل المنتج"
   },
   "notAvaliableRightNow": "غير متاح حاليا",
-  "ALL_ORDERS": "جميع الطلبات",
-  "unAvaliable": "غير متاح"
+  "ALL_ORDERS": "طلباتي",
+  "unAvaliable": "غير متاح",
+  "toDate": "الي تاريخ",
+  "fromDate": "من تاريخ",
+  "apply": "تطبيق",
+  "clear": "مسح",
+
+  "defaultUser": "المستخدم",
+  "activeStatus": "حساب نشط",
+  "inactiveStatus": "غير نشط",
+  "editButton": "تعديل البيانات",
+  "cancel": "إلغاء",
+  "saveButton": "حفظ التغييرات",
+  "userIdLabel": "معرّف الحساب",
+  "userNameLabel": "اسم المستخدم",
+  "userNameError": "اسم المستخدم مطلوب (3 حروف على الأقل)",
+  "emailLabel": "البريد الإلكتروني",
+  "emailPlaceholder": "لا يوجد بريد إلكتروني مُسجّل",
+  "emailError": "يرجى إدخال بريد إلكتروني صحيح",
+  "roleGroupLabel": "رقم مجموعة الصلاحيات"
 }

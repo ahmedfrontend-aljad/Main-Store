@@ -12,10 +12,6 @@ export class GuestAuthService {
   private readonly _PlatformId = inject(PLATFORM_ID);
 
   ensureGuestToken(): Observable<any> {
-    if (!isPlatformBrowser(this._PlatformId)) {
-      return of(null);
-    }
-
     const userToken = localStorage.getItem('userToken');
     const guestToken = localStorage.getItem('guestToken');
 

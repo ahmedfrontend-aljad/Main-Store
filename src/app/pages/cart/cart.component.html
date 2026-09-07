@@ -1,4 +1,4 @@
-<section class="cart-section sm:mt-20 ">
+<section class="cart-section sm:mt-20">
   <div
     class="w-full max-w-7xl h-full bg-main-light shadow-md rounded-lg mb-5 mx-auto px-3 sm:px-6"
   >
@@ -8,7 +8,7 @@
         <div
           class="flex justify-between items-center mb-6 pb-2 border-b border-gray-200"
         >
-          <h3 class="font-bold text-lg sm:text-2xl mb-0 text-gray-800">
+          <h3 class="font-bold text-lg sm:text-2xl mb-0">
             {{ "cart.shoppingcart" | translate }}
           </h3>
 
@@ -140,11 +140,11 @@
               <i
                 class="fas fa-money-bill-wave text-xl sm:text-2xl text-green-600"
               ></i>
-              <h5 class="mb-0 font-bold text-sm sm:text-lg text-gray-800">
+              <h5 class="mb-0 font-bold text-sm sm:text-lg">
                 {{ "cart.carttotal" | translate }}
               </h5>
             </div>
-            <span class="text-base sm:text-xl font-extrabold text-green-700">
+            <span class="sm:text-xl font-extrabold text-green-700">
               {{ totalPrice | currency: "GBP" }}
             </span>
           </div>
@@ -159,7 +159,7 @@
           >
             <button
               type="submit"
-              (click)="paymentMethods()"
+              (click)="goToPayment()"
               class="checkout-btn w-full sm:w-auto min-w-[240px] py-3.5 px-8 font-bold rounded-lg text-base shadow-md transition-all duration-300"
               [disabled]="!isCartHasProducts"
             >

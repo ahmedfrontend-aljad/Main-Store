@@ -1,137 +1,174 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { firstValueFrom, tap } from 'rxjs';
-import { DataService } from '../../Core/Services/data.service';
-import { StoreUrl } from '../../Shared/constants/api.constant';
-import { ToastrService } from 'ngx-toastr';
-import { LoadingService } from '../../Core/Services/loading.service';
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
+import { TabsModule } from 'primeng/tabs';
+import { catchError, EMPTY, firstValueFrom, tap } from 'rxjs';
+import { DataService } from '../../Core/Services/data.service';
+import { HelperService } from '../../Core/Services/helper.service';
+import { LoadingService } from '../../Core/Services/loading.service';
+import { StoreInputComponent } from '../../Shared/components/store-input/store-input.component';
+import { apiUrl } from '../../Shared/constants/api.constant';
+import { PAGE_SIZE } from '../../Shared/constants/general.constant';
 
-export type OrderStatus =
-  | 'all'
-  | 'completed'
-  | 'pending'
-  | 'under_review'
-  | 'on_the_way';
-
-export interface Order {
-  id: number;
-  customerName: string;
-  totalAmount: number;
-  status: OrderStatus;
-  date: string;
-}
 @Component({
   selector: 'app-all-orders',
-  imports: [TranslateModule],
+  imports: [
+    TranslateModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    StoreInputComponent,
+    TabsModule,
+  ],
   templateUrl: './all-orders.component.html',
   styleUrl: './all-orders.component.scss',
 })
 export class AllOrdersComponent implements OnInit {
   private readonly _DataService = inject(DataService);
   private readonly _ToastrService = inject(ToastrService);
+  private readonly _FormBuilder = inject(FormBuilder);
   private readonly _LoadingService = inject(LoadingService);
+  private readonly _HelperService = inject(HelperService);
+
   allOrders: any[] = [];
-  ngOnInit(): void {
-    this.getAllOrders();
-  }
+  pageNo = 1;
+  pageSize = PAGE_SIZE;
+  deliverdOrders: any;
+  filtersForm!: FormGroup;
+  showClearFilters: boolean = false;
+  value: string = 'tab1';
 
-  getAllOrders() {
-    this._LoadingService.start();
-    firstValueFrom(
-      this._DataService.get(`${StoreUrl}`).pipe(
-        tap((res) => {
-          this._LoadingService.stop();
-          if (res?.IsSuccess) {
-            this.allOrders = res.Obj;
-            console.log(res);
-          } else {
-            this._ToastrService.error(res.message);
-            console.log(res);
-          }
-        }),
-      ),
-    ).catch((error) => {
-      this._LoadingService.stop();
-      this._ToastrService.error(error);
-    });
-  }
-  activeTab = signal<OrderStatus>('all');
-
-  tabs: { id: OrderStatus; label: string }[] = [
-    { id: 'all', label: 'الكل' },
-    { id: 'completed', label: 'تمت' },
-    { id: 'pending', label: 'معلقة' },
-    { id: 'under_review', label: 'قيد المراجعة' },
-    { id: 'on_the_way', label: 'في الطريق' },
+  tabs = [
+    {
+      id: 'tab1',
+      title: 'inreview',
+    },
+    {
+      id: 'tab2',
+      title: 'accepted',
+    },
+    {
+      id: 'tab3',
+      title: 'ready',
+    },
+    {
+      id: 'tab4',
+      title: 'out for delevery',
+    },
+    {
+      id: 'tab5',
+      title: 'deleverd ',
+    },
+    {
+      id: 'tab6',
+      title: 'canceled ',
+    },
   ];
 
-  orders = signal<Order[]>([
-    {
-      id: 101,
-      customerName: 'أحمد محمود',
-      totalAmount: 450,
-      status: 'completed',
-      date: '2026-08-30',
-    },
-    {
-      id: 102,
-      customerName: 'أحمد محمود',
-      totalAmount: 1200,
-      status: 'pending',
-      date: '2026-08-31',
-    },
-    {
-      id: 103,
-      customerName: 'أحمد محمود',
-      totalAmount: 310,
-      status: 'under_review',
-      date: '2026-08-31',
-    },
-    {
-      id: 104,
-      customerName: 'أحمد محمود',
-      totalAmount: 890,
-      status: 'on_the_way',
-      date: '2026-08-31',
-    },
-    {
-      id: 105,
-      customerName: 'أحمد محمود',
-      totalAmount: 650,
-      status: 'completed',
-      date: '2026-08-29',
-    },
-  ]);
-
-  filteredOrders = computed(() => {
-    const currentTab = this.activeTab();
-    if (currentTab === 'all') {
-      return this.orders();
-    }
-    return this.orders().filter((order) => order.status === currentTab);
-  });
-
-  setTab(status: OrderStatus) {
-    this.activeTab.set(status);
+  ngOnInit(): void {
+    this.initForm();
+    this.getAllOrdersByStatus();
+    this.getDeliverdOrders();
   }
 
-  getStatusBadgeClass(status: OrderStatus): string {
-    switch (status) {
-      case 'completed':
-        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
-      case 'pending':
-        return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
-      case 'under_review':
-        return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
-      case 'on_the_way':
-        return 'bg-purple-500/10 text-purple-400 border-purple-500/20';
-      default:
-        return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
-    }
+  initForm() {
+    this.filtersForm = this._FormBuilder.group({
+      fromDate: [''],
+      toDate: [''],
+    });
   }
 
-  getStatusLabel(status: OrderStatus): string {
-    const tab = this.tabs.find((t) => t.id === status);
-    return tab ? tab.label : status;
+  getDeliverdOrders() {
+    this._LoadingService.start();
+    const rawParams = {
+      pageNumber: this.pageNo,
+      pageSize: this.pageSize,
+      fromDate: this.filtersForm.value.fromDate,
+      toDate: this.filtersForm.value.toDate,
+    };
+    const cleanedParams = this._HelperService.cleanNullValues(rawParams);
+
+    firstValueFrom(
+      this._DataService
+        .get(
+          `${apiUrl}/XtraAndPos_MobileLookups/GetPagedSaleInvoicesByDate`,
+          cleanedParams,
+        )
+        .pipe(
+          tap((res) => {
+            this._LoadingService.stop();
+            if (res?.IsSuccess) {
+              this.deliverdOrders = res.Obj;
+            } else {
+              this._ToastrService.error(res.message);
+            }
+          }),
+          catchError((err) => {
+            this._LoadingService.stop();
+            this._ToastrService.error('حدث خطأ أثناء جلب الطلبات المكتملة');
+            return EMPTY;
+          }),
+        ),
+    );
+  }
+
+  getAllOrdersByStatus() {
+    this._LoadingService.start();
+    const rawParams = {
+      pageNumber: this.pageNo,
+      pageSize: this.pageSize,
+      fromDate: this.filtersForm.value.fromDate,
+      toDate: this.filtersForm.value.toDate,
+    };
+    const cleanedParams = this._HelperService.cleanNullValues(rawParams);
+
+    firstValueFrom(
+      this._DataService
+        .get(
+          `${apiUrl}/XtraAndPOS_SaleInvoiceReqNew/GetPagedSaleInvoiceReqByDate`,
+          cleanedParams,
+        )
+        .pipe(
+          tap((res) => {
+            this._LoadingService.stop();
+            if (res?.IsSuccess) {
+              this.allOrders = res.Obj;
+            } else {
+              this._ToastrService.error(res.message);
+            }
+          }),
+          catchError((err) => {
+            this._LoadingService.stop();
+            this._ToastrService.error('حدث خطأ أثناء جلب الطلبات');
+            return EMPTY;
+          }),
+        ),
+    );
+  }
+
+  get hasFiltersSelected(): boolean {
+    const { fromDate, toDate } = this.filtersForm.value;
+    return !!fromDate || !!toDate;
+  }
+
+  applyFilter() {
+    if (!this.hasFiltersSelected) return;
+    this.showClearFilters = true;
+    this.getAllOrdersByStatus();
+    this.getDeliverdOrders();
+  }
+
+  clearFilters() {
+    this.filtersForm.reset();
+    this.showClearFilters = false;
+    this.getAllOrdersByStatus();
+    this.getDeliverdOrders();
   }
 }
