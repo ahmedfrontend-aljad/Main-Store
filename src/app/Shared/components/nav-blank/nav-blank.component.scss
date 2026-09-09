@@ -18,10 +18,31 @@ ul {
 }
 
 .cart {
+  position: relative;
+  display: inline-block;
+
   .fa-cart-shopping {
     font-size: 1.4rem;
     color: var(--color-primary);
     transition: all 0.3s ease;
+  }
+
+  .cart-badge {
+    top: 0px;
+    left: 78%;
+    transform: translate(-30%, -50%) !important;
+    background-color: var(--color-secondary);
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.25em 0.5em;
+    min-width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--color-bg);
+    box-shadow: 0 2px 4px var(--color-shadow);
   }
 
   &:hover .fa-cart-shopping {

@@ -85,11 +85,19 @@
         >
           @if (isUserLogged) {
             <div
-              class="cart cursor-pointer position-relative"
+              class="cart cursor-pointer position-relative d-inline-block"
               routerLink="/cart"
               (click)="showMobileMenu && toggleMenu()"
             >
-              <i class="fa-solid fa-cart-shopping fs-5" ngSkipHydration></i>
+             <i class="fa-solid fa-cart-shopping fs-5" ngSkipHydration></i>
+
+              @if (itemsCount > 0) {
+                <span
+                  class="cart-badge badge rounded-pill position-absolute translate-middle"
+                >
+                  {{ itemsCount }}
+                </span>
+              }
             </div>
           }
 

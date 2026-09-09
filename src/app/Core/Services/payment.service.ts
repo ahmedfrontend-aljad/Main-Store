@@ -12,7 +12,7 @@ export class PaymentService {
   createPaymentInvoice(body: any): Observable<any> {
     return this._DataService.post(
       `${apiUrl}/XtraAndPos_StoreInvoices/CreateInvoiceForMobile`,
-      {},
+      body,
     );
   }
 }

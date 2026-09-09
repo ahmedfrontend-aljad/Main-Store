@@ -9,7 +9,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { TabsModule } from 'primeng/tabs';
-import { catchError, EMPTY, firstValueFrom, tap } from 'rxjs';
+import { finalize } from 'rxjs';
 import { DataService } from '../../Core/Services/data.service';
 import { HelperService } from '../../Core/Services/helper.service';
 import { LoadingService } from '../../Core/Services/loading.service';
@@ -19,6 +19,7 @@ import { PAGE_SIZE } from '../../Shared/constants/general.constant';
 
 @Component({
   selector: 'app-all-orders',
+  standalone: true,
   imports: [
     TranslateModule,
     FormsModule,
@@ -46,30 +47,12 @@ export class AllOrdersComponent implements OnInit {
   value: string = 'tab1';
 
   tabs = [
-    {
-      id: 'tab1',
-      title: 'inreview',
-    },
-    {
-      id: 'tab2',
-      title: 'accepted',
-    },
-    {
-      id: 'tab3',
-      title: 'ready',
-    },
-    {
-      id: 'tab4',
-      title: 'out for delevery',
-    },
-    {
-      id: 'tab5',
-      title: 'deleverd ',
-    },
-    {
-      id: 'tab6',
-      title: 'canceled ',
-    },
+    { id: 'tab1', title: 'inreview' },
+    { id: 'tab2', title: 'accepted' },
+    { id: 'tab3', title: 'ready' },
+    { id: 'tab4', title: 'out for delevery' },
+    { id: 'tab5', title: 'deleverd ' },
+    { id: 'tab6', title: 'canceled ' },
   ];
 
   ngOnInit(): void {
@@ -78,79 +61,99 @@ export class AllOrdersComponent implements OnInit {
     this.getDeliverdOrders();
   }
 
-  initForm() {
+  initForm(): void {
     this.filtersForm = this._FormBuilder.group({
       fromDate: [''],
       toDate: [''],
     });
   }
 
-  getDeliverdOrders() {
-    this._LoadingService.start();
-    const rawParams = {
-      pageNumber: this.pageNo,
-      pageSize: this.pageSize,
-      fromDate: this.filtersForm.value.fromDate,
-      toDate: this.filtersForm.value.toDate,
-    };
-    const cleanedParams = this._HelperService.cleanNullValues(rawParams);
-
-    firstValueFrom(
-      this._DataService
-        .get(
-          `${apiUrl}/XtraAndPos_MobileLookups/GetPagedSaleInvoicesByDate`,
-          cleanedParams,
-        )
-        .pipe(
-          tap((res) => {
-            this._LoadingService.stop();
-            if (res?.IsSuccess) {
-              this.deliverdOrders = res.Obj;
-            } else {
-              this._ToastrService.error(res.message);
-            }
-          }),
-          catchError((err) => {
-            this._LoadingService.stop();
-            this._ToastrService.error('حدث خطأ أثناء جلب الطلبات المكتملة');
-            return EMPTY;
-          }),
-        ),
-    );
+  private formatDateToISO(date: any): string | null {
+    if (!date) return null;
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return null;
+    return d.toISOString().split('T')[0];
   }
 
-  getAllOrdersByStatus() {
+  getDeliverdOrders(): void {
     this._LoadingService.start();
+
+    const { fromDate, toDate } = this.filtersForm.value;
+
+    const defaultFromDate = '2021-01-01';
+    const defaultToDate = new Date().toISOString().split('T')[0];
+
     const rawParams = {
       pageNumber: this.pageNo,
       pageSize: this.pageSize,
-      fromDate: this.filtersForm.value.fromDate,
-      toDate: this.filtersForm.value.toDate,
+      fromDate: this.formatDateToISO(fromDate) || defaultFromDate,
+      toDate: this.formatDateToISO(toDate) || defaultToDate,
     };
-    const cleanedParams = this._HelperService.cleanNullValues(rawParams);
 
-    firstValueFrom(
-      this._DataService
-        .get(
-          `${apiUrl}/XtraAndPOS_SaleInvoiceReqNew/GetPagedSaleInvoiceReqByDate`,
-          cleanedParams,
-        )
-        .pipe(
-          tap((res) => {
-            this._LoadingService.stop();
-            if (res?.IsSuccess) {
-              this.allOrders = res.Obj;
-            } else {
-              this._ToastrService.error(res.message);
-            }
-          }),
-          catchError((err) => {
-            this._LoadingService.stop();
-            this._ToastrService.error('حدث خطأ أثناء جلب الطلبات');
-            return EMPTY;
-          }),
-        ),
-    );
+    const cleanedParams = this._HelperService.cleanNullValues(rawParams);
+    console.log('API Params:', cleanedParams);
+    this._DataService
+      .get(`${apiUrl}/XtraAndPos_MobileLookups/GetPagedSaleInvoicesByDate`, {
+        params: cleanedParams,
+      })
+      .pipe(finalize(() => this._LoadingService.stop()))
+      .subscribe({
+        next: (res: any) => {
+          if (res?.IsSuccess || res?.isSuccess) {
+            this.deliverdOrders = res.Obj;
+          } else {
+            this._ToastrService.error(
+              res?.Message || res?.message || 'فشلت عملية جلب الطلبات المكتملة',
+            );
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this._ToastrService.error('حدث خطأ أثناء جلب الطلبات المكتملة');
+        },
+      });
+  }
+
+  getAllOrdersByStatus(): void {
+    this._LoadingService.start();
+
+    const { fromDate, toDate } = this.filtersForm.value;
+
+    const defaultFromDate = '2021-01-01';
+    const defaultToDate = new Date().toISOString().split('T')[0];
+
+    const rawParams = {
+      pageNumber: this.pageNo,
+      pageSize: this.pageSize,
+      fromDate: this.formatDateToISO(fromDate) || defaultFromDate,
+      toDate: this.formatDateToISO(toDate) || defaultToDate,
+    };
+
+    const cleanedParams = this._HelperService.cleanNullValues(rawParams);
+    console.log('API Params:', cleanedParams);
+    this._DataService
+      .get(
+        `${apiUrl}/XtraAndPOS_SaleInvoiceReqNew/GetPagedSaleInvoiceReqByDate`,
+        {
+          params: cleanedParams,
+        },
+      )
+      .pipe(finalize(() => this._LoadingService.stop()))
+      .subscribe({
+        next: (res: any) => {
+          if (res?.IsSuccess || res?.isSuccess) {
+            this.allOrders = res.Obj;
+          } else {
+            this._ToastrService.error(
+              res?.Message || res?.message || 'فشلت عملية جلب الطلبات',
+            );
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this._ToastrService.error('حدث خطأ أثناء جلب الطلبات');
+        },
+      });
   }
 
   get hasFiltersSelected(): boolean {
@@ -158,14 +161,14 @@ export class AllOrdersComponent implements OnInit {
     return !!fromDate || !!toDate;
   }
 
-  applyFilter() {
+  applyFilter(): void {
     if (!this.hasFiltersSelected) return;
     this.showClearFilters = true;
     this.getAllOrdersByStatus();
     this.getDeliverdOrders();
   }
 
-  clearFilters() {
+  clearFilters(): void {
     this.filtersForm.reset();
     this.showClearFilters = false;
     this.getAllOrdersByStatus();

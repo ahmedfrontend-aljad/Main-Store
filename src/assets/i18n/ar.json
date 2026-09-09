@@ -242,7 +242,6 @@
   "fromDate": "من تاريخ",
   "apply": "تطبيق",
   "clear": "مسح",
-
   "defaultUser": "المستخدم",
   "activeStatus": "حساب نشط",
   "inactiveStatus": "غير نشط",
@@ -255,5 +254,18 @@
   "emailLabel": "البريد الإلكتروني",
   "emailPlaceholder": "لا يوجد بريد إلكتروني مُسجّل",
   "emailError": "يرجى إدخال بريد إلكتروني صحيح",
-  "roleGroupLabel": "رقم مجموعة الصلاحيات"
+  "basicInfoSection": "البيانات الأساسية",
+  "contactInfoSection": "معلومات التواصل",
+  "shippingAddressSection": "عنوان التوصيل",
+  "nameArLabel": "الاسم بالعربية",
+  "nameEnLabel": "الاسم بالإنجليزية",
+  "phoneLabel": "رقم الهاتف",
+  "whatsappLabel": "واتساب",
+  "governorateLabel": "المحافظة",
+  "cityNameLabel": "المدينة",
+  "districtLabel": "الحي / المنطقة",
+  "streetLabel": "الشارع",
+  "buildingNumberLabel": "رقم المبنى",
+  "nationalAddressLabel": "العنوان الوطني",
+  "addressLabel": "العنوان التفصيلي"
 }

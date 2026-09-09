@@ -3,6 +3,7 @@ import {
   Component,
   HostListener,
   inject,
+  OnDestroy,
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
@@ -10,6 +11,10 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MyTranslateService } from '../../../Core/Services/my-translate.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { ThemeService } from '../../../Core/Services/theme.service';
+import { CartService } from '../../../Core/Services/cart.service';
+import { Subscription } from 'rxjs';
+import { LoadingService } from '../../../Core/Services/loading.service';
+import jwtDecode from 'jwt-decode';
 
 @Component({
   selector: 'app-nav-blank',
@@ -18,20 +23,25 @@ import { ThemeService } from '../../../Core/Services/theme.service';
   templateUrl: './nav-blank.component.html',
   styleUrls: ['./nav-blank.component.scss'],
 })
-export class NavBlankComponent implements OnInit {
+export class NavBlankComponent implements OnInit, OnDestroy {
   isUserLogged = false;
   isGuest = false;
-
+  decoded: any;
+  itemsCount: number = 0;
   showDropdown = false;
   showMobileMenu = false;
   showLangDropdown = false;
   isDarkMode = false;
   selectedLanguage = 'English';
 
+  private cartSub!: Subscription;
+
   private readonly _PLATFORM_ID = inject(PLATFORM_ID);
   private readonly _Router = inject(Router);
   private readonly _MyTranslateService = inject(MyTranslateService);
   private readonly _themeService = inject(ThemeService);
+  private readonly _CartService = inject(CartService);
+  private readonly _LoadingService = inject(LoadingService);
 
   constructor() {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
@@ -40,6 +50,11 @@ export class NavBlankComponent implements OnInit {
       if (token) {
         this.isUserLogged = true;
         this.isGuest = false;
+        try {
+          this.decoded = jwtDecode(token);
+        } catch (e) {
+          console.error('Invalid token:', e);
+        }
       } else {
         this.isUserLogged = false;
         this.isGuest = true;
@@ -53,6 +68,20 @@ export class NavBlankComponent implements OnInit {
   ngOnInit(): void {
     this._themeService.loadTheme();
     this.updateThemeState();
+
+    this.cartSub = this._CartService.cartCount$.subscribe((count) => {
+      this.itemsCount = count;
+    });
+
+    if (this.decoded?.Id) {
+      this._CartService.getLoggedCart(this.decoded.Id).subscribe();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.cartSub) {
+      this.cartSub.unsubscribe();
+    }
   }
 
   toggleTheme(): void {
@@ -68,7 +97,6 @@ export class NavBlankComponent implements OnInit {
     }
   }
 
-  // Mobile Menu
   toggleMenu(): void {
     this.showMobileMenu = !this.showMobileMenu;
     if (isPlatformBrowser(this._PLATFORM_ID)) {
@@ -76,12 +104,10 @@ export class NavBlankComponent implements OnInit {
     }
   }
 
-  // User Dropdown
   toggleDropdown(): void {
     this.showDropdown = !this.showDropdown;
   }
 
-  // Guest actions
   guestLogin(): void {
     this._Router.navigate(['/auth/login']);
   }
@@ -90,18 +116,18 @@ export class NavBlankComponent implements OnInit {
     this._Router.navigate(['/auth/register']);
   }
 
-  // Sign out
   signout(): void {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
       localStorage.removeItem('userToken');
       localStorage.removeItem('guestToken');
+      localStorage.removeItem('cartCount');
       this.isUserLogged = false;
-      this.isGuest = true; 
+      this.isGuest = true;
+      this._CartService.updateCartCount(0);
       this._Router.navigate(['/home']);
     }
   }
 
-  // Language
   toggleLangDropdown(): void {
     this.showLangDropdown = !this.showLangDropdown;
   }
@@ -112,7 +138,6 @@ export class NavBlankComponent implements OnInit {
     this.showLangDropdown = false;
   }
 
-  // Close dropdowns on outside click
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent): void {
     const target = event.target as HTMLElement;

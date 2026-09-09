@@ -5,7 +5,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
       <div>
         <app-store-input
-          [control]="$any(InvoiceForm.get('clienName'))"
+          [control]="$any(InvoiceForm.get('clientName'))"
           [placeholder]="'cart.invoice.clientName'"
           [label]="'cart.invoice.clientName'"
           [type]="'text'"
@@ -32,17 +32,17 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
       <div class="mb-4">
-        <label for="paymentTypeMethod" class="font-medium">
+        <label for="paymentType" class="font-medium">
           {{ "cart.invoice.paymentMethod" | translate }}
         </label>
         <select
-          formControlName="paymentTypeMethod"
+          formControlName="paymentType"
           class="form-select w-full p-1 mt-2 border rounded"
         >
-          <option value="1">
+          <option [ngValue]="1">
             {{ "cart.invoice.cashOnDelivery" | translate }}
           </option>
-          <option value="2">{{ "cart.invoice.visa" | translate }}</option>
+          <option [ngValue]="2">{{ "cart.invoice.visa" | translate }}</option>
         </select>
       </div>
 

@@ -35,6 +35,31 @@ import { DataService } from '../../Core/Services/data.service';
 import { GuestAuthService } from '../../Core/Services/guest-auth.service';
 import { StoreUrl } from '../../Shared/constants/api.constant';
 import { PAGE_SIZE } from '../../Shared/constants/general.constant';
+export interface APIBanners {
+  TotalCount: number;
+  PageNumber: number;
+  PageSize: number;
+  TotalPages: number;
+  PagedResult: PagedResult[];
+}
+
+export interface PagedResult {
+  Id: number;
+  No: number;
+  Guid: string;
+  TitleAr: string;
+  TitleEn: string;
+  DescriptionAr: string;
+  DescriptionEn: string;
+  ImagePath: string;
+  LinkUrl: string;
+  DisplayOrder: number;
+  StartDate: Date;
+  EndDate: Date;
+  IsActive: boolean;
+  BranchId: number;
+  Notes: string;
+}
 
 @Component({
   selector: 'app-home',
@@ -150,10 +175,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   addToCart(productId: number, price: number, quantity: number) {
     const product = this.filteredItems.find((item) => item.Id === productId);
-    if (product && this.isOutOfStock(product)) {
-      this._ToastrService.warning('هذا المنتج غير متوفر حالياً');
-      return;
-    }
+
     const userToken = localStorage.getItem('userToken');
     const guestToken = localStorage.getItem('guestToken');
 
@@ -220,16 +242,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  getAvailableStock(product: any): number {
-    if (product?.ItemUnits?.length > 0) {
+ getAvailableStock(product: any): number {
+ /*   if (product?.ItemUnits?.length > 0) {
       const unit = product.ItemUnits[0];
       return unit.Quantity ?? unit.Stock ?? unit.AvailableQuantity ?? 0;
-    }
+    }*/
     return 0;
   }
 
-  isOutOfStock(product: any): boolean {
-    return this.getAvailableStock(product) <= 0;
+  isOutOfStock(product: any): any {
+   /* return this.getAvailableStock(product) <= 0;*/
   }
 
   getBanners() {

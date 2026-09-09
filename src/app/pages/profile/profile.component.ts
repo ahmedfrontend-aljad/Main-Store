@@ -7,22 +7,44 @@ import {
   Validators,
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import jwtDecode from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, firstValueFrom } from 'rxjs';
 import { DataService } from '../../Core/Services/data.service';
 import { LoadingService } from '../../Core/Services/loading.service';
 import { StoreInputComponent } from '../../Shared/components/store-input/store-input.component';
 import { StoreUrl } from '../../Shared/constants/api.constant';
-import jwtDecode from 'jwt-decode';
 
 export interface UserProfile {
   UserId: string;
   UserName: string;
-  Email: string | null;
+  Email: string;
   Active: boolean;
   RoleGroupId: number;
-  RoleGroupName: string | null;
-  Client: any;
+  RoleGroupName: string;
+  Client: Client;
+}
+
+export interface Client {
+  Id: number;
+  NameAr: string;
+  NameEn: string;
+  ClientCode: string;
+  Email: string;
+  PhoneNo: string;
+  Whatsapp: string;
+  Address: string;
+  NationalAddress: string;
+  Street: string;
+  District: string;
+  Governorate: string;
+  CityName: string;
+  CityId: number;
+  BuildingNumber: string;
+  Latitude: string;
+  Longitude: string;
+  IsStoreClient: boolean;
+  StoreUserId: string;
 }
 
 @Component({
@@ -60,14 +82,35 @@ export class ProfileComponent implements OnInit {
         { value: '', disabled: true },
         [Validators.required, Validators.minLength(3)],
       ],
-      email: [{ value: '', disabled: true }, [Validators.email]],
+      email: [
+        { value: '', disabled: true },
+        [Validators.required, Validators.email],
+      ],
+
+      nameAr: [{ value: '', disabled: true }],
+      nameEn: [{ value: '', disabled: true }],
+      phoneNo: [{ value: '', disabled: true }, [Validators.required]],
+      whatsapp: [{ value: '', disabled: true }],
+      address: [{ value: '', disabled: true }, [Validators.required]],
+      nationalAddress: [{ value: '', disabled: true }],
+      governorate: [{ value: '', disabled: true }],
+      cityName: [{ value: '', disabled: true }],
+      district: [{ value: '', disabled: true }],
+      street: [{ value: '', disabled: true }],
+      buildingNumber: [{ value: '', disabled: true }],
+      clientCode: [{ value: '', disabled: true }],
     });
   }
 
   async getProfileData(): Promise<void> {
-    const userToken = localStorage.getItem('userToken')!;
+    const userToken = localStorage.getItem('userToken');
+    if (!userToken) {
+      this._ToastrService.error('لم يتم العثور على رمز الجلسة');
+      return;
+    }
+
     const decoded: any = jwtDecode(userToken);
-    const userId = decoded.Id;
+    const userId = decoded?.Id;
     if (!userId) {
       this._ToastrService.error('لم يتم العثور على معرّف المستخدم');
       return;
@@ -89,9 +132,7 @@ export class ProfileComponent implements OnInit {
         this.profileData = response.Obj;
         this.populateForm(this.profileData);
       } else {
-        this._ToastrService.error(
-          response?.Message || 'فشلت عملية جلب البيانات',
-        );
+        this._ToastrService.error(response?.Message);
       }
     } catch (error) {
       console.error(error);
@@ -100,11 +141,26 @@ export class ProfileComponent implements OnInit {
   }
 
   private populateForm(data: UserProfile): void {
+    const client = data?.Client || ({} as Client);
+
     this.profileForm.patchValue({
       userId: data.UserId,
       userName: data.UserName,
       email: data.Email,
       RoleGroupId: data.RoleGroupId,
+
+      nameAr: client.NameAr || data.UserName,
+      nameEn: client.NameEn || '',
+      phoneNo: client.PhoneNo || '',
+      whatsapp: client.Whatsapp || '',
+      address: client.Address || '',
+      nationalAddress: client.NationalAddress || '',
+      governorate: client.Governorate || '',
+      cityName: client.CityName || '',
+      district: client.District || '',
+      street: client.Street || '',
+      buildingNumber: client.BuildingNumber || '',
+      clientCode: client.ClientCode || '',
     });
   }
 
@@ -112,8 +168,25 @@ export class ProfileComponent implements OnInit {
     this.isEditMode = !this.isEditMode;
 
     if (this.isEditMode) {
-      this.profileForm.get('userName')?.enable();
-      this.profileForm.get('email')?.enable();
+      const editableControls = [
+        'userName',
+        'email',
+        'nameAr',
+        'nameEn',
+        'phoneNo',
+        'whatsapp',
+        'address',
+        'nationalAddress',
+        'governorate',
+        'cityName',
+        'district',
+        'street',
+        'buildingNumber',
+      ];
+
+      editableControls.forEach((controlName) => {
+        this.profileForm.get(controlName)?.enable();
+      });
     } else {
       this.profileForm.disable();
       if (this.profileData) {
@@ -134,25 +207,25 @@ export class ProfileComponent implements OnInit {
     const endpoint = `${basePath}User/UpdateClient`;
 
     const formValues = this.profileForm.getRawValue();
-    const clientData = this.profileData?.Client || {};
+    const clientData = this.profileData?.Client || ({} as Client);
 
     const payload = {
       userId: formValues.userId || localStorage.getItem('userId'),
-      nameAr: formValues.userName,
-      nameEn: formValues.userName,
+      nameAr: formValues.nameAr || formValues.userName,
+      nameEn: formValues.nameEn || formValues.userName,
       email: formValues.email,
-      phoneNo: clientData.phoneNo || '',
-      whatsapp: clientData.whatsapp || '',
-      address: clientData.address || '',
-      nationalAddress: clientData.nationalAddress || '',
-      street: clientData.street || '',
-      district: clientData.district || '',
-      governorate: clientData.governorate || '',
-      cityName: clientData.cityName || '',
-      cityId: clientData.cityId || 0,
-      buildingNumber: clientData.buildingNumber || '',
-      latitude: clientData.latitude || '',
-      longitude: clientData.longitude || '',
+      phoneNo: formValues.phoneNo,
+      whatsapp: formValues.whatsapp,
+      address: formValues.address,
+      nationalAddress: formValues.nationalAddress,
+      street: formValues.street,
+      district: formValues.district,
+      governorate: formValues.governorate,
+      cityName: formValues.cityName,
+      cityId: clientData.CityId || 0,
+      buildingNumber: formValues.buildingNumber,
+      latitude: clientData.Latitude || '',
+      longitude: clientData.Longitude || '',
     };
 
     try {
@@ -168,7 +241,7 @@ export class ProfileComponent implements OnInit {
         this.profileForm.disable();
         this.getProfileData();
       } else {
-        this._ToastrService.error(response?.Message || 'فشلت عملية التحديث');
+        this._ToastrService.error(response?.Message);
       }
     } catch (error) {
       console.error(error);

@@ -25,6 +25,8 @@ export class HelperService {
         delete formValue[key];
       }
     });
+
+    return formValue;
   }
 
   formatDateDisplay(date: string | null | undefined): string {

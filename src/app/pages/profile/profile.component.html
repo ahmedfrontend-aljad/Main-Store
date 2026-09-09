@@ -1,31 +1,56 @@
 <div
-  class="max-w-4xl mx-auto my-8 p-6 bg-white rounded-xl shadow-md border border-gray-100 dir-rtl"
+  class="max-w-5xl mx-auto my-8 p-6 rounded-xl shadow-md border dir-rtl transition-colors"
+  style="
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    border-color: var(--color-border);
+    box-shadow: 0 4px 6px var(--color-shadow);
+  "
 >
   <!-- Header Section -->
-  <div class="flex items-center justify-between pb-6 border-b border-gray-200">
+  <div
+    class="flex items-center justify-between pb-6 border-b"
+    style="border-color: var(--color-border)"
+  >
     <div class="flex items-center gap-4">
       <div
-        class="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl font-bold"
+        class="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold"
+        style="
+          background-color: var(--primary-green-dark);
+          color: var(--color-primary);
+        "
       >
         {{ profileData?.UserName?.charAt(0)?.toUpperCase() || "U" }}
       </div>
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">
+        <h1 class="text-2xl font-bold" style="color: var(--color-text)">
           {{ profileData?.UserName || ("defaultUser" | translate) }}
         </h1>
-        <span
-          class="inline-block mt-1 px-3 py-1 text-xs font-semibold rounded-full"
-          [ngClass]="
-            profileData?.Active
-              ? 'bg-green-100 text-green-700'
-              : 'bg-red-100 text-red-700'
-          "
-        >
-          {{
-            (profileData?.Active ? "activeStatus" : "inactiveStatus")
-              | translate
-          }}
-        </span>
+        <div class="flex items-center gap-2 mt-1">
+          <span
+            class="inline-block px-3 py-1 text-xs font-semibold rounded-full"
+            [ngClass]="
+              profileData?.Active
+                ? 'bg-green-100 text-green-700'
+                : 'bg-red-100 text-red-700'
+            "
+          >
+            {{
+              (profileData?.Active ? "activeStatus" : "inactiveStatus")
+                | translate
+            }}
+          </span>
+          <span
+            *ngIf="profileData?.Client?.ClientCode"
+            class="text-xs px-2 py-1 rounded"
+            style="
+              background-color: var(--primary-green-dark);
+              color: var(--color-muted);
+            "
+          >
+            #{{ profileData?.Client?.ClientCode }}
+          </span>
+        </div>
       </div>
     </div>
 
@@ -33,80 +58,169 @@
       type="button"
       (click)="toggleEditMode()"
       class="px-4 py-2 text-sm font-medium rounded-lg border transition-colors"
-      [ngClass]="
-        isEditMode
-          ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
-          : 'bg-blue-600 text-white hover:bg-blue-700'
+      [style.background-color]="
+        isEditMode ? 'transparent' : 'var(--color-primary)'
+      "
+      [style.color]="isEditMode ? 'var(--color-text)' : '#ffffff'"
+      [style.border-color]="
+        isEditMode ? 'var(--color-border)' : 'var(--color-primary)'
       "
     >
       {{ (isEditMode ? "cancel" : "editButton") | translate }}
     </button>
   </div>
 
-  <!-- Profile Form -->
   <form
     [formGroup]="profileForm"
     (ngSubmit)="updateProfile()"
-    class="mt-6 space-y-6"
+    class="mt-6 space-y-8"
   >
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- User ID (Read-only or disabled) -->
-      <app-store-input
-        *ngIf="profileForm.get('userId')"
-        [control]="$any(profileForm.get('userId'))"
-        [placeholder]="'userIdLabel'"
-        [label]="'userIdLabel'"
-        [type]="'text'"
+    <div>
+      <h2
+        class="text-lg font-bold mb-4 border-b pb-2"
+        style="color: var(--color-text); border-color: var(--color-border)"
       >
-      </app-store-input>
+        {{ "basicInfoSection" | translate }}
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <app-store-input
+          [control]="$any(profileForm.get('userName'))"
+          [placeholder]="'userNameLabel' | translate"
+          [label]="'userNameLabel' | translate"
+          [type]="'text'"
+        ></app-store-input>
 
-      <!-- User Name -->
-      <app-store-input
-        *ngIf="profileForm.get('userName')"
-        [control]="$any(profileForm.get('userName'))"
-        [placeholder]="'UserName'"
-        [label]="'userNameLabel'"
-        [type]="'text'"
-      >
-      </app-store-input>
+        <app-store-input
+          [control]="$any(profileForm.get('email'))"
+          [placeholder]="'emailLabel' | translate"
+          [label]="'emailLabel' | translate"
+          [type]="'email'"
+        ></app-store-input>
 
-      <!-- Email -->
-      <app-store-input
-        *ngIf="profileForm.get('email')"
-        [control]="$any(profileForm.get('email'))"
-        [placeholder]="'emailPlaceholder'"
-        [label]="'emailLabel'"
-        [type]="'email'"
-      >
-      </app-store-input>
+        <app-store-input
+          [control]="$any(profileForm.get('nameAr'))"
+          [placeholder]="'nameArLabel' | translate"
+          [label]="'nameArLabel' | translate"
+          [type]="'text'"
+        ></app-store-input>
 
-      <!-- Role Group ID -->
-      <app-store-input
-        *ngIf="profileForm.get('RoleGroupId')"
-        [control]="$any(profileForm.get('RoleGroupId'))"
-        [placeholder]="'RoleGroupId'"
-        [label]="'roleGroupLabel'"
-        [type]="'number'"
+        <app-store-input
+          [control]="$any(profileForm.get('nameEn'))"
+          [placeholder]="'nameEnLabel' | translate"
+          [label]="'nameEnLabel' | translate"
+          [type]="'text'"
+        ></app-store-input>
+      </div>
+    </div>
+
+    <div>
+      <h2
+        class="text-lg font-bold mb-4 border-b pb-2"
+        style="color: var(--color-text); border-color: var(--color-border)"
       >
-      </app-store-input>
+        {{ "contactInfoSection" | translate }}
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <app-store-input
+          [control]="$any(profileForm.get('phoneNo'))"
+          [placeholder]="'phoneLabel' | translate"
+          [label]="'phoneLabel' | translate"
+          [type]="'text'"
+        ></app-store-input>
+
+        <app-store-input
+          [control]="$any(profileForm.get('whatsapp'))"
+          [placeholder]="'whatsappLabel' | translate"
+          [label]="'whatsappLabel' | translate"
+          [type]="'text'"
+        ></app-store-input>
+      </div>
+    </div>
+
+    <div>
+      <h2
+        class="text-lg font-bold mb-4 border-b pb-2"
+        style="color: var(--color-text); border-color: var(--color-border)"
+      >
+        {{ "shippingAddressSection" | translate }}
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <app-store-input
+          [control]="$any(profileForm.get('governorate'))"
+          [placeholder]="'governorateLabel' | translate"
+          [label]="'governorateLabel' | translate"
+          [type]="'text'"
+        ></app-store-input>
+
+        <app-store-input
+          [control]="$any(profileForm.get('cityName'))"
+          [placeholder]="'cityNameLabel' | translate"
+          [label]="'cityNameLabel' | translate"
+          [type]="'text'"
+        ></app-store-input>
+
+        <app-store-input
+          [control]="$any(profileForm.get('district'))"
+          [placeholder]="'districtLabel' | translate"
+          [label]="'districtLabel' | translate"
+          [type]="'text'"
+        ></app-store-input>
+
+        <app-store-input
+          [control]="$any(profileForm.get('street'))"
+          [placeholder]="'streetLabel' | translate"
+          [label]="'streetLabel' | translate"
+          [type]="'text'"
+        ></app-store-input>
+
+        <app-store-input
+          [control]="$any(profileForm.get('buildingNumber'))"
+          [placeholder]="'buildingNumberLabel' | translate"
+          [label]="'buildingNumberLabel' | translate"
+          [type]="'text'"
+        ></app-store-input>
+
+        <app-store-input
+          [control]="$any(profileForm.get('nationalAddress'))"
+          [placeholder]="'nationalAddressLabel' | translate"
+          [label]="'nationalAddressLabel' | translate"
+          [type]="'text'"
+        ></app-store-input>
+      </div>
+
+      <div class="mt-4">
+        <app-store-input
+          [control]="$any(profileForm.get('address'))"
+          [placeholder]="'addressLabel' | translate"
+          [label]="'addressLabel' | translate"
+          [type]="'text'"
+        ></app-store-input>
+      </div>
     </div>
 
     <!-- Action Buttons -->
     <div
       *ngIf="isEditMode"
-      class="flex justify-end gap-3 pt-4 border-t border-gray-200"
+      class="flex justify-end gap-3 pt-4 border-t"
+      style="border-color: var(--color-border)"
     >
       <button
         type="button"
         (click)="toggleEditMode()"
-        class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+        class="px-5 py-2.5 text-sm font-medium rounded-lg border"
+        style="
+          background-color: transparent;
+          color: var(--color-text);
+          border-color: var(--color-border);
+        "
       >
         {{ "cancel" | translate }}
       </button>
       <button
         type="submit"
         [disabled]="profileForm.invalid"
-        class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="px-5 py-2.5 text-sm font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        style="background-color: var(--color-primary); color: #ffffff"
       >
         {{ "saveButton" | translate }}
       </button>

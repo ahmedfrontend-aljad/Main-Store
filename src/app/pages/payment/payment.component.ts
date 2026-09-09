@@ -49,7 +49,11 @@ export class paymentComponent implements OnInit {
   userId: string | null = null;
 
   get selectedPaymentMethod(): string {
-    return this.InvoiceForm.get('paymentTypeMethod')?.value || '1';
+    return this.InvoiceForm.get('paymentType')?.value?.toString() || '1';
+  }
+
+  get saleInvoiceDetails(): FormArray {
+    return this.InvoiceForm.get('saleInvoiceDetails') as FormArray;
   }
 
   ngOnInit(): void {
@@ -65,7 +69,7 @@ export class paymentComponent implements OnInit {
 
     try {
       const decodedToken: any = jwtDecode(token);
-      this.userId = decodedToken.Id || decodedToken.id;
+      this.userId = decodedToken.Id || decodedToken.id || decodedToken.nameid;
     } catch (error) {
       this._ToastrService.error('Invalid token. Please log in again.');
       this._router.navigate(['/auth/login']);
@@ -103,144 +107,158 @@ export class paymentComponent implements OnInit {
   }
 
   initForm(): void {
+    const now = new Date();
+    const dateTimeISO = now.toISOString().replace('T', ' ').split('.')[0];
     this.InvoiceForm = this._formBuilder.group({
-      clienName: ['', Validators.required],
-      salesManId: [0],
-      salesManName: [''],
       id: [0],
-      serial: [''],
-      branchId: [1],
-      posType: [1],
-      banquetDate: [''],
-      driverId: [0],
-      paymentTypeMethod: ['1'],
-      cash: [0],
-      visa: [0],
-      debt: [0],
-      clientId: [null],
-      superVisorId: [0],
-      superVisorName: [''],
-      notes: [''],
-      isPendingPayment: [true],
-      tableId: [0],
-      isMobile: [true],
-      treasuryId: [0],
-      exchangePrice: [0],
-      curancyId: [0],
-      saleInvoiceDetails: this._formBuilder.array([]),
-      saleInvNotesDto: this._formBuilder.array([]),
-      saleInvoiceDiscountDtos: this._formBuilder.array([]),
-      clientType: [1],
-      docType: [0],
-      docDate: [new Date().toISOString().split('T')[0]],
-      bankId: [0],
-      visaTrxNo: [''],
-      visaTrxType: [1],
-      paymentType: [1],
-      storeId: [1],
+      insuranceAmount: [0],
+      deliveryAddress: [''],
+      saleInvoiceReqId: [0],
+      saleInvoiceReqDocNo: [0],
+      paid: [0],
+      reminder: [0],
       totalInvoice: [0],
-      saveAndPost: [true],
+      totalInvoiceAfterVatIncluded: [0],
+      currencyId: [1],
+      equivalent: [0],
+      clientId: [0, [Validators.required]],
+      clientName: [''],
+      userId: [''],
+      paymentType: [1],
+      workByPriceWithVat: [true],
+      docDate: [dateTimeISO],
+      notes: [''],
+      totalDisc: [0],
+      cash: [0],
+      visa: [0.0],
+      bankId: [0],
+      updatedTableId: [0],
+      debt: [0.0],
+      isPendingPayment: [false],
+      treasuryId: [null],
+      exchangePrice: [1],
+      clientType: [1],
+      docType: [1],
+      storeId: [1],
+      isMobile: [true],
+      tableId: [0],
+      visaTrxType: [1],
+      visaTrxNo: [''],
       totalInvoiceVatAmount: [0],
       totalInvoiceAfterVat: [0],
-      totalDisc: [0],
-      totalDiscRate: [0],
+      salesManId: [0],
       totalInvoiceAfterDisc: [0],
-      docProjectId: [0],
-      docProjectName: [''],
-      saleOfferId: [0],
-      saleOfferName: [''],
+      totalDiscRate: [0],
       tobagoVatAmount: [0],
-      saleNotAffectStorage: [true],
-      salesAccountID: [0],
-      salesAccountCode: [''],
-      salesAccountName: [''],
-      insuranceCompanyId: [0],
-      insuranceCompanyName: [''],
-      otherDisc: [0],
-      totalInvoiceAfterVatIncluded: [0],
-      workByPriceWithVat: [true],
+      posType: [1, [Validators.required]],
+      saveAndPost: [false],
+      banquetDate: [null],
+      saleInvoiceDetails: this._formBuilder.array([]),
+      saleInvNotesDto: this._formBuilder.array([]),
     });
   }
 
-  private listenToPaymentMethodChange(): void {
-    this.InvoiceForm.get('paymentTypeMethod')?.valueChanges.subscribe(
-      (type) => {
-        if (type === '1') {
-          this.InvoiceForm.patchValue({
-            cash: this.totalPrice,
-            visa: 0,
-            visaTrxNo: '',
-            paymentType: 1,
-          });
-        } else if (type === '2') {
-          this.InvoiceForm.patchValue({
-            cash: 0,
-            visa: this.totalPrice,
-            paymentType: 2,
-          });
-        }
-      },
-    );
-  }
+  private createItemFormGroup(item: any): FormGroup {
+    const qty = Number(item.count || item.quantity || item.Quantity || 1);
+    const unitPrice = Number(item.price || item.Price || 0);
+    const vatRate = 15;
 
-  createProductFormGroup(item: Icart): FormGroup {
+    const vatAmount = (unitPrice * qty * vatRate) / 100;
+    const totalPriceAfterVat = unitPrice * qty + vatAmount;
+
     return this._formBuilder.group({
-      productId: [item.ProductId],
-      nameAr: [item.ProductName || ''],
-      quantity: [item.Quantity],
-      price: [item.Price],
-      uniteId: [item.UnitId || 0],
-      itemID: [item.ProductId],
-      uniteName: [item.UnitName || ''],
-      branchId: [1],
-      priceIncludeVat: [item.Price],
-      discount: [0],
+      branchId: [0],
+      price: [unitPrice],
+      priceIncludeVat: [unitPrice],
+      discount: [0.0],
       totalDisc: [0],
-      discountPercent: [0],
-      vat: [0],
+      discountPercent: [0.0],
+      vat: [vatRate],
+      vatAmount: [vatAmount],
+      itemID: [item.id || item.itemId || item.ProductId || 0],
       weight: [0],
+      quantity: [qty],
+      count: [qty],
       itemType_Sale: [1],
       offerItemchek: [0],
+      uniteId: [item.unitId || 1],
+      uniteName: [item.unitName || ''],
+      nameAr: [item.name || item.productName || item.ProductName || ''],
+      productId: [item.productId || item.id || item.ProductId || 0],
+      productBarcode: [null],
       productCode: [''],
       productGtin: [''],
       patchCode: [''],
-      expirationDate: [''],
-      totalPriceAfterVat: [item.Price * item.Quantity],
-      totalPriceAfterDiscount: [item.Price * item.Quantity],
-      vatAmount: [0],
-      docDate: [new Date().toISOString()],
+      expirationDate: [new Date().toISOString().split('T')[0]],
+      totalPrice: [unitPrice * qty],
+      totalPriceAfterVat: [totalPriceAfterVat],
+      totalPriceAfterDiscount: [unitPrice],
       isProductFree: [false],
-      count: [0],
       isHasBonus: [false],
       isProductBonus: [false],
       notes: [''],
       tobagoVat: [0],
       tobagoVatAmount: [0],
+      costCenterId: [0],
+      costCenterName: [''],
+    });
+  }
+
+  private listenToPaymentMethodChange(): void {
+    this.InvoiceForm.get('paymentType')?.valueChanges.subscribe((type) => {
+      const selectedType = Number(type);
+      if (selectedType === 1) {
+        this.InvoiceForm.patchValue(
+          {
+            cash: this.totalPrice,
+            paid: this.totalPrice,
+            visa: 0.0,
+            visaTrxNo: '',
+          },
+          { emitEvent: false },
+        );
+      } else if (selectedType === 2) {
+        this.InvoiceForm.patchValue(
+          {
+            cash: 0.0,
+            visa: this.totalPrice,
+            paid: this.totalPrice,
+          },
+          { emitEvent: false },
+        );
+      }
     });
   }
 
   populateFormWithCartData(): void {
-    const saleInvoiceDetails = this.InvoiceForm.get(
-      'saleInvoiceDetails',
-    ) as FormArray;
-    saleInvoiceDetails.clear();
+    this.saleInvoiceDetails.clear();
 
     this.cartproducts.forEach((item) => {
-      saleInvoiceDetails.push(this.createProductFormGroup(item));
+      this.saleInvoiceDetails.push(this.createItemFormGroup(item));
     });
 
+    const numericClientId = Number(this.userId);
+    const validClientId =
+      !isNaN(numericClientId) && numericClientId > 0 ? numericClientId : 1;
+
     this.InvoiceForm.patchValue({
-      clientId: this.userId,
+      clientId: validClientId,
+      userId: this.userId,
       totalInvoice: this.totalPrice,
       totalInvoiceAfterVat: this.totalPrice,
+      totalInvoiceAfterDisc: this.totalPrice,
+      equivalent: this.totalPrice,
+      paid: this.totalPrice,
       cash: this.totalPrice,
-      visa: 0,
+      visa: 0.0,
+      debt: 0.0,
+      storeId: 1,
+      isMobile: true,
+      saveAndPost: false,
     });
   }
 
   createInvoice(): void {
-  console.log('hello');
-  
     if (this.InvoiceForm.invalid) {
       this.InvoiceForm.markAllAsTouched();
       this._ToastrService.error(
@@ -249,37 +267,16 @@ export class paymentComponent implements OnInit {
       return;
     }
 
-    const formValue = { ...this.InvoiceForm.value };
-
-    formValue.cash = this._HelperService.formatAmount(formValue.cash);
-    formValue.visa = this._HelperService.formatAmount(formValue.visa);
-
-    formValue.docDate = this._HelperService.formatDateDisplay(
-      formValue.docDate,
-    );
-
-    formValue.banquetDate = this._HelperService.formatDateDisplay(
-      formValue.banquetDate,
-    );
-
-    const totalPaid = formValue.cash + formValue.visa;
-    const remainingDebt = this.totalPrice - totalPaid;
-
-    formValue.debt =
-      remainingDebt > 0 ? this._HelperService.formatAmount(remainingDebt) : 0;
-
-    formValue.paymentType =
-      formValue.cash > 0 && formValue.visa > 0 ? 3 : formValue.visa > 0 ? 2 : 1;
-
     let createdInvoiceId: string = '';
     this._loadingService.start();
 
+    const payload = this.InvoiceForm.value;
     this._PaymentService
-      .createPaymentInvoice(formValue)
+      .createPaymentInvoice(payload)
       .pipe(
         switchMap((res: any) => {
-          if (res?.IsSuccess) {
-            createdInvoiceId = res?.Obj?.Id || res?.Id || '';
+          if (res?.IsSuccess || res?.isSuccess || res?.Obj) {
+            createdInvoiceId = res?.Obj?.Id || res?.Id || res?.id || '';
             return this._cartService.clearCart(this.userId!);
           } else {
             this._ToastrService.error(
@@ -291,12 +288,12 @@ export class paymentComponent implements OnInit {
         finalize(() => this._loadingService.stop()),
       )
       .subscribe({
-        next: () => {
-          this._ToastrService.success(
-            this._translate.instant('cart.invoice.successMsg'),
-          );
-          localStorage.removeItem('cartItems');
-          this._router.navigate(['/order-success'], {
+        next: (res) => {
+          this._ToastrService.success(this._translate.instant(res?.Message));
+          localStorage.removeItem('items');
+          localStorage.removeItem('cartCount');
+
+          this._router.navigate(['/allOrders'], {
             queryParams: { invoiceId: createdInvoiceId },
           });
         },

@@ -247,5 +247,19 @@
   "emailLabel": "Email Address",
   "emailPlaceholder": "No registered email",
   "emailError": "Please enter a valid email address",
-  "roleGroupLabel": "Role Group ID"
+  "roleGroupLabel": "Role Group ID",
+  "basicInfoSection": "Basic Information",
+  "contactInfoSection": "Contact Information",
+  "shippingAddressSection": "Shipping Address",
+  "nameArLabel": "Arabic Name",
+  "nameEnLabel": "English Name",
+  "phoneLabel": "Phone Number",
+  "whatsappLabel": "WhatsApp",
+  "governorateLabel": "Governorate",
+  "cityNameLabel": "City Name",
+  "districtLabel": "District",
+  "streetLabel": "Street",
+  "buildingNumberLabel": "Building Number",
+  "nationalAddressLabel": "National Address",
+  "addressLabel": "Detailed Address"
 }

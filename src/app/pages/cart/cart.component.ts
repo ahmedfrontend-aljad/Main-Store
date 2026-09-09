@@ -60,7 +60,7 @@ export class CartComponent implements OnInit, OnDestroy {
           if (res?.IsSuccess && res?.Obj?.Items) {
             this.cardUserItems.set(res.Obj.Items);
             this.recalculateTotalPrice();
-            localStorage.setItem('cartItems', JSON.stringify(res.Obj.Items));
+            localStorage.setItem('items', JSON.stringify(res.Obj.Items));
             this.isCartHasProducts = res.Obj.Items.length > 0;
           } else {
             this.resetLocalCartState();
@@ -69,7 +69,7 @@ export class CartComponent implements OnInit, OnDestroy {
         error: (err) => {
           this._LoadingService.stop();
           console.error('Error fetching cart:', err);
-          const localCart = localStorage.getItem('cartItems');
+          const localCart = localStorage.getItem('items');
           if (localCart) {
             this.cardUserItems.set(JSON.parse(localCart));
             this.recalculateTotalPrice();
@@ -166,7 +166,7 @@ export class CartComponent implements OnInit, OnDestroy {
         this.subscriptions.add(
           this._CartService
             .SyncCartFromLocal({
-              cartItems: updatedCart,
+              items: updatedCart,
               userId: this.decoded.Id,
             })
             .subscribe({
@@ -176,7 +176,7 @@ export class CartComponent implements OnInit, OnDestroy {
                   this.cardUserItems.set(updatedCart);
                   this.recalculateTotalPrice();
                   localStorage.setItem(
-                    'cartItems',
+                    'items',
                     JSON.stringify(updatedCart),
                   );
                   this.isCartHasProducts = updatedCart.length > 0;
@@ -227,7 +227,7 @@ export class CartComponent implements OnInit, OnDestroy {
       this.subscriptions.add(
         this._CartService
           .SyncCartFromLocal({
-            cartItems: updatedCart,
+            items: updatedCart,
             userId: this.decoded.Id,
           })
           .subscribe({
@@ -235,8 +235,9 @@ export class CartComponent implements OnInit, OnDestroy {
               if (res?.IsSuccess) {
                 this.cardUserItems.set(updatedCart);
                 this.recalculateTotalPrice();
-                localStorage.setItem('cartItems', JSON.stringify(updatedCart));
-                this._ToastrService.success('تم تحديث الكمية بنجاح.');
+                localStorage.setItem('items', JSON.stringify(updatedCart));
+                this._CartService.getLoggedCart(this.decoded.Id);
+                this._ToastrService.success(res?.Message);
               } else {
                 this._ToastrService.error(res?.Message || 'فشل تحديث الكمية.');
               }
@@ -265,7 +266,7 @@ export class CartComponent implements OnInit, OnDestroy {
   private resetLocalCartState(): void {
     this.cardUserItems.set([]);
     this.recalculateTotalPrice();
-    localStorage.removeItem('cartItems');
+    localStorage.removeItem('items');
     this.isCartHasProducts = false;
   }
 }
