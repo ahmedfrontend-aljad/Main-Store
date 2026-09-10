@@ -9,7 +9,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { Subscription, Unsubscribable } from 'rxjs';
+import { finalize, firstValueFrom, Unsubscribable } from 'rxjs';
 import { AuthService } from '../../../Core/Services/auth.service';
 import { StoreInputComponent } from '../../../Shared/components/store-input/store-input.component';
 import { SubmitButtonComponent } from '../../../Shared/components/submit-button/submit-button.component';
@@ -17,9 +17,12 @@ import { LoadingService } from '../../../Core/Services/loading.service';
 import { CommonModule } from '@angular/common';
 import { GuestAuthService } from '../../../Core/Services/guest-auth.service';
 import jwtDecode from 'jwt-decode';
+import { StoreUrl } from '../../../Shared/constants/api.constant';
+import { DataService } from '../../../Core/Services/data.service';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [
     RouterLink,
     ReactiveFormsModule,
@@ -41,6 +44,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   private readonly _TranslateService = inject(TranslateService);
   private readonly _LoadingService = inject(LoadingService);
   private readonly _GuestAuthService = inject(GuestAuthService);
+  private readonly _DataService = inject(DataService);
 
   destoryUserData!: Unsubscribable;
   destoryGustData!: Unsubscribable;
@@ -60,6 +64,31 @@ export class LoginComponent implements OnInit, OnDestroy {
       rememberMe: [true],
       getRoles: [true],
     });
+  }
+
+  async getProfileData(userId: string): Promise<void> {
+    this._LoadingService.start();
+    const endpoint = `${StoreUrl}/User/GetProfile`;
+
+    try {
+      const response: any = await firstValueFrom(
+        this._DataService
+          .get(`${endpoint}?userId=${userId}`)
+          .pipe(finalize(() => this._LoadingService.stop())),
+      );
+
+      if (response?.IsSuccess) {
+        localStorage.setItem(
+          'profileData',
+          JSON.stringify(response.Obj?.Client?.Id),
+        );
+      } else {
+        this._ToastrService.error(response?.Message);
+      }
+    } catch (error: any) {
+      console.error(error);
+      this._ToastrService.error(error?.Message);
+    }
   }
 
   sendLoginData(): void {
@@ -82,7 +111,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     };
 
     this.destoryUserData = this._AuthService.sendLoginData(payload).subscribe({
-      next: (res) => {
+      next: async (res) => {
         this._LoadingService.stop();
         this.isloading = false;
 
@@ -90,10 +119,20 @@ export class LoginComponent implements OnInit, OnDestroy {
           this._ToastrService.success(
             this._TranslateService.instant('auth.loginSuccess'),
           );
+
+          localStorage.removeItem('guestToken');
           localStorage.setItem('userToken', res.Obj.AccessToken);
-          const decoded: any = jwtDecode(res.Obj.AccessToken)!;
-          const userId = decoded.Id;
-          localStorage.setItem('userId', userId);
+
+          try {
+            const decoded: any = jwtDecode(res.Obj.AccessToken);
+            if (decoded?.Id) {
+              localStorage.setItem('userId', decoded.Id);
+              await this.getProfileData(decoded.Id);
+            }
+          } catch (e) {
+            console.error('Invalid JWT Token', e);
+          }
+
           this._Router.navigate(['/home']);
         } else {
           this._ToastrService.error(
@@ -112,10 +151,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
   }
 
-  guestLogin(): void {
-    this._LoadingService.start();
-    this._GuestAuthService.ensureGuestToken();
-    this._LoadingService.stop();
+  async guestLogin(): Promise<void> {
+    await this._GuestAuthService.ensureGuestToken();
+    this._Router.navigate(['/home']);
   }
 
   ngOnDestroy(): void {

@@ -35,10 +35,10 @@ export class CartComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
 
   totalPrice: number = 0;
-  decoded!: any;
+  userId = localStorage.getItem('userId');
 
   ngOnInit(): void {
-    const token = localStorage.getItem('userToken');
+    const token = localStorage.getItem('userToken')!;
     if (token) {
       this.getCartItems();
     }
@@ -51,7 +51,7 @@ export class CartComponent implements OnInit, OnDestroy {
   getCartItems(): void {
     this._LoadingService.start();
     this.subscriptions.add(
-      this._CartService.getLoggedCart(this.decoded.Id).subscribe({
+      this._CartService.getLoggedCart(this.userId).subscribe({
         next: (res) => {
           this._LoadingService.stop();
           if (res?.IsSuccess && res?.Obj?.Items) {
@@ -106,7 +106,7 @@ export class CartComponent implements OnInit, OnDestroy {
         this._LoadingService.start();
 
         this.subscriptions.add(
-          this._CartService.clearCart(this.decoded.Id).subscribe({
+          this._CartService.clearCart(this.userId).subscribe({
             next: (res) => {
               this._LoadingService.stop();
               this.resetLocalCartState();
@@ -164,7 +164,7 @@ export class CartComponent implements OnInit, OnDestroy {
           this._CartService
             .SyncCartFromLocal({
               items: updatedCart,
-              userId: this.decoded.Id,
+              userId: this.userId,
             })
             .subscribe({
               next: (res) => {
@@ -222,7 +222,7 @@ export class CartComponent implements OnInit, OnDestroy {
         this._CartService
           .SyncCartFromLocal({
             items: updatedCart,
-            userId: this.decoded.Id,
+            userId: this.userId,
           })
           .subscribe({
             next: (res) => {
@@ -230,7 +230,7 @@ export class CartComponent implements OnInit, OnDestroy {
                 this.cardUserItems.set(updatedCart);
                 this.recalculateTotalPrice();
                 localStorage.setItem('items', JSON.stringify(updatedCart));
-                this._CartService.getLoggedCart(this.decoded.Id);
+                this._CartService.getLoggedCart(this.userId);
                 this._ToastrService.success(res?.Message);
               } else {
                 this._ToastrService.error(res?.Message);

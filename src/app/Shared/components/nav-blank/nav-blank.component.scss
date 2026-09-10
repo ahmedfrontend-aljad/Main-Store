@@ -2,6 +2,26 @@ nav {
   padding-bottom: 10px;
 }
 
+.navbar-nav {
+  .nav-link {
+    color: var(--color-text, #333) !important;
+    transition:
+      color 0.3s ease,
+      background-color 0.3s ease;
+    border-bottom: 2px solid transparent;
+
+    &:hover,
+    &:focus {
+      color: var(--btn-hover-bg, var(--color-primary, #2c974b)) !important;
+      background-color: transparent !important;
+    }
+
+    &.active {
+      color: var(--btn-hover-bg, var(--color-primary, #2c974b)) !important;
+    }
+  }
+}
+
 .userIcon {
   color: var(--color-secondary);
   font-size: 1.4rem;
@@ -11,10 +31,6 @@ nav {
     color: var(--color-primary);
     transform: scale(1.1);
   }
-}
-
-ul {
-  color: white !important;
 }
 
 .cart {
@@ -128,6 +144,7 @@ ul {
     font-size: 13px !important;
   }
 }
+
 .navbar-toggler {
   border-color: var(--color-border, #3f3f5a) !important;
 

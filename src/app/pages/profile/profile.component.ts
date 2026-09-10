@@ -105,9 +105,7 @@ export class ProfileComponent implements OnInit {
     const userId = localStorage.getItem('userId')!;
 
     this._LoadingService.start();
-    const endpoint = StoreUrl.endsWith('/')
-      ? `${StoreUrl}User/GetProfile`
-      : `${StoreUrl}/User/GetProfile`;
+    const endpoint = `${StoreUrl}/User/GetProfile`;
 
     try {
       const response: any = await firstValueFrom(

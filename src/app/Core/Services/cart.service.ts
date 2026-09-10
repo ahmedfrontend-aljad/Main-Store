@@ -31,14 +31,14 @@ export class CartService {
     }
   }
 
-  getLoggedCart(userId: string): Observable<any> {
+  getLoggedCart(userId: any): Observable<any> {
     return this._DataService
       .get(`${apiUrl}/XtraAndPos_StoreCart/GetCartAsync?userId=${userId}`)
       .pipe(
         tap((res: any) => {
           if (res?.IsSuccess) {
             const count = res.Obj?.Items?.length || 0;
-            this.updateCartCount(count); 
+            this.updateCartCount(count);
           }
         }),
       );
@@ -61,7 +61,7 @@ export class CartService {
       );
   }
 
-  SyncCartFromLocal(data: { items: any[]; userId: string }): Observable<any> {
+  SyncCartFromLocal(data: { items: any[]; userId: any }): Observable<any> {
     return this._DataService
       .post(`${apiUrl}/XtraAndPos_StoreCart/SyncCartFromLocalAsync`, data)
       .pipe(
@@ -74,7 +74,7 @@ export class CartService {
       );
   }
 
-  clearCart(userId: string): Observable<any> {
+  clearCart(userId: any): Observable<any> {
     return this._DataService
       .delete(`${apiUrl}/NewStore/Cart/ClearCart?userId=${userId}`)
       .pipe(

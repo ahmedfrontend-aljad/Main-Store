@@ -11,31 +11,6 @@ import { ProductCardComponent } from '../../Shared/components/product-card/produ
 import { StoreUrl } from '../../Shared/constants/api.constant';
 import { PAGE_SIZE } from '../../Shared/constants/general.constant';
 import { GuestAuthService } from '../../Core/Services/guest-auth.service';
-export interface APIBanners {
-  TotalCount: number;
-  PageNumber: number;
-  PageSize: number;
-  TotalPages: number;
-  PagedResult: PagedResult[];
-}
-
-export interface PagedResult {
-  Id: number;
-  No: number;
-  Guid: string;
-  TitleAr: string;
-  TitleEn: string;
-  DescriptionAr: string;
-  DescriptionEn: string;
-  ImagePath: string;
-  LinkUrl: string;
-  DisplayOrder: number;
-  StartDate: Date;
-  EndDate: Date;
-  IsActive: boolean;
-  BranchId: number;
-  Notes: string;
-}
 
 @Component({
   selector: 'app-home',
@@ -57,13 +32,13 @@ export class HomeComponent implements OnInit {
   private readonly _DataService = inject(DataService);
   private readonly _spinnerInterceptor = inject(NgxSpinnerService);
   private readonly _GuestAuthService = inject(GuestAuthService);
+
   products: any[] = [];
   categories: any[] = [];
   offers: any[] = [];
 
   text: string = '';
   sub!: Subscription;
-  isUser: boolean = false;
   currentUrl: string = '';
   bannersData: any;
   pageNo = 1;
@@ -81,7 +56,6 @@ export class HomeComponent implements OnInit {
     pullDrag: false,
     dots: false,
     navSpeed: 700,
-
     responsive: {
       0: { items: 1 },
       400: { items: 2 },
@@ -111,8 +85,10 @@ export class HomeComponent implements OnInit {
 
   async ngOnInit() {
     this.currentUrl = this._Router.url;
+
+    await this._GuestAuthService.ensureGuestToken();
+
     await this.getHomeData();
-    this._GuestAuthService.ensureGuestToken();
   }
 
   get currentLang(): string {
@@ -137,14 +113,14 @@ export class HomeComponent implements OnInit {
     await firstValueFrom(
       this._DataService.get(`${StoreUrl}/Home/GetHome`).pipe(
         tap((res) => {
-          this.bannersData = res.Obj.Banners;
-          this.categories = res.Obj.Groups;
-          this.offers = res.Obj.Offers;
+          this.bannersData = res?.Obj?.Banners;
+          this.categories = res?.Obj?.Groups;
+          this.offers = res?.Obj?.Offers;
         }),
       ),
     ).catch((error) => {
       console.error(error);
-      this._ToastrService.error(error.Message);
+      this._ToastrService.error(error?.Message || 'Error fetching home data');
     });
 
     this._spinnerInterceptor.hide();

@@ -45,7 +45,7 @@ export class paymentComponent implements OnInit {
   InvoiceForm!: FormGroup;
   totalPrice: number = 0;
   userId: string | null = null;
-
+  clientId: any;
   get selectedPaymentMethod(): string {
     return this.InvoiceForm.get('paymentType')?.value?.toString() || '1';
   }
@@ -106,7 +106,7 @@ export class paymentComponent implements OnInit {
 
   initForm(): void {
     const nowISO = new Date().toISOString().split('.')[0];
-
+    this.clientId = Number(localStorage.getItem('profileData'));
     this.InvoiceForm = this._formBuilder.group({
       id: [0],
       insuranceAmount: [0],
@@ -119,7 +119,7 @@ export class paymentComponent implements OnInit {
       totalInvoiceAfterVatIncluded: [0],
       currencyId: [1],
       equivalent: [0],
-      clientId: [this.userId, [Validators.required]],
+      clientId: [this.clientId, [Validators.required]],
       clientName: [this.userName],
       userId: [''],
       paymentType: [1],
@@ -208,13 +208,12 @@ export class paymentComponent implements OnInit {
       this.saleInvoiceDetails.push(this.createItemFormGroup(item));
     });
 
-    const clientId = this.userId;
     const total = cartObj.TotalPrice || this.totalPrice;
     const vat = cartObj.TotalVat || 0;
     const grandTotal = cartObj.TotalPriceAfterVat || total;
 
     this.InvoiceForm.patchValue({
-      clientId: clientId,
+      clientId: this.clientId,
       userId: this.userId || '',
       totalInvoice: total,
       totalInvoiceVatAmount: vat,

@@ -7,9 +7,14 @@ import {
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+} from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { CartService } from '../../../Core/Services/cart.service';
 import { MyTranslateService } from '../../../Core/Services/my-translate.service';
 import { ThemeService } from '../../../Core/Services/theme.service';
@@ -33,6 +38,7 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   selectedLanguage = 'English';
 
   private cartSub!: Subscription;
+  private routerSub!: Subscription;
 
   private readonly _PLATFORM_ID = inject(PLATFORM_ID);
   private readonly _Router = inject(Router);
@@ -42,8 +48,6 @@ export class NavBlankComponent implements OnInit, OnDestroy {
 
   constructor() {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
-      this.userId = localStorage.getItem('userId');
-
       const savedLang = localStorage.getItem('lang') || 'en';
       this.selectedLanguage = savedLang === 'ar' ? 'عربي' : 'English';
     }
@@ -52,24 +56,41 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._themeService.loadTheme();
     this.updateThemeState();
+    this.checkAuthStatus();
 
-    if (localStorage.getItem('guestToken')) {
-      this.isGuest = true;
-    }
+    this.routerSub = this._Router.events
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe(() => {
+        this.checkAuthStatus();
+      });
 
     this.cartSub = this._CartService.cartCount$.subscribe((count) => {
       this.itemsCount = count;
     });
 
-    if (this.userId) {
+    if (this.userId && this.isUserLogged) {
       this._CartService.getLoggedCart(this.userId).subscribe();
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.cartSub) {
-      this.cartSub.unsubscribe();
+  checkAuthStatus(): void {
+    if (isPlatformBrowser(this._PLATFORM_ID)) {
+      const userToken = localStorage.getItem('userToken');
+      this.userId = localStorage.getItem('userId');
+
+      if (userToken) {
+        this.isUserLogged = true;
+        this.isGuest = false;
+      } else {
+        this.isUserLogged = false;
+        this.isGuest = true;
+      }
     }
+  }
+
+  ngOnDestroy(): void {
+    if (this.cartSub) this.cartSub.unsubscribe();
+    if (this.routerSub) this.routerSub.unsubscribe();
   }
 
   toggleTheme(): void {
@@ -106,11 +127,11 @@ export class NavBlankComponent implements OnInit, OnDestroy {
 
   signout(): void {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
-      localStorage.removeItem('userToken');
-      localStorage.removeItem('cartCount');
+      localStorage.clear(); 
       this.isUserLogged = false;
+      this.isGuest = true;
       this._CartService.updateCartCount(0);
-      this._Router.navigate(['/home']);
+      this._Router.navigate(['/auth/login']);
     }
   }
 
