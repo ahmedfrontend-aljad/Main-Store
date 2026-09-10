@@ -10,6 +10,7 @@ import { DataService } from '../../Core/Services/data.service';
 import { ProductCardComponent } from '../../Shared/components/product-card/product-card.component';
 import { StoreUrl } from '../../Shared/constants/api.constant';
 import { PAGE_SIZE } from '../../Shared/constants/general.constant';
+import { GuestAuthService } from '../../Core/Services/guest-auth.service';
 export interface APIBanners {
   TotalCount: number;
   PageNumber: number;
@@ -55,6 +56,7 @@ export class HomeComponent implements OnInit {
   private readonly _ToastrService = inject(ToastrService);
   private readonly _DataService = inject(DataService);
   private readonly _spinnerInterceptor = inject(NgxSpinnerService);
+  private readonly _GuestAuthService = inject(GuestAuthService);
   products: any[] = [];
   categories: any[] = [];
   offers: any[] = [];
@@ -110,6 +112,7 @@ export class HomeComponent implements OnInit {
   async ngOnInit() {
     this.currentUrl = this._Router.url;
     await this.getHomeData();
+    this._GuestAuthService.ensureGuestToken();
   }
 
   get currentLang(): string {

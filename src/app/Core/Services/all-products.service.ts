@@ -15,7 +15,7 @@ export class AllProductsService {
   // Get Headers
   getHeaders(): HttpHeaders {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
-      const userToken = localStorage.getItem('userToken');
+      const userToken = localStorage.getItem('userToken') ||  localStorage.getItem('guestToken');;
 
       const token = userToken;
 

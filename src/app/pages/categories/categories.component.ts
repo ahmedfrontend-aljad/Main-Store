@@ -43,7 +43,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       this._CategoriesService.getAllCategories().subscribe({
         next: (res) => {
           console.log(res);
-          this.allCategories.set(res.Obj.ItemGroups);
+          this.allCategories.set(res.Obj.Groups);
           this._LoadingService.stop();
         },
         error: (err) => {

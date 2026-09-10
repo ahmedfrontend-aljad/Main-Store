@@ -6,7 +6,8 @@ import { finalize } from 'rxjs';
 export const spinnerInterceptor: HttpInterceptorFn = (req, next) => {
   const spinnerService = inject(NgxSpinnerService);
 
-  const token = localStorage.getItem('userToken');
+  const token =
+    localStorage.getItem('userToken') || localStorage.getItem('guestToken');
   let modifiedReq = req;
 
   if (token) {
@@ -22,6 +23,6 @@ export const spinnerInterceptor: HttpInterceptorFn = (req, next) => {
   return next(modifiedReq).pipe(
     finalize(() => {
       spinnerService.hide();
-    })
+    }),
   );
 };

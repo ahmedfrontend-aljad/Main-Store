@@ -14,7 +14,7 @@ export class CategoriesService {
   private readonly _PLATFORM_ID = inject(PLATFORM_ID);
   getHeaders(): HttpHeaders {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
-      const userToken = localStorage.getItem('userToken');
+      const userToken = localStorage.getItem('userToken') ||  localStorage.getItem('guestToken');;
 
       const token = userToken ;
 

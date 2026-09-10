@@ -53,6 +53,10 @@ export class NavBlankComponent implements OnInit, OnDestroy {
     this._themeService.loadTheme();
     this.updateThemeState();
 
+    if (localStorage.getItem('guestToken')) {
+      this.isGuest = true;
+    }
+
     this.cartSub = this._CartService.cartCount$.subscribe((count) => {
       this.itemsCount = count;
     });
@@ -105,7 +109,6 @@ export class NavBlankComponent implements OnInit, OnDestroy {
       localStorage.removeItem('userToken');
       localStorage.removeItem('cartCount');
       this.isUserLogged = false;
-      this.isGuest = true;
       this._CartService.updateCartCount(0);
       this._Router.navigate(['/home']);
     }
