@@ -10,7 +10,7 @@ export const authLoginGuard: CanActivateFn = (route, state) => {
     const userToken = localStorage.getItem('userToken');
 
     if (userToken) {
-      return router.createUrlTree(['/home']);
+      return router.navigate(['/home']);
     }
 
     return true;

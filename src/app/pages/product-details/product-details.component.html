@@ -170,19 +170,7 @@
           {{ detailsProduct.CreatedDate | date: "mediumDate" }}
         </div>
 
-        <button
-          class="add-to-cart btn btn-primary mt-4 py-2 px-6 rounded-lg text-white font-bold flex items-center justify-center gap-2"
-          [disabled]="detailsProduct.Balance <= 0"
-          [class.opacity-50]="detailsProduct.Balance <= 0"
-          (click)="addToCart(detailsProduct.Id, selectedUnit?.Price ?? 0)"
-        >
-          <i class="fas fa-shopping-cart"></i>
-          @if (detailsProduct.Balance > 0) {
-            {{ "products.addtocart" | translate }}
-          } @else {
-            🚫 {{ "notAvaliableRightNow" | translate }}
-          }
-        </button>
+        <app-add-to-cart [product]="detailsProduct"> </app-add-to-cart>
       </div>
     </div>
 

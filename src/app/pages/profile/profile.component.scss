@@ -1,0 +1,24 @@
+::ng-deep {
+  app-store-input {
+    input:disabled,
+    select:disabled,
+    textarea:disabled,
+    input[disabled] {
+      background-color: #2b2b40 !important;
+
+      color: #ffffff !important;
+
+      -webkit-text-fill-color: #ffffff !important;
+
+      border-color: #3f3f5a !important;
+
+      opacity: 1 !important;
+      cursor: not-allowed;
+    }
+
+    input:disabled::placeholder {
+      color: #6c757d !important;
+      -webkit-text-fill-color: #6c757d !important;
+    }
+  }
+}

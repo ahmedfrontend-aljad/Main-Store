@@ -103,18 +103,10 @@ export class ProfileComponent implements OnInit {
   }
 
   async getProfileData(): Promise<void> {
-    const userToken = localStorage.getItem('userToken');
-    if (!userToken) {
-      this._ToastrService.error('لم يتم العثور على رمز الجلسة');
-      return;
-    }
+    const userToken = localStorage.getItem('userToken')!;
 
     const decoded: any = jwtDecode(userToken);
     const userId = decoded?.Id;
-    if (!userId) {
-      this._ToastrService.error('لم يتم العثور على معرّف المستخدم');
-      return;
-    }
 
     this._LoadingService.start();
     const endpoint = StoreUrl.endsWith('/')
@@ -134,9 +126,9 @@ export class ProfileComponent implements OnInit {
       } else {
         this._ToastrService.error(response?.Message);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      this._ToastrService.error('حدث خطأ أثناء تحميل بيانات الملف الشخصي');
+      this._ToastrService.error(error.Message);
     }
   }
 
@@ -149,7 +141,7 @@ export class ProfileComponent implements OnInit {
       email: data.Email,
       RoleGroupId: data.RoleGroupId,
 
-      nameAr: client.NameAr || data.UserName,
+      nameAr: client.NameAr,
       nameEn: client.NameEn || '',
       phoneNo: client.PhoneNo || '',
       whatsapp: client.Whatsapp || '',
@@ -236,16 +228,16 @@ export class ProfileComponent implements OnInit {
       );
 
       if (response?.IsSuccess) {
-        this._ToastrService.success('تم تحديث البيانات بنجاح');
+        this._ToastrService.success(response.Message);
         this.isEditMode = false;
         this.profileForm.disable();
         this.getProfileData();
       } else {
         this._ToastrService.error(response?.Message);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      this._ToastrService.error('حدث خطأ أثناء حفظ التغييرات');
+      this._ToastrService.error(error.Message);
     }
   }
 }

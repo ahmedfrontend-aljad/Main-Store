@@ -1,71 +1,243 @@
-<section class="max-w-7xl mx-auto space-y-8" dir="rtl">
-  <div class="app-toolbar mb-1 d-flex flex-stack flex-wrap align-items-center">
-    <div class="page-title">
-      <h1 class="page-heading d-flex fw-bold fs-3 my-0 font-serif">
-        {{ "ALL_ORDERS" | translate }}
-      </h1>
-    </div>
-  </div>
-
-  <form [formGroup]="filtersForm" class="mb-5">
-    <div class="row g-2 align-items-center">
-      <div class="col-md-3">
-        <app-store-input
-          [control]="this.filtersForm.get('fromDate')!"
-          [type]="'date'"
-          [placeholder]="'fromDate'"
-          [label]="'fromDate'"
-        >
-        </app-store-input>
-      </div>
-
-      <div class="col-md-3">
-        <app-store-input
-          [control]="this.filtersForm.get('toDate')!"
-          [type]="'date'"
-          [placeholder]="'toDate'"
-          [label]="'toDate'"
-        >
-        </app-store-input>
-      </div>
-      <div class="mt-9 col-md-3">
-        <button
-          type="button"
-          [disabled]="!hasFiltersSelected"
-          class="btn btn-primary"
-          (click)="applyFilter()"
-        >
-          {{ "apply" | translate }}
-        </button>
-
-        <button
-          *ngIf="showClearFilters"
-          type="button"
-          class="btn btn-danger ms-3"
-          (click)="clearFilters()"
-        >
-          {{ "clear" | translate }}
-        </button>
+<div class="container m-auto px-4 sm:px-6">
+  <section
+    class="max-w-7xl mx-auto space-y-8"
+    [attr.dir]="currentLang === 'ar' ? 'rtl' : 'ltr'"
+  >
+    <div
+      class="app-toolbar mb-1 d-flex flex-stack flex-wrap align-items-center"
+    >
+      <div class="page-title">
+        <h1 class="page-heading d-flex fw-bold fs-3 my-0 font-serif">
+          {{ "ALL_ORDERS" | translate }}
+        </h1>
       </div>
     </div>
-  </form>
 
-  <div>
-    <div class="space-y-2">
+    <form [formGroup]="filtersForm" class="mb-5">
+      <div class="row g-2 align-items-center">
+        <div class="col-md-3">
+          <app-store-input
+            [control]="filtersForm.get('fromDate')!"
+            [type]="'date'"
+            [placeholder]="'FROM_DATE' | translate"
+            [label]="'FROM_DATE' | translate"
+          >
+          </app-store-input>
+        </div>
+
+        <div class="col-md-3">
+          <app-store-input
+            [control]="filtersForm.get('toDate')!"
+            [type]="'date'"
+            [placeholder]="'TO_DATE' | translate"
+            [label]="'TO_DATE' | translate"
+          >
+          </app-store-input>
+        </div>
+
+        <div class="mt-9 col-md-3">
+          <button
+            type="button"
+            [disabled]="!hasFiltersSelected"
+            class="btn btn-primary"
+            (click)="applyFilter()"
+          >
+            {{ "APPLY" | translate }}
+          </button>
+
+          <button
+            *ngIf="showClearFilters"
+            type="button"
+            class="btn btn-danger me-3 ms-3"
+            (click)="clearFilters()"
+          >
+            {{ "CLEAR" | translate }}
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <div class="bg-white rounded shadow-sm">
       <p-tabs [(value)]="value">
         <p-tablist>
           @for (tab of tabs; track tab.id) {
-            <p-tab [value]="tab.id">{{ tab.title }}</p-tab>
+            <p-tab [value]="tab.id">
+              <span class="fw-bold fs-6">
+                {{ tab.translationKey | translate }}
+              </span>
+            </p-tab>
           }
         </p-tablist>
+
         <p-tabpanels>
           @for (tab of tabs; track tab.id) {
             <p-tabpanel [value]="tab.id">
-              <h2 class="text-lg font-bold">{{ tab.title }}</h2>
+              <div
+                *ngIf="getOrdersByStatus(tab.status).length === 0"
+                class="text-center py-5 text-muted"
+              >
+                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                <p class="fs-5">
+                  {{ "NO_ORDERS_FOUND" | translate }} ({{
+                    tab.translationKey | translate
+                  }})
+                </p>
+              </div>
+
+              <div
+                class="row g-4"
+                *ngIf="getOrdersByStatus(tab.status).length > 0"
+              >
+                @for (
+                  order of getOrdersByStatus(tab.status);
+                  track order.Id || order.DocNo
+                ) {
+                  <div class="col-6 col-md-6 col-lg-4 px-1 px-sm-2">
+                    <div
+                      class="card h-100 border shadow-sm rounded-3 overflow-hidden"
+                    >
+                      <div
+                        class="card-header bg-light d-flex justify-content-between align-items-center py-3"
+                      >
+                        <div>
+                          <span class="fw-bold text-primary">
+                            {{ "ORDER_NO" | translate }}: #{{
+                              order.DocNo || order.Id
+                            }}
+                          </span>
+                        </div>
+                        <small class="text-muted">
+                          {{ order.DocDate | date: "yyyy/MM/dd HH:mm" }}
+                        </small>
+                      </div>
+
+                      <div class="card-body">
+                        <p class="mb-2">
+                          <i class="bi bi-person text-muted me-1 ms-1"></i>
+                          <strong>{{ "CLIENT" | translate }}:</strong>
+                          {{ order.ClientName || ("CASH_CLIENT" | translate) }}
+                        </p>
+
+                        <p class="mb-2" *ngIf="order.ClientPhoneNo">
+                          <i class="bi bi-telephone text-muted me-1 ms-1"></i>
+                          <strong>{{ "PHONE" | translate }}:</strong>
+                          {{ order.ClientPhoneNo }}
+                        </p>
+
+                        <hr class="my-3" />
+
+                        <h6 class="fw-bold mb-2 fs-7 text-secondary">
+                          {{ "ITEMS" | translate }} ({{
+                            (order.SaleInvoiceDetails || order.Details)
+                              ?.length || 0
+                          }}):
+                        </h6>
+
+                        <ul class="list-group list-group-flush mb-3">
+                          @for (
+                            item of order.SaleInvoiceDetails || order.Details;
+                            track item.Id || item.ItemNo
+                          ) {
+                            <li
+                              class="list-group-item d-flex justify-content-between align-items-center px-0 py-1 bg-transparent fs-7"
+                            >
+                              <span>
+                                {{
+                                  currentLang === "ar"
+                                    ? item.NameAr || item.ItemName
+                                    : item.NameEn ||
+                                      item.ItemName ||
+                                      item.NameAr
+                                }}
+                                (x{{ item.Quantity || item.Qty }})
+                              </span>
+                              <span class="fw-semibold">
+                                {{
+                                  item.TotalPriceAfterVat ||
+                                    item.TotalWithVat ||
+                                    item.TotalPrice | number: "1.2-2"
+                                }}
+                                {{
+                                  order.CurrencyName || ("CURRENCY" | translate)
+                                }}
+                              </span>
+                            </li>
+                          }
+                        </ul>
+
+                        <div class="bg-light p-3 rounded-2 space-y-1">
+                          <div
+                            class="d-flex justify-content-between text-muted fs-7"
+                          >
+                            <span>{{ "TOTAL_BEFORE_TAX" | translate }}:</span>
+                            <span>
+                              {{
+                                order.TotalInvoiceAfterDisc ||
+                                  order.TotalBeforeVat ||
+                                  order.NetTotal | number: "1.2-2"
+                              }}
+                              {{
+                                order.CurrencyName || ("CURRENCY" | translate)
+                              }}
+                            </span>
+                          </div>
+                          <div
+                            class="d-flex justify-content-between text-muted fs-7"
+                          >
+                            <span>{{ "VAT_AMOUNT" | translate }}:</span>
+                            <span>
+                              {{
+                                order.TotalInvoiceVatAmount || order.VatAmount
+                                  | number: "1.2-2"
+                              }}
+                              {{
+                                order.CurrencyName || ("CURRENCY" | translate)
+                              }}
+                            </span>
+                          </div>
+                          <div
+                            class="d-flex justify-content-between fw-bold text-dark fs-6 mt-1 border-top pt-1"
+                          >
+                            <span>{{ "TOTAL_INCLUSIVE" | translate }}:</span>
+                            <span class="text-success">
+                              {{
+                                order.TotalInvoiceAfterVat ||
+                                  order.NetTotalWithVat ||
+                                  order.Total | number: "1.2-2"
+                              }}
+                              {{
+                                order.CurrencyName || ("CURRENCY" | translate)
+                              }}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              @if (
+                getTotalCountByStatus(tab.status) > pageSize &&
+                getOrdersByStatus(tab.status).length > 0
+              ) {
+                <div class="d-flex justify-content-center mt-4">
+                  <ngb-pagination
+                    [(page)]="pageNo"
+                    [pageSize]="pageSize"
+                    [collectionSize]="getTotalCountByStatus(tab.status)"
+                    (pageChange)="page($event)"
+                    [maxSize]="5"
+                    [rotate]="true"
+                    [boundaryLinks]="true"
+                  >
+                  </ngb-pagination>
+                </div>
+              }
             </p-tabpanel>
           }
         </p-tabpanels>
       </p-tabs>
     </div>
-  </div>
-</section>
+  </section>
+</div>

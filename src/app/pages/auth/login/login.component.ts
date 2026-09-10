@@ -15,6 +15,7 @@ import { StoreInputComponent } from '../../../Shared/components/store-input/stor
 import { SubmitButtonComponent } from '../../../Shared/components/submit-button/submit-button.component';
 import { LoadingService } from '../../../Core/Services/loading.service';
 import { CommonModule } from '@angular/common';
+import { GuestAuthService } from '../../../Core/Services/guest-auth.service';
 
 @Component({
   selector: 'app-login',
@@ -38,6 +39,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   private readonly _Router = inject(Router);
   private readonly _TranslateService = inject(TranslateService);
   private readonly _LoadingService = inject(LoadingService);
+  private readonly _GuestAuthService = inject(GuestAuthService);
 
   destoryUserData!: Unsubscribable;
   destoryGustData!: Unsubscribable;
@@ -58,15 +60,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       getRoles: [true],
     });
   }
-
-  guestData = {
-    companyId: 1,
-    branchId: 1,
-    userName: 'Admin',
-    password: 'Admin123',
-    rememberMe: false,
-    getRoles: true,
-  };
 
   sendLoginData(): void {
     this._LoadingService.start();
@@ -117,25 +110,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   guestLogin(): void {
     this._LoadingService.start();
-    this.destoryGustData = this._AuthService
-      .sendLoginData(this.guestData)
-      .subscribe({
-        next: (res) => {
-          this._LoadingService.stop();
-
-          if (res?.Obj?.AccessToken) {
-            localStorage.setItem('guestToken', res.Obj.AccessToken);
-            this._Router.navigate(['/home']);
-          } else {
-            console.error('Guest Login Error:', res);
-          }
-        },
-        error: (err) => {
-          this._LoadingService.stop();
-
-          console.error('Guest Login Error:', err);
-        },
-      });
+    this._GuestAuthService.ensureGuestToken();
+    this._LoadingService.stop();
   }
 
   ngOnDestroy(): void {

@@ -15,9 +15,8 @@ export class CategoriesService {
   getHeaders(): HttpHeaders {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
       const userToken = localStorage.getItem('userToken');
-      const guestToken = localStorage.getItem('guestToken');
 
-      const token = userToken || guestToken;
+      const token = userToken ;
 
       return new HttpHeaders({
         Authorization: token ? `Bearer ${token}` : '',

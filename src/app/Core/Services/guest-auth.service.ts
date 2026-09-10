@@ -1,46 +1,45 @@
-import { isPlatformBrowser } from '@angular/common';
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { catchError, Observable, of, tap } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+import { catchError, firstValueFrom, of, tap } from 'rxjs';
 import { apiUrl } from '../../Shared/constants/api.constant';
 import { DataService } from './data.service';
+import { LoadingService } from './loading.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GuestAuthService {
   private readonly _DataService = inject(DataService);
-  private readonly _PlatformId = inject(PLATFORM_ID);
+  private readonly _ToastrService = inject(ToastrService);
+  private readonly _LoadingService = inject(LoadingService);
+  private readonly _Router = inject(Router);
 
-  ensureGuestToken(): Observable<any> {
-    const userToken = localStorage.getItem('userToken');
-    const guestToken = localStorage.getItem('guestToken');
+  ensureGuestToken() {
+    this._LoadingService.start();
+    firstValueFrom(
+      this._DataService
+        .post(`${apiUrl}/NewStore/Guest/Enter`, {
+          branchId: 1,
+        })
+        .pipe(
+          tap((res) => {
+            this._LoadingService.stop();
 
-    if (userToken || guestToken) {
-      return of(true);
-    }
+            this._ToastrService.success(res?.Message);
+            const token = res.Obj.AccessToken;
+            this._Router.navigate(['/home']);
 
-    return this._DataService
-      .post(`${apiUrl}/Login`, {
-        companyId: 1,
-        branchId: 1,
-        userName: 'Admin',
-        password: 'Admin123',
-        rememberMe: false,
-        getRoles: true,
-      })
-      .pipe(
-        tap((res: any) => {
-          console.log(res);
-
-          const token = res.Obj.AccessToken;
-          if (token) {
-            localStorage.setItem('guestToken', token);
-          }
-        }),
-        catchError((err) => {
-          console.error('Failed to Login As guest:', err);
-          return of(null);
-        }),
-      );
+            if (token) {
+              localStorage.setItem('userToken', token);
+            }
+          }),
+          catchError((err) => {
+            this._LoadingService.stop();
+            console.error('Failed to Login As guest:', err);
+            return of(null);
+          }),
+        ),
+    );
   }
 }

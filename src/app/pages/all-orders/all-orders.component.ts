@@ -6,7 +6,8 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { TabsModule } from 'primeng/tabs';
 import { finalize } from 'rxjs';
@@ -27,6 +28,7 @@ import { PAGE_SIZE } from '../../Shared/constants/general.constant';
     CommonModule,
     StoreInputComponent,
     TabsModule,
+    NgbPaginationModule,
   ],
   templateUrl: './all-orders.component.html',
   styleUrl: './all-orders.component.scss',
@@ -37,28 +39,32 @@ export class AllOrdersComponent implements OnInit {
   private readonly _FormBuilder = inject(FormBuilder);
   private readonly _LoadingService = inject(LoadingService);
   private readonly _HelperService = inject(HelperService);
+  public readonly translate = inject(TranslateService);
 
   allOrders: any[] = [];
+  deliverdOrders: any[] = [];
+
   pageNo = 1;
   pageSize = PAGE_SIZE;
-  deliverdOrders: any;
+  totalOrdersCount = 0;
+  totalDeliveredCount = 0;
+
   filtersForm!: FormGroup;
   showClearFilters: boolean = false;
   value: string = 'tab1';
 
   tabs = [
-    { id: 'tab1', title: 'inreview' },
-    { id: 'tab2', title: 'accepted' },
-    { id: 'tab3', title: 'ready' },
-    { id: 'tab4', title: 'out for delevery' },
-    { id: 'tab5', title: 'deleverd ' },
-    { id: 'tab6', title: 'canceled ' },
+    { id: 'tab1', translationKey: 'STATUS_IN_REVIEW', status: 1 },
+    { id: 'tab2', translationKey: 'STATUS_ACCEPTED', status: 2 },
+    { id: 'tab3', translationKey: 'STATUS_READY', status: 3 },
+    { id: 'tab4', translationKey: 'STATUS_OUT_FOR_DELIVERY', status: 4 },
+    { id: 'tab5', translationKey: 'deliverd', status: 5 },
+    { id: 'tab6', translationKey: 'STATUS_CANCELED', status: 6 },
   ];
 
   ngOnInit(): void {
     this.initForm();
-    this.getAllOrdersByStatus();
-    this.getDeliverdOrders();
+    this.loadAllData();
   }
 
   initForm(): void {
@@ -75,41 +81,39 @@ export class AllOrdersComponent implements OnInit {
     return d.toISOString().split('T')[0];
   }
 
+  loadAllData(): void {
+    this.getAllOrdersByStatus();
+    this.getDeliverdOrders();
+  }
+
   getDeliverdOrders(): void {
-    this._LoadingService.start();
-
     const { fromDate, toDate } = this.filtersForm.value;
-
-    const defaultFromDate = '2021-01-01';
-    const defaultToDate = new Date().toISOString().split('T')[0];
 
     const rawParams = {
       pageNumber: this.pageNo,
       pageSize: this.pageSize,
-      fromDate: this.formatDateToISO(fromDate) || defaultFromDate,
-      toDate: this.formatDateToISO(toDate) || defaultToDate,
+      fromDate: this.formatDateToISO(fromDate),
+      toDate: this.formatDateToISO(toDate),
     };
 
     const cleanedParams = this._HelperService.cleanNullValues(rawParams);
-    console.log('API Params:', cleanedParams);
+
     this._DataService
       .get(`${apiUrl}/XtraAndPos_MobileLookups/GetPagedSaleInvoicesByDate`, {
         params: cleanedParams,
       })
-      .pipe(finalize(() => this._LoadingService.stop()))
       .subscribe({
         next: (res: any) => {
-          if (res?.IsSuccess || res?.isSuccess) {
-            this.deliverdOrders = res.Obj;
+          if (res?.IsSuccess) {
+            this.deliverdOrders = res.Obj?.trx || [];
+            this.totalDeliveredCount = res.Obj?.totalCount;
           } else {
-            this._ToastrService.error(
-              res?.Message || res?.message || 'فشلت عملية جلب الطلبات المكتملة',
-            );
+            this._ToastrService.error(res?.Message);
           }
         },
         error: (err) => {
           console.error(err);
-          this._ToastrService.error('حدث خطأ أثناء جلب الطلبات المكتملة');
+          this._ToastrService.error(err?.Message || err?.message);
         },
       });
   }
@@ -118,42 +122,53 @@ export class AllOrdersComponent implements OnInit {
     this._LoadingService.start();
 
     const { fromDate, toDate } = this.filtersForm.value;
-
-    const defaultFromDate = '2021-01-01';
     const defaultToDate = new Date().toISOString().split('T')[0];
 
     const rawParams = {
       pageNumber: this.pageNo,
       pageSize: this.pageSize,
-      fromDate: this.formatDateToISO(fromDate) || defaultFromDate,
+      fromDate: this.formatDateToISO(fromDate),
       toDate: this.formatDateToISO(toDate) || defaultToDate,
     };
 
     const cleanedParams = this._HelperService.cleanNullValues(rawParams);
-    console.log('API Params:', cleanedParams);
+
     this._DataService
       .get(
         `${apiUrl}/XtraAndPOS_SaleInvoiceReqNew/GetPagedSaleInvoiceReqByDate`,
-        {
-          params: cleanedParams,
-        },
+        { params: cleanedParams },
       )
       .pipe(finalize(() => this._LoadingService.stop()))
       .subscribe({
         next: (res: any) => {
-          if (res?.IsSuccess || res?.isSuccess) {
-            this.allOrders = res.Obj;
+          if (res?.IsSuccess) {
+            this.allOrders = res.Obj?.trx || [];
+            this.totalOrdersCount = res.Obj?.totalCount;
           } else {
-            this._ToastrService.error(
-              res?.Message || res?.message || 'فشلت عملية جلب الطلبات',
-            );
+            this._ToastrService.error(res?.Message);
           }
         },
         error: (err) => {
           console.error(err);
-          this._ToastrService.error('حدث خطأ أثناء جلب الطلبات');
+          this._ToastrService.error(err?.Message || err?.message);
         },
       });
+  }
+
+  getOrdersByStatus(status: number): any[] {
+    if (status === 5) {
+      return this.deliverdOrders || [];
+    }
+    if (!this.allOrders) return [];
+    return this.allOrders.filter((order) => order.Status === status);
+  }
+
+  getTotalCountByStatus(status: number): number {
+    return status === 5 ? this.totalDeliveredCount : this.totalOrdersCount;
+  }
+
+  get currentLang(): string {
+    return this.translate.currentLang || 'ar';
   }
 
   get hasFiltersSelected(): boolean {
@@ -161,17 +176,22 @@ export class AllOrdersComponent implements OnInit {
     return !!fromDate || !!toDate;
   }
 
+  page(pageIndex: number): void {
+    this.pageNo = pageIndex;
+    this.loadAllData();
+  }
+
   applyFilter(): void {
     if (!this.hasFiltersSelected) return;
+    this.pageNo = 1;
     this.showClearFilters = true;
-    this.getAllOrdersByStatus();
-    this.getDeliverdOrders();
+    this.loadAllData();
   }
 
   clearFilters(): void {
     this.filtersForm.reset();
+    this.pageNo = 1;
     this.showClearFilters = false;
-    this.getAllOrdersByStatus();
-    this.getDeliverdOrders();
+    this.loadAllData();
   }
 }

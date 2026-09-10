@@ -13,6 +13,7 @@ import { CartService } from '../../Core/Services/cart.service';
 import { LoadingService } from '../../Core/Services/loading.service';
 import { PAGE_SIZE } from '../../Shared/constants/general.constant';
 import { IPagination } from '../../Shared/models/IPagination.model';
+import { ProductCardComponent } from '../../Shared/components/product-card/product-card.component';
 
 @Component({
   selector: 'app-products',
@@ -23,6 +24,7 @@ import { IPagination } from '../../Shared/models/IPagination.model';
     RouterLink,
     TranslateModule,
     NgbPaginationModule,
+    ProductCardComponent,
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
@@ -46,16 +48,7 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUrl = this._Router.url;
-    if (isPlatformBrowser(this._PLATFORM_ID)) {
-      const token = localStorage.getItem('userToken');
-      if (token) {
-        try {
-          this.decoded = jwtDecode(token);
-        } catch (e) {
-          console.error('Invalid token format', e);
-        }
-      }
-    }
+
     this.loadItems();
   }
 
@@ -69,7 +62,6 @@ export class ProductsComponent implements OnInit {
 
   loadItems() {
     this._LoadingService.start();
-
     this._AllProductsService.getPagedItem(this.pageNo, PAGE_SIZE).subscribe({
       next: (res) => {
         this.allProducts.set(res.Obj.PagedResult);
@@ -94,72 +86,5 @@ export class ProductsComponent implements OnInit {
   page(ev: any): void {
     this.pageNo = ev;
     this.loadItems();
-  }
-
-  getProductImage(product: any): string | null {
-    if (product?.ItemUnits && product.ItemUnits.length > 0) {
-      for (const unit of product.ItemUnits) {
-        if (unit.ItemImages && unit.ItemImages.length > 0) {
-          for (const img of unit.ItemImages) {
-            if (img && img.Image) {
-              return img.Image;
-            }
-          }
-        }
-      }
-    }
-    return null;
-  }
-
-  getAvailableStock(product: any): number {
-    if (product?.ItemUnits?.length > 0) {
-      const unit = product.ItemUnits[0];
-      return unit.Quantity ?? unit.Stock ?? unit.AvailableQuantity ?? 0;
-    }
-    return 0;
-  }
-
-  isOutOfStock(product: any): boolean {
-    return this.getAvailableStock(product) <= 0;
-  }
-
-  addToCart(productId: number, price: number, quantity: number = 1): void {
-    const product = this.filteredItems.find((item) => item.Id === productId);
-    if (product && this.isOutOfStock(product)) {
-      this._ToastrService.warning('هذا المنتج غير متوفر حالياً');
-      return;
-    }
-
-    const token = localStorage.getItem('userToken');
-    if (!token) {
-      this._ToastrService.error('من فضلك اعد تسجيل الدخول!');
-      localStorage.removeItem('userToken');
-      this._Router.navigate(['/login']);
-      return;
-    }
-
-    try {
-      const decoded: any = jwtDecode(token);
-
-      const data = {
-        UserId: decoded.Id,
-        ProductId: productId,
-        Quantity: quantity,
-        Price: price,
-      };
-
-      this._CartService.addToCart(data).subscribe({
-        next: (res) => {
-          this._ToastrService.success(res.Message || 'تمت الإضافة بنجاح');
-        },
-        error: (err) => {
-          console.error('Error while adding:', err);
-          this._ToastrService.error(err.Message || 'حدث خطأ في الإضافة');
-        },
-      });
-    } catch (error) {
-      this._ToastrService.error('جلسة تسجيل الدخول انتهت');
-      this._Router.navigate(['/login']);
-    }
   }
 }

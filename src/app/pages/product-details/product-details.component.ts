@@ -12,11 +12,12 @@ import {
 import { AllProductsService } from '../../Core/Services/all-products.service';
 import { CartService } from '../../Core/Services/cart.service';
 import { LoadingService } from '../../Core/Services/loading.service';
+import { AddToCartComponent } from "../../Shared/components/add-to-cart/add-to-cart.component";
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [DatePipe, TranslateModule],
+  imports: [DatePipe, TranslateModule, AddToCartComponent],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.scss',
 })

@@ -8,13 +8,12 @@ import {
   PLATFORM_ID,
 } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { MyTranslateService } from '../../../Core/Services/my-translate.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { ThemeService } from '../../../Core/Services/theme.service';
-import { CartService } from '../../../Core/Services/cart.service';
-import { Subscription } from 'rxjs';
-import { LoadingService } from '../../../Core/Services/loading.service';
 import jwtDecode from 'jwt-decode';
+import { Subscription } from 'rxjs';
+import { CartService } from '../../../Core/Services/cart.service';
+import { MyTranslateService } from '../../../Core/Services/my-translate.service';
+import { ThemeService } from '../../../Core/Services/theme.service';
 
 @Component({
   selector: 'app-nav-blank',
@@ -41,7 +40,6 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   private readonly _MyTranslateService = inject(MyTranslateService);
   private readonly _themeService = inject(ThemeService);
   private readonly _CartService = inject(CartService);
-  private readonly _LoadingService = inject(LoadingService);
 
   constructor() {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
@@ -119,7 +117,6 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   signout(): void {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
       localStorage.removeItem('userToken');
-      localStorage.removeItem('guestToken');
       localStorage.removeItem('cartCount');
       this.isUserLogged = false;
       this.isGuest = true;

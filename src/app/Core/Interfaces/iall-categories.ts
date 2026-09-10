@@ -25,7 +25,7 @@ export interface IallCategories {
   DocRefGuid: string;
   IsActive: boolean;
   CreatedDate: Date;
-  CreatedBy: CreatedBy;
+  CreatedBy: string;
   IsUpdated: boolean;
   LastUpdatedBy: null;
   LastUpdatedDate: Date;
@@ -40,13 +40,6 @@ export interface IallCategories {
   LastModifiedDate: Date;
   ModifyCount: number;
   updateFlag: null;
-}
-
-export enum CreatedBy {
-  AbtkarAdmin = 'AbtkarAdmin',
-  Admin = 'Admin',
-  Support = 'SUPPORT',
-  Support2 = 'SUPPORT2',
 }
 
 export interface Item {
@@ -119,7 +112,7 @@ export interface Item {
   DocRefGuid: string;
   IsActive: boolean;
   CreatedDate: Date;
-  CreatedBy: CreatedBy;
+  CreatedBy: string;
   IsUpdated: boolean;
   LastUpdatedBy: null;
   LastUpdatedDate: Date;
@@ -130,7 +123,7 @@ export interface Item {
   Notes: null;
   CancelDate: Date;
   ModifyById: null;
-  ModifyByName: CreatedBy | null;
+  ModifyByName: string;
   LastModifiedDate: Date;
   ModifyCount: number;
   updateFlag: null;
@@ -275,7 +268,7 @@ export interface ItemGroupBranchElement {
   Notes: null;
   CancelDate: Date;
   ModifyById: null;
-  ModifyByName: CreatedBy | null;
+  ModifyByName: string;
   LastModifiedDate: Date;
   ModifyCount: number;
   updateFlag: null;
