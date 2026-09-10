@@ -1,14 +1,11 @@
 @if (product?.ItemUnits && product.ItemUnits.length > 0) {
   <button
     class="add-to-cart"
-    [disabled]="isOutOfStock()"
-    [class.disabled-btn]="isOutOfStock()"
+   
     (click)="addToCart()"
   >
-    @if (isOutOfStock()) {
-      🚫 {{ "notAvaliableRightNow" | translate }}
-    } @else {
+
       🛒 {{ "products.addtocart" | translate }}
-    }
+    
   </button>
 }

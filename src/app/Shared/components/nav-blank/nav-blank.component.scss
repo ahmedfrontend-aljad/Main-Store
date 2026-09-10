@@ -128,3 +128,27 @@ ul {
     font-size: 13px !important;
   }
 }
+.navbar-toggler {
+  border-color: var(--color-border, #3f3f5a) !important;
+
+  .navbar-toggler-icon {
+    filter: invert(1) grayscale(100%) brightness(200%);
+  }
+
+  &:focus,
+  &:hover {
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
+.dark,
+:host-context(.dark) {
+  .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+
+    .navbar-toggler-icon {
+      filter: invert(1) grayscale(100%) brightness(200%) !important;
+    }
+  }
+}

@@ -14,7 +14,6 @@ import { ToastrService } from 'ngx-toastr';
 import { EMPTY, finalize, switchMap } from 'rxjs';
 import { Icart } from '../../Core/Interfaces/icart';
 import { CartService } from '../../Core/Services/cart.service';
-import { HelperService } from '../../Core/Services/helper.service';
 import { LoadingService } from '../../Core/Services/loading.service';
 import { PaymentService } from '../../Core/Services/payment.service';
 import { StoreInputComponent } from '../../Shared/components/store-input/store-input.component';
@@ -41,7 +40,6 @@ export class paymentComponent implements OnInit {
   private readonly _translate = inject(TranslateService);
   private readonly _router = inject(Router);
   private readonly _loadingService = inject(LoadingService);
-  private readonly _HelperService = inject(HelperService);
 
   cartproducts: Icart[] = [];
   InvoiceForm!: FormGroup;
@@ -51,25 +49,25 @@ export class paymentComponent implements OnInit {
   get selectedPaymentMethod(): string {
     return this.InvoiceForm.get('paymentType')?.value?.toString() || '1';
   }
+  token = localStorage.getItem('userToken')!;
+  decodedToken: any = jwtDecode(this.token);
 
   get saleInvoiceDetails(): FormArray {
     return this.InvoiceForm.get('saleInvoiceDetails') as FormArray;
   }
+  userName = this.decodedToken.given_name;
 
   ngOnInit(): void {
     this.initForm();
-    this.listenToPaymentMethodChange();
 
-    const token = localStorage.getItem('userToken');
-    if (!token) {
+    if (!this.token) {
       this._ToastrService.error('User not logged in!');
       this._router.navigate(['/auth/login']);
       return;
     }
 
     try {
-      const decodedToken: any = jwtDecode(token);
-      this.userId = decodedToken.Id || decodedToken.id || decodedToken.nameid;
+      this.userId = this.decodedToken.Id;
     } catch (error) {
       this._ToastrService.error('Invalid token. Please log in again.');
       this._router.navigate(['/auth/login']);
@@ -89,8 +87,8 @@ export class paymentComponent implements OnInit {
         next: (res) => {
           if (res?.Obj?.Items?.length > 0) {
             this.cartproducts = res.Obj.Items;
-            this.totalPrice = res.Obj.TotalPrice;
-            this.populateFormWithCartData();
+            this.totalPrice = res.Obj.TotalPrice || 0;
+            this.populateFormWithCartData(res.Obj);
           } else {
             this._ToastrService.info(
               this._translate.instant('cart.invoice.emptyCart'),
@@ -107,8 +105,8 @@ export class paymentComponent implements OnInit {
   }
 
   initForm(): void {
-    const now = new Date();
-    const dateTimeISO = now.toISOString().replace('T', ' ').split('.')[0];
+    const nowISO = new Date().toISOString().split('.')[0];
+
     this.InvoiceForm = this._formBuilder.group({
       id: [0],
       insuranceAmount: [0],
@@ -121,21 +119,21 @@ export class paymentComponent implements OnInit {
       totalInvoiceAfterVatIncluded: [0],
       currencyId: [1],
       equivalent: [0],
-      clientId: [0, [Validators.required]],
-      clientName: [''],
+      clientId: [this.userId, [Validators.required]],
+      clientName: [this.userName],
       userId: [''],
       paymentType: [1],
-      workByPriceWithVat: [true],
-      docDate: [dateTimeISO],
+      workByPriceWithVat: [false],
+      docDate: [nowISO],
       notes: [''],
       totalDisc: [0],
       cash: [0],
-      visa: [0.0],
+      visa: [0],
       bankId: [0],
       updatedTableId: [0],
-      debt: [0.0],
+      debt: [0],
       isPendingPayment: [false],
-      treasuryId: [null],
+      treasuryId: [0],
       exchangePrice: [1],
       clientType: [1],
       docType: [1],
@@ -152,29 +150,26 @@ export class paymentComponent implements OnInit {
       tobagoVatAmount: [0],
       posType: [1, [Validators.required]],
       saveAndPost: [false],
-      banquetDate: [null],
+      banquetDate: [nowISO],
       saleInvoiceDetails: this._formBuilder.array([]),
       saleInvNotesDto: this._formBuilder.array([]),
     });
   }
 
   private createItemFormGroup(item: any): FormGroup {
-    const qty = Number(item.count || item.quantity || item.Quantity || 1);
-    const unitPrice = Number(item.price || item.Price || 0);
-    const vatRate = 15;
-
-    const vatAmount = (unitPrice * qty * vatRate) / 100;
-    const totalPriceAfterVat = unitPrice * qty + vatAmount;
+    const qty = item.count || item.quantity || item.Quantity || 1;
+    const price = item.price || item.Price || 0;
+    const todayISO = new Date().toISOString().split('T')[0];
 
     return this._formBuilder.group({
-      branchId: [0],
-      price: [unitPrice],
-      priceIncludeVat: [unitPrice],
-      discount: [0.0],
-      totalDisc: [0],
-      discountPercent: [0.0],
-      vat: [vatRate],
-      vatAmount: [vatAmount],
+      branchId: [1],
+      price: [price],
+      priceIncludeVat: [item.priceIncludeVat || price],
+      discount: [item.discount || 0],
+      totalDisc: [item.totalDisc || 0],
+      discountPercent: [item.discountPercent || 0],
+      vat: [item.vat || 15],
+      vatAmount: [item.vatAmount || 0],
       itemID: [item.id || item.itemId || item.ProductId || 0],
       weight: [0],
       quantity: [qty],
@@ -185,14 +180,16 @@ export class paymentComponent implements OnInit {
       uniteName: [item.unitName || ''],
       nameAr: [item.name || item.productName || item.ProductName || ''],
       productId: [item.productId || item.id || item.ProductId || 0],
-      productBarcode: [null],
+      productBarcode: [''],
       productCode: [''],
       productGtin: [''],
       patchCode: [''],
-      expirationDate: [new Date().toISOString().split('T')[0]],
-      totalPrice: [unitPrice * qty],
-      totalPriceAfterVat: [totalPriceAfterVat],
-      totalPriceAfterDiscount: [unitPrice],
+      expirationDate: [
+        item.expirationDate ? `${item.expirationDate}T00:00:00` : todayISO,
+      ],
+      totalPrice: [item.totalPrice || price * qty],
+      totalPriceAfterVat: [item.totalPriceAfterVat || price * qty],
+      totalPriceAfterDiscount: [item.totalPriceAfterDiscount || price * qty],
       isProductFree: [false],
       isHasBonus: [false],
       isProductBonus: [false],
@@ -204,57 +201,28 @@ export class paymentComponent implements OnInit {
     });
   }
 
-  private listenToPaymentMethodChange(): void {
-    this.InvoiceForm.get('paymentType')?.valueChanges.subscribe((type) => {
-      const selectedType = Number(type);
-      if (selectedType === 1) {
-        this.InvoiceForm.patchValue(
-          {
-            cash: this.totalPrice,
-            paid: this.totalPrice,
-            visa: 0.0,
-            visaTrxNo: '',
-          },
-          { emitEvent: false },
-        );
-      } else if (selectedType === 2) {
-        this.InvoiceForm.patchValue(
-          {
-            cash: 0.0,
-            visa: this.totalPrice,
-            paid: this.totalPrice,
-          },
-          { emitEvent: false },
-        );
-      }
-    });
-  }
-
-  populateFormWithCartData(): void {
+  populateFormWithCartData(cartObj: any): void {
     this.saleInvoiceDetails.clear();
 
     this.cartproducts.forEach((item) => {
       this.saleInvoiceDetails.push(this.createItemFormGroup(item));
     });
 
-    const numericClientId = Number(this.userId);
-    const validClientId =
-      !isNaN(numericClientId) && numericClientId > 0 ? numericClientId : 1;
+    const clientId = this.userId;
+    const total = cartObj.TotalPrice || this.totalPrice;
+    const vat = cartObj.TotalVat || 0;
+    const grandTotal = cartObj.TotalPriceAfterVat || total;
 
     this.InvoiceForm.patchValue({
-      clientId: validClientId,
-      userId: this.userId,
-      totalInvoice: this.totalPrice,
-      totalInvoiceAfterVat: this.totalPrice,
-      totalInvoiceAfterDisc: this.totalPrice,
-      equivalent: this.totalPrice,
-      paid: this.totalPrice,
-      cash: this.totalPrice,
-      visa: 0.0,
-      debt: 0.0,
-      storeId: 1,
-      isMobile: true,
-      saveAndPost: false,
+      clientId: clientId,
+      userId: this.userId || '',
+      totalInvoice: total,
+      totalInvoiceVatAmount: vat,
+      totalInvoiceAfterVat: grandTotal,
+      totalInvoiceAfterDisc: total,
+      equivalent: grandTotal,
+      paid: grandTotal,
+      cash: grandTotal,
     });
   }
 
@@ -270,18 +238,15 @@ export class paymentComponent implements OnInit {
     let createdInvoiceId: string = '';
     this._loadingService.start();
 
-    const payload = this.InvoiceForm.value;
     this._PaymentService
-      .createPaymentInvoice(payload)
+      .createPaymentInvoice(this.InvoiceForm.value)
       .pipe(
         switchMap((res: any) => {
           if (res?.IsSuccess || res?.isSuccess || res?.Obj) {
             createdInvoiceId = res?.Obj?.Id || res?.Id || res?.id || '';
             return this._cartService.clearCart(this.userId!);
           } else {
-            this._ToastrService.error(
-              res?.Message || 'فشلت عملية إنشاء الفاتورة',
-            );
+            this._ToastrService.error(res?.Message);
             return EMPTY;
           }
         }),
@@ -299,7 +264,7 @@ export class paymentComponent implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          this._ToastrService.error('حدث خطأ أثناء معالجة الطلب.');
+          this._ToastrService.error(err?.error?.Message);
         },
       });
   }
