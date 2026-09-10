@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import jwtDecode from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
 import { firstValueFrom, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
@@ -41,8 +40,6 @@ export class CartComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const token = localStorage.getItem('userToken');
     if (token) {
-      this.decoded = jwtDecode(token);
-      localStorage.setItem('userId', this.decoded.Id);
       this.getCartItems();
     }
   }
@@ -175,10 +172,7 @@ export class CartComponent implements OnInit, OnDestroy {
                 if (res?.IsSuccess) {
                   this.cardUserItems.set(updatedCart);
                   this.recalculateTotalPrice();
-                  localStorage.setItem(
-                    'items',
-                    JSON.stringify(updatedCart),
-                  );
+                  localStorage.setItem('items', JSON.stringify(updatedCart));
                   this.isCartHasProducts = updatedCart.length > 0;
 
                   Swal.fire(
@@ -239,7 +233,7 @@ export class CartComponent implements OnInit, OnDestroy {
                 this._CartService.getLoggedCart(this.decoded.Id);
                 this._ToastrService.success(res?.Message);
               } else {
-                this._ToastrService.error(res?.Message || 'فشل تحديث الكمية.');
+                this._ToastrService.error(res?.Message);
               }
             },
             error: (err) => {

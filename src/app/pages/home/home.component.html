@@ -1,88 +1,211 @@
 <div class="container">
   <section class="w-full mb-8 md:mb-14">
-    <div class="banners w-full h-48 md:h-72">
-      <div class="Mainbanner w-full h-full">
-        <img
-          src="./assets/images/Banners/mainbanner.jpg"
-          class="h-full w-full object-cover rounded-lg shadow-banner"
-          alt="Main Banner"
-        />
-      </div>
-    </div>
-  </section>
-
-  <section class="w-full mb-10 md:mb-14 mt-4 md:mt-9">
-    <div class="px-1">
-      <div class="heading">
-        <h3
-          class="mt-4 md:mt-8 font-weight-bolder font-serif text-2xl md:text-4xl"
-        >
-          {{ "homecomponent.allcategories" | translate }}
-        </h3>
-        <p class="mb-4 md:mb-8 mt-1 text-secondary text-sm md:text-base">
-          {{ "homecomponent.shopbyyourfavoritecategory" | translate }}
-        </p>
-      </div>
-      <div class="section-content">
-        <owl-carousel-o [options]="customOptionsCat">
-          @for (cat of allcategories(); track $index) {
-            <ng-template carouselSlide [id]="cat.Code">
-              <div
-                class="category-slide mx-1 cursor-pointer"
-                [routerLink]="['/catDetails', cat.Code]"
+    @if (bannersData && bannersData.length > 0) {
+      @if (bannersData.length === 1) {
+        <div class="single-banner-wrapper w-full">
+          <a
+            [href]="bannersData[0].LinkUrl"
+            target="_blank"
+            class="block relative group overflow-hidden rounded-2xl shadow-lg"
+          >
+            <img
+              [src]="bannersData[0].ImagePath"
+              [alt]="
+                currentLang === 'ar'
+                  ? bannersData[0].TitleAr
+                  : bannersData[0].TitleEn
+              "
+              class="w-full h-48 sm:h-72 md:h-96 object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div
+              class="banner-overlay absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-6 text-white"
+            >
+              <h2 class="text-xl md:text-3xl font-bold font-serif mb-2">
+                {{
+                  currentLang === "ar"
+                    ? bannersData[0].TitleAr
+                    : bannersData[0].TitleEn
+                }}
+              </h2>
+              <p
+                class="text-sm md:text-base text-gray-200 max-w-xl line-clamp-2"
               >
-                <img
-                  class="rounded-lg h-36 mb-2 object-cover w-full"
-                  src="./assets/images/Category.png"
-                  [alt]="cat.NameAr"
-                />
-                <h2 class="m-auto text-center text-base font-serif font-bold">
-                  {{ cat.NameAr }}
-                </h2>
-              </div>
-            </ng-template>
-          }
-        </owl-carousel-o>
-      </div>
-    </div>
-  </section>
-
-  <section class="mb-10 md:mb-14">
-    <div class="w-full">
-      <div class="heading">
-        <h3
-          class="mt-4 md:mt-8 font-weight-bolder font-serif text-2xl md:text-4xl"
-        >
-          {{ "homecomponent.bestoffers" | translate }}
-        </h3>
-        <p class="mb-4 md:mb-8 mt-1 text-secondary text-sm md:text-base">
-          {{ "homecomponent.bestoffers!shopnow" | translate }}
-        </p>
-      </div>
-
-      <div class="section-content">
-        <owl-carousel-o [options]="customOptionsCat">
-          @for (cat of allcategories(); track $index) {
-            <ng-template carouselSlide [id]="cat.Code">
+                {{
+                  currentLang === "ar"
+                    ? bannersData[0].DescriptionAr
+                    : bannersData[0].DescriptionEn
+                }}
+              </p>
+            </div>
+          </a>
+        </div>
+      } @else if (bannersData.length === 2) {
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          @for (banner of bannersData; track banner.Id) {
+            <a
+              [href]="banner.LinkUrl"
+              target="_blank"
+              class="relative group overflow-hidden rounded-2xl shadow-md block"
+            >
+              <img
+                [src]="banner.ImagePath"
+                [alt]="currentLang === 'ar' ? banner.TitleAr : banner.TitleEn"
+                class="w-full h-48 md:h-64 object-cover transition-transform duration-500 group-hover:scale-105"
+              />
               <div
-                class="category-slide mx-1 cursor-pointer"
-                [routerLink]="['/catDetails', cat.Code]"
+                class="banner-overlay absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex flex-col justify-end p-4 text-white"
               >
-                <img
-                  class="rounded-lg h-36 mb-2 object-cover w-full"
-                  src="./assets/images/Category.png"
-                  [alt]="cat.NameAr"
-                />
-                <h2 class="m-auto text-center text-base font-serif font-bold">
-                  {{ cat.NameAr }}
-                </h2>
+                <h3 class="text-lg md:text-xl font-bold font-serif mb-1">
+                  {{ currentLang === "ar" ? banner.TitleAr : banner.TitleEn }}
+                </h3>
+                <p class="text-xs md:text-sm text-gray-200 line-clamp-2">
+                  {{
+                    currentLang === "ar"
+                      ? banner.DescriptionAr
+                      : banner.DescriptionEn
+                  }}
+                </p>
               </div>
-            </ng-template>
+            </a>
           }
-        </owl-carousel-o>
+        </div>
+      } @else {
+        <div class="main-banner-slider rounded-2xl overflow-hidden shadow-lg">
+          <owl-carousel-o [options]="customOptionsBanners">
+            @for (banner of bannersData; track banner.Id) {
+              <ng-template carouselSlide [id]="banner.Id.toString()">
+                <a
+                  [href]="banner.LinkUrl"
+                  target="_blank"
+                  class="block relative group overflow-hidden"
+                >
+                  <img
+                    [src]="banner.ImagePath"
+                    [alt]="
+                      currentLang === 'ar' ? banner.TitleAr : banner.TitleEn
+                    "
+                    class="w-full h-52 sm:h-72 md:h-96 object-cover"
+                  />
+                  <div
+                    class="banner-overlay absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent flex flex-col justify-end p-6 md:p-10 text-white"
+                  >
+                    <span
+                      class="inline-block bg-primary text-xs md:text-sm px-3 py-1 rounded-full mb-2 w-fit"
+                    >
+                      {{ "homecomponent.bestoffers" | translate }}
+                    </span>
+                    <h2
+                      class="text-2xl md:text-4xl font-bold font-serif mb-2 drop-shadow"
+                    >
+                      {{
+                        currentLang === "ar" ? banner.TitleAr : banner.TitleEn
+                      }}
+                    </h2>
+                    <p
+                      class="text-xs md:text-base text-gray-200 max-w-2xl line-clamp-2"
+                    >
+                      {{
+                        currentLang === "ar"
+                          ? banner.DescriptionAr
+                          : banner.DescriptionEn
+                      }}
+                    </p>
+                  </div>
+                </a>
+              </ng-template>
+            }
+          </owl-carousel-o>
+        </div>
+      }
+    } @else {
+      <div class="banners w-full h-48 md:h-72">
+        <div class="Mainbanner w-full h-full">
+          <img
+            src="./assets/images/Banners/mainbanner.jpg"
+            class="h-full w-full object-cover rounded-lg shadow-banner"
+            alt="Main Banner"
+          />
+        </div>
       </div>
-    </div>
+    }
   </section>
+
+  @if (categories.length > 0) {
+    <section class="w-full mb-10 md:mb-14 mt-4 md:mt-9">
+      <div class="px-1">
+        <div class="heading">
+          <h3
+            class="mt-4 md:mt-8 font-weight-bolder font-serif text-2xl md:text-4xl"
+          >
+            {{ "homecomponent.allcategories" | translate }}
+          </h3>
+          <p class="mb-4 md:mb-8 mt-1 text-secondary text-sm md:text-base">
+            {{ "homecomponent.shopbyyourfavoritecategory" | translate }}
+          </p>
+        </div>
+        <div class="section-content">
+          <owl-carousel-o [options]="customOptionsCat">
+            @for (cat of categories; track $index) {
+              <ng-template carouselSlide [id]="cat.Code">
+                <div
+                  class="category-slide mx-1 cursor-pointer"
+                  [routerLink]="['/catDetails', cat.Code]"
+                >
+                  <img
+                    class="rounded-lg h-36 mb-2 object-cover w-full"
+                    src="./assets/images/Category.png"
+                    [alt]="currentLang === 'ar' ? cat.NameAr : cat.NameEn"
+                  />
+                  <h2 class="m-auto text-center text-base font-serif font-bold">
+                    {{ currentLang === "ar" ? cat.NameAr : cat.NameEn }}
+                  </h2>
+                </div>
+              </ng-template>
+            }
+          </owl-carousel-o>
+        </div>
+      </div>
+    </section>
+  }
+
+  @if (offers.length > 0) {
+    <section class="mb-10 md:mb-14">
+      <div class="w-full">
+        <div class="heading">
+          <h3
+            class="mt-4 md:mt-8 font-weight-bolder font-serif text-2xl md:text-4xl"
+          >
+            {{ "homecomponent.bestoffers" | translate }}
+          </h3>
+          <p class="mb-4 md:mb-8 mt-1 text-secondary text-sm md:text-base">
+            {{ "homecomponent.bestoffers!shopnow" | translate }}
+          </p>
+        </div>
+
+        <div class="section-content">
+          <owl-carousel-o [options]="customOptionsCat">
+            @for (offer of offers; track $index) {
+              <ng-template carouselSlide [id]="offer?.Code">
+                <div
+                  class="category-slide mx-1 cursor-pointer"
+                  [routerLink]="['/offerDetails', offer?.Code]"
+                >
+                  <img
+                    class="rounded-lg h-36 mb-2 object-cover w-full"
+                    src="./assets/images/Category.png"
+                    [alt]="currentLang === 'ar' ? offer.NameAr : offer.NameEn"
+                  />
+                  <h2 class="m-auto text-center text-base font-serif font-bold">
+                    {{ currentLang === "ar" ? offer.NameAr : offer.NameEn }}
+                  </h2>
+                </div>
+              </ng-template>
+            }
+          </owl-carousel-o>
+        </div>
+      </div>
+    </section>
+  }
 
   <section>
     <div class="w-full mt-8 md:mt-16">
@@ -113,10 +236,10 @@
         class="section-content mt-16 grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
       >
         @for (product of filteredItems; track product.Id) {
-         <app-product-card
-         [product]="product"
-         [currentUrl]="currentUrl"
-         ></app-product-card>
+          <app-product-card
+            [product]="product"
+            [currentUrl]="currentUrl"
+          ></app-product-card>
         }
       </div>
     </div>

@@ -2,7 +2,6 @@ import { DatePipe } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import jwtDecode from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import {
@@ -12,7 +11,7 @@ import {
 import { AllProductsService } from '../../Core/Services/all-products.service';
 import { CartService } from '../../Core/Services/cart.service';
 import { LoadingService } from '../../Core/Services/loading.service';
-import { AddToCartComponent } from "../../Shared/components/add-to-cart/add-to-cart.component";
+import { AddToCartComponent } from '../../Shared/components/add-to-cart/add-to-cart.component';
 
 @Component({
   selector: 'app-product-details',
@@ -99,18 +98,11 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   addToCart(productId: number, price: number, quantity: number = 1): void {
     this._LoadingService.start();
-    const token = localStorage.getItem('userToken');
-    if (!token) {
-      this._LoadingService.stop();
-      this._ToastrService.error('من فضلك قم بتسجيل الدخول أولاً!');
-      this._Router.navigate(['/login']);
-      return;
-    }
+    const userId = localStorage.getItem('userId');
 
     try {
-      const decoded: any = jwtDecode(token);
       const data = {
-        UserId: decoded.Id,
+        UserId: userId,
         ProductId: productId,
         Quantity: quantity,
         Price: price,
@@ -122,9 +114,9 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
           this._LoadingService.stop();
 
           if (res && res.IsSuccess) {
-            this._ToastrService.success(res.Message || 'تمت الإضافة بنجاح');
+            this._ToastrService.success(res.Message);
           } else {
-            this._ToastrService.error(res.Message || 'حدث خطأ ما');
+            this._ToastrService.error(res.Message);
           }
         },
         error: (err) => {

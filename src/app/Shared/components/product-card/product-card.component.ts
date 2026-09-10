@@ -1,18 +1,37 @@
-import { Component, Input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, Input, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { AddToCartComponent } from '../add-to-cart/add-to-cart.component';
+import { ToastrService } from 'ngx-toastr';
 import { Item, ItemUnit } from '../../../Core/Interfaces/iall-categories';
+import { AddToCartComponent } from '../add-to-cart/add-to-cart.component';
 
 @Component({
   selector: 'app-product-card',
-  imports: [RouterLink, AddToCartComponent, TranslateModule],
+  standalone: true,
+  imports: [AddToCartComponent, TranslateModule],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.scss',
 })
 export class ProductCardComponent {
   @Input({ required: true }) product!: any;
   @Input({ required: true }) currentUrl!: any;
+
+  private readonly _Router = inject(Router);
+  private readonly _ToastrService = inject(ToastrService);
+
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
+  }
+
+  openDetails(): void {
+    if (this.isLoggedIn()) {
+      this._Router.navigate(['/details', this.product.Id]);
+    } else {
+      this._ToastrService.warning('يجب تسجيل الدخول لإتمام هذه العملية');
+
+      this._Router.navigate(['/auth/login']);
+    }
+  }
 
   getAvailableStock(): number {
     if (this.product?.ItemUnits?.length > 0) {

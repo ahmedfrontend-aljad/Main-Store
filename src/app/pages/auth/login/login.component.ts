@@ -16,6 +16,7 @@ import { SubmitButtonComponent } from '../../../Shared/components/submit-button/
 import { LoadingService } from '../../../Core/Services/loading.service';
 import { CommonModule } from '@angular/common';
 import { GuestAuthService } from '../../../Core/Services/guest-auth.service';
+import jwtDecode from 'jwt-decode';
 
 @Component({
   selector: 'app-login',
@@ -90,6 +91,9 @@ export class LoginComponent implements OnInit, OnDestroy {
             this._TranslateService.instant('auth.loginSuccess'),
           );
           localStorage.setItem('userToken', res.Obj.AccessToken);
+          const decoded: any = jwtDecode(res.Obj.AccessToken)!;
+          const userId = decoded.Id;
+          localStorage.setItem('userId', userId);
           this._Router.navigate(['/home']);
         } else {
           this._ToastrService.error(

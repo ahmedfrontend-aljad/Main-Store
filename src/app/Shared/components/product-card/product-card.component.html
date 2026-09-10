@@ -10,10 +10,7 @@
       <i class="fa-solid fa-heart text-xl cursor-pointer"></i>
     </div>
 
-    <div
-      class="image-container cursor-pointer"
-      [routerLink]="['/details', product.Id]"
-    >
+    <div class="image-container cursor-pointer" (click)="openDetails()">
       @if (getProductImage(product)) {
         <img
           [src]="'data:image/jpeg;base64,' + getProductImage(product)"
@@ -25,11 +22,7 @@
     </div>
 
     <div class="product-body">
-      <div
-        [routerLink]="['/details', product.Id]"
-        [state]="{ from: currentUrl }"
-        class="cursor-pointer"
-      >
+      <div (click)="openDetails()" class="cursor-pointer">
         <div class="product-title">
           <h3>{{ product.NameAr }}</h3>
         </div>

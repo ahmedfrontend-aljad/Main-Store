@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import jwtDecode from 'jwt-decode';
 import { Subscription } from 'rxjs';
 import { CartService } from '../../../Core/Services/cart.service';
 import { MyTranslateService } from '../../../Core/Services/my-translate.service';
@@ -25,7 +24,7 @@ import { ThemeService } from '../../../Core/Services/theme.service';
 export class NavBlankComponent implements OnInit, OnDestroy {
   isUserLogged = false;
   isGuest = false;
-  decoded: any;
+  userId: any;
   itemsCount: number = 0;
   showDropdown = false;
   showMobileMenu = false;
@@ -43,20 +42,7 @@ export class NavBlankComponent implements OnInit, OnDestroy {
 
   constructor() {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
-      const token = localStorage.getItem('userToken');
-
-      if (token) {
-        this.isUserLogged = true;
-        this.isGuest = false;
-        try {
-          this.decoded = jwtDecode(token);
-        } catch (e) {
-          console.error('Invalid token:', e);
-        }
-      } else {
-        this.isUserLogged = false;
-        this.isGuest = true;
-      }
+      this.userId = localStorage.getItem('userId');
 
       const savedLang = localStorage.getItem('lang') || 'en';
       this.selectedLanguage = savedLang === 'ar' ? 'عربي' : 'English';
@@ -71,8 +57,8 @@ export class NavBlankComponent implements OnInit, OnDestroy {
       this.itemsCount = count;
     });
 
-    if (this.decoded?.Id) {
-      this._CartService.getLoggedCart(this.decoded.Id).subscribe();
+    if (this.userId) {
+      this._CartService.getLoggedCart(this.userId).subscribe();
     }
   }
 

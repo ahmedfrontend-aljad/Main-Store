@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import jwtDecode from 'jwt-decode';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { CartService } from '../../../Core/Services/cart.service';
@@ -36,9 +35,7 @@ export class AddToCartComponent {
   addToCart() {
     console.log(this.product);
 
-    const userToken = localStorage.getItem('userToken')!;
-    const decoded: any = jwtDecode(userToken);
-    const userId = decoded.Id || decoded.nameid;
+    const userId = localStorage.getItem('userId')!;
 
     const firstUnit = this.product?.ItemUnits?.[0];
     if (!firstUnit) {

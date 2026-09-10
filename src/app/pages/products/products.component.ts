@@ -1,19 +1,15 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
-import jwtDecode from 'jwt-decode';
-import { ToastrService } from 'ngx-toastr';
-import { ItemUnit } from '../../Core/Interfaces/iall-categories';
 import { Iproducts } from '../../Core/Interfaces/iproducts';
 import { AllProductsService } from '../../Core/Services/all-products.service';
-import { CartService } from '../../Core/Services/cart.service';
 import { LoadingService } from '../../Core/Services/loading.service';
+import { ProductCardComponent } from '../../Shared/components/product-card/product-card.component';
 import { PAGE_SIZE } from '../../Shared/constants/general.constant';
 import { IPagination } from '../../Shared/models/IPagination.model';
-import { ProductCardComponent } from '../../Shared/components/product-card/product-card.component';
 
 @Component({
   selector: 'app-products',
@@ -21,7 +17,6 @@ import { ProductCardComponent } from '../../Shared/components/product-card/produ
   imports: [
     CommonModule,
     FormsModule,
-    RouterLink,
     TranslateModule,
     NgbPaginationModule,
     ProductCardComponent,
@@ -41,9 +36,6 @@ export class ProductsComponent implements OnInit {
   pageSize = PAGE_SIZE;
   private readonly _AllProductsService = inject(AllProductsService);
   private readonly _Router = inject(Router);
-  private readonly _ToastrService = inject(ToastrService);
-  private readonly _CartService = inject(CartService);
-  private readonly _PLATFORM_ID = inject(PLATFORM_ID);
   private readonly _LoadingService = inject(LoadingService);
 
   ngOnInit(): void {

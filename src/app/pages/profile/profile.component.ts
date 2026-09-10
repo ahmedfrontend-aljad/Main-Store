@@ -7,7 +7,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import jwtDecode from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, firstValueFrom } from 'rxjs';
 import { DataService } from '../../Core/Services/data.service';
@@ -103,10 +102,7 @@ export class ProfileComponent implements OnInit {
   }
 
   async getProfileData(): Promise<void> {
-    const userToken = localStorage.getItem('userToken')!;
-
-    const decoded: any = jwtDecode(userToken);
-    const userId = decoded?.Id;
+    const userId = localStorage.getItem('userId')!;
 
     this._LoadingService.start();
     const endpoint = StoreUrl.endsWith('/')

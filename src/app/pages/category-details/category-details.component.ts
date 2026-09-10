@@ -1,6 +1,7 @@
 import {
   Component,
   inject,
+  OnDestroy,
   OnInit,
   signal,
   WritableSignal,
@@ -29,7 +30,7 @@ import { IPagination } from '../../Shared/models/IPagination.model';
   templateUrl: './category-details.component.html',
   styleUrl: './category-details.component.scss',
 })
-export class CategoryDetailsComponent implements OnInit {
+export class CategoryDetailsComponent implements OnInit, OnDestroy {
   private readonly _CategoriesService = inject(CategoriesService);
   private readonly _ActivatedRoute = inject(ActivatedRoute);
   private readonly _Router = inject(Router);
@@ -51,32 +52,41 @@ export class CategoryDetailsComponent implements OnInit {
 
   getallProducts() {
     this._LoadingService.start();
+
     const sub = this._ActivatedRoute.paramMap.subscribe({
       next: (params) => {
-        const code = params.get('code');
-        if (code) {
+        const routeParam = params.get('code')?.toString().trim();
+
+        if (routeParam) {
           const catSub = this._CategoriesService.getAllCategories().subscribe({
             next: (res) => {
               this._LoadingService.stop();
 
-              const allGroups = res.Obj?.ItemGroups || [];
+              const allGroups = res?.Obj?.Groups || res?.Obj || [];
+
               const selectedGroup = allGroups.find(
-                (group: any) => group.Code === code,
+                (group: any) =>
+                  group.Code?.toString() === routeParam ||
+                  group.Id?.toString() === routeParam,
               );
 
-              if (selectedGroup && selectedGroup.Item) {
-                const items: Item[] = selectedGroup.Item;
+              if (selectedGroup && selectedGroup.Items) {
+                const items: Item[] = selectedGroup.Items;
                 this.itemsInCategories.set(items);
-
-                this.setData(res.Obj?.TotalCount || items.length);
+                this.setData(items.length);
               } else {
                 this.itemsInCategories.set([]);
                 this.setData(0);
               }
             },
-            error: (err) => console.error(err),
+            error: (err) => {
+              console.error(err);
+              this._LoadingService.stop();
+            },
           });
           this.subscriptions.add(catSub);
+        } else {
+          this._LoadingService.stop();
         }
       },
     });
@@ -113,5 +123,9 @@ export class CategoryDetailsComponent implements OnInit {
 
   page(ev: number): void {
     this.pageNo = ev;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }
