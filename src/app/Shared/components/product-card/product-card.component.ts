@@ -20,7 +20,7 @@ export class ProductCardComponent {
   private readonly _ToastrService = inject(ToastrService);
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem('userToken');
   }
 
   openDetails(): void {
