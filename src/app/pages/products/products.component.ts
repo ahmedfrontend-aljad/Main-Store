@@ -54,18 +54,20 @@ export class ProductsComponent implements OnInit {
 
   loadItems() {
     this._LoadingService.start();
-    this._AllProductsService.getPagedItem(this.pageNo, PAGE_SIZE).subscribe({
-      next: (res) => {
-        this.allProducts.set(res.Obj.PagedResult);
-        this.totalCount = res.Obj.TotalCount;
-        this.setData(res.Obj);
-        this._LoadingService.stop();
-      },
-      error: (err) => {
-        this._LoadingService.stop();
-        console.error(err);
-      },
-    });
+    this._AllProductsService
+      .getPagedItem(this.pageNo, PAGE_SIZE, this.text)
+      .subscribe({
+        next: (res) => {
+          this.allProducts.set(res.Obj.PagedResult);
+          this.totalCount = res.Obj.TotalCount;
+          this.setData(res.Obj);
+          this._LoadingService.stop();
+        },
+        error: (err) => {
+          this._LoadingService.stop();
+          console.error(err);
+        },
+      });
   }
 
   setData(res: any): void {

@@ -6,11 +6,12 @@ import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { firstValueFrom, Subscription, tap } from 'rxjs';
+import { AllProductsService } from '../../Core/Services/all-products.service';
 import { DataService } from '../../Core/Services/data.service';
+import { GuestAuthService } from '../../Core/Services/guest-auth.service';
 import { ProductCardComponent } from '../../Shared/components/product-card/product-card.component';
 import { StoreUrl } from '../../Shared/constants/api.constant';
 import { PAGE_SIZE } from '../../Shared/constants/general.constant';
-import { GuestAuthService } from '../../Core/Services/guest-auth.service';
 
 @Component({
   selector: 'app-home',
@@ -32,6 +33,7 @@ export class HomeComponent implements OnInit {
   private readonly _DataService = inject(DataService);
   private readonly _spinnerInterceptor = inject(NgxSpinnerService);
   private readonly _GuestAuthService = inject(GuestAuthService);
+  private readonly _AllProductsService = inject(AllProductsService);
 
   products: any[] = [];
   categories: any[] = [];
@@ -86,9 +88,15 @@ export class HomeComponent implements OnInit {
   async ngOnInit() {
     this.currentUrl = this._Router.url;
 
-    await this._GuestAuthService.ensureGuestToken();
+    this._spinnerInterceptor.show();
 
-    await this.getHomeData();
+    try {
+      await this._GuestAuthService.ensureGuestToken();
+
+      await Promise.all([this.getHomeData(), this.loadItems()]);
+    } finally {
+      this._spinnerInterceptor.hide();
+    }
   }
 
   get currentLang(): string {
@@ -108,21 +116,37 @@ export class HomeComponent implements OnInit {
   }
 
   async getHomeData() {
-    this._spinnerInterceptor.show();
-
-    await firstValueFrom(
-      this._DataService.get(`${StoreUrl}/Home/GetHome`).pipe(
-        tap((res) => {
-          this.bannersData = res?.Obj?.Banners;
-          this.categories = res?.Obj?.Groups;
-          this.offers = res?.Obj?.Offers;
-        }),
-      ),
-    ).catch((error) => {
+    try {
+      const res: any = await firstValueFrom(
+        this._DataService.get(`${StoreUrl}/Home/GetHome`).pipe(
+          tap((res) => {
+            this.bannersData = res?.Obj?.Banners;
+            this.categories = res?.Obj?.Groups;
+            this.offers = res?.Obj?.Offers;
+          }),
+        ),
+      );
+    } catch (error: any) {
       console.error(error);
       this._ToastrService.error(error?.Message || 'Error fetching home data');
-    });
+    }
+  }
 
-    this._spinnerInterceptor.hide();
+  async loadItems() {
+    try {
+      const res: any = await firstValueFrom(
+        this._AllProductsService.getPagedItem(
+          this.pageNo,
+          PAGE_SIZE,
+          this.text,
+        ),
+      );
+      if (res?.IsSuccess) {
+        this.products = res?.Obj?.PagedResult || [];
+      }
+    } catch (err: any) {
+      console.error(err);
+      this._ToastrService.error(err?.Message || 'Error fetching products');
+    }
   }
 }

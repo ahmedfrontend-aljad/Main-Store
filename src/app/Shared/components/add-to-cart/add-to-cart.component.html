@@ -1,11 +1,11 @@
 @if (product?.ItemUnits && product.ItemUnits.length > 0) {
-  <button
-    class="add-to-cart"
-   
-    (click)="addToCart()"
-  >
-
-      🛒 {{ "products.addtocart" | translate }}
-    
+  <button class="add-to-cart" [disabled]="isOutOfStock()" (click)="addToCart()">
+    @if (getAvailableStock() > 0) {
+      <i class="fa-solid fa-cart-shopping"></i>
+      {{ "products.addtocart" | translate }}
+    } @else {
+      <i class="fa-solid fa-ban"></i>
+      {{ "notAvaliableRightNow" | translate }}
+    }
   </button>
 }
