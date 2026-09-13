@@ -33,9 +33,12 @@ export class AddToCartComponent {
   }
 
   addToCart() {
-    console.log(this.product);
+    const userId = localStorage.getItem('userId');
 
-    const userId = localStorage.getItem('userId')!;
+    if (!userId) {
+      this._ToastrService.warning('يجب تسجيل الدخول لإتمام هذه العملية');
+      return;
+    }
 
     const firstUnit = this.product?.ItemUnits?.[0];
     if (!firstUnit) {
@@ -56,17 +59,20 @@ export class AddToCartComponent {
     this._spinnerInterceptor.show();
 
     this._CartService.addToCart(dataToSend).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this._spinnerInterceptor.hide();
-        if (response && response.IsSuccess) {
+
+        if (response?.IsSuccess) {
           this._ToastrService.success(response.Message);
         } else {
-          this._ToastrService.error(response.Message);
+          this._ToastrService.error(response?.Message);
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         this._spinnerInterceptor.hide();
-        this._ToastrService.error(err?.Message);
+
+        const errorMessage = err?.error?.Message || err?.Message;
+        this._ToastrService.error(errorMessage);
       },
     });
   }

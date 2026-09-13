@@ -135,18 +135,14 @@ export class LoginComponent implements OnInit, OnDestroy {
 
           this._Router.navigate(['/home']);
         } else {
-          this._ToastrService.error(
-            res?.Message || this._TranslateService.instant('auth.loginError'),
-          );
+          this._ToastrService.error(res?.Message);
         }
       },
       error: (err) => {
         this._LoadingService.stop();
         this.isloading = false;
         console.error('HTTP Error:', err);
-        this._ToastrService.error(
-          this._TranslateService.instant('auth.loginError'),
-        );
+        this._ToastrService.error(this._TranslateService.instant(err.Message));
       },
     });
   }
