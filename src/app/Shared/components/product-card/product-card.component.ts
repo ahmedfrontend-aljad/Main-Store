@@ -19,18 +19,8 @@ export class ProductCardComponent {
   private readonly _Router = inject(Router);
   private readonly _ToastrService = inject(ToastrService);
 
-  isLoggedIn(): boolean {
-    return !!localStorage.getItem('userToken');
-  }
-
   openDetails(): void {
-    if (this.isLoggedIn()) {
-      this._Router.navigate(['/details', this.product.Id]);
-    } else {
-      this._ToastrService.warning('يجب تسجيل الدخول لإتمام هذه العملية');
-
-      this._Router.navigate(['/auth/login']);
-    }
+    this._Router.navigate(['/details', this.product.Id]);
   }
 
   getAvailableStock(): number {

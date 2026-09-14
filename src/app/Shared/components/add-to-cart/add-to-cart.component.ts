@@ -35,10 +35,6 @@ export class AddToCartComponent {
   addToCart() {
     const userId = localStorage.getItem('userId');
 
-    if (!userId) {
-      this._ToastrService.warning('يجب تسجيل الدخول لإتمام هذه العملية');
-      return;
-    }
 
     const firstUnit = this.product?.ItemUnits?.[0];
     if (!firstUnit) {
