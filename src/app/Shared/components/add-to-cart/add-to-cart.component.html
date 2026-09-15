@@ -1,11 +1,20 @@
-@if (product?.ItemUnits && product.ItemUnits.length > 0) {
-  <button class="add-to-cart" [disabled]="isOutOfStock()" (click)="addToCart()">
-    @if (getAvailableStock() > 0) {
-      <i class="fa-solid fa-cart-shopping"></i>
-      {{ "products.addtocart" | translate }}
-    } @else {
-      <i class="fa-solid fa-ban"></i>
-      {{ "notAvaliableRightNow" | translate }}
-    }
-  </button>
-}
+<button
+  type="button"
+  [disabled]="isOutOfStock()"
+  (click)="addToCart()"
+  class="w-full h-10 px-4 rounded-xl font-medium text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-70 disabled:shadow-none"
+  [ngClass]="{
+    'bg-primary hover:bg-emerald-600 text-white shadow-emerald-200 dark:shadow-none':
+      !isOutOfStock(),
+    'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border border-gray-200 dark:border-gray-700':
+      isOutOfStock(),
+  }"
+>
+  @if (!isOutOfStock()) {
+    <i class="fa-solid fa-cart-shopping text-xs md:text-sm"></i>
+    <span>{{ "products.addtocart" | translate }}</span>
+  } @else {
+    <i class="fa-solid fa-ban text-red-500 dark:text-red-400"></i>
+    <span class="text-xs">{{ "notAvaliableRightNow" | translate }}</span>
+  }
+</button>

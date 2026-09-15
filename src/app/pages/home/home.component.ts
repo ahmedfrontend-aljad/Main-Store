@@ -12,6 +12,7 @@ import { GuestAuthService } from '../../Core/Services/guest-auth.service';
 import { ProductCardComponent } from '../../Shared/components/product-card/product-card.component';
 import { StoreUrl } from '../../Shared/constants/api.constant';
 import { PAGE_SIZE } from '../../Shared/constants/general.constant';
+import { ProductDetailsComponent } from '../product-details/product-details.component';
 
 @Component({
   selector: 'app-home',
@@ -22,6 +23,7 @@ import { PAGE_SIZE } from '../../Shared/constants/general.constant';
     RouterLink,
     TranslateModule,
     ProductCardComponent,
+    ProductDetailsComponent,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
@@ -34,6 +36,7 @@ export class HomeComponent implements OnInit {
   private readonly _spinnerInterceptor = inject(NgxSpinnerService);
   private readonly _GuestAuthService = inject(GuestAuthService);
   private readonly _AllProductsService = inject(AllProductsService);
+  selectedProductId: number | string | null = null;
 
   products: any[] = [];
   categories: any[] = [];
@@ -148,5 +151,13 @@ export class HomeComponent implements OnInit {
       console.error(err);
       this._ToastrService.error(err?.Message || 'Error fetching products');
     }
+  }
+
+  openProductModal(id: number | string): void {
+    this.selectedProductId = id;
+  }
+
+  closeProductModal(): void {
+    this.selectedProductId = null;
   }
 }

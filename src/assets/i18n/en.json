@@ -100,8 +100,7 @@
     "blend": "Blend",
     "category": "Category",
     "categoryname": "Category Name",
-    "OldPriceEGP": "Old Price EGP",
-    "priceEGP": "price EGP",
+
     "totalquentity": "Total Quentity",
     "pice": "pice",
     "createdat:": "Created At :"
@@ -214,7 +213,7 @@
     "noImage": "No image available",
     "code": "Code",
     "supplier": "Supplier",
-    "currency": "EGP",
+    "currency": "£",
     "per": "Per",
     "selectUnit": "Select Unit",
     "remainingStock": "Remaining Stock",
@@ -280,5 +279,6 @@
   "STATUS_READY": "Ready",
   "STATUS_OUT_FOR_DELIVERY": "Out for Delivery",
   "STATUS_CANCELED": "Canceled",
-  "deliverd": "Deliverd"
+  "deliverd": "Deliverd",
+  "noresultsmatchedthesearchratio": "No results matched the search ratio"
 }

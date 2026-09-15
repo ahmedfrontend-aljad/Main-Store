@@ -1,8 +1,5 @@
-import { Component, Input, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
-import { Item, ItemUnit } from '../../../Core/Interfaces/iall-categories';
 import { AddToCartComponent } from '../add-to-cart/add-to-cart.component';
 
 @Component({
@@ -16,46 +13,40 @@ export class ProductCardComponent {
   @Input({ required: true }) product!: any;
   @Input({ required: true }) currentUrl!: any;
 
-  private readonly _Router = inject(Router);
-  private readonly _ToastrService = inject(ToastrService);
+  @Output() showDetails = new EventEmitter<number | string>();
 
   openDetails(): void {
-    this._Router.navigate(['/details', this.product.Id]);
+    if (this.product?.Id) {
+      this.showDetails.emit(this.product.Id);
+    }
   }
 
   getAvailableStock(): number {
+    if (this.product?.Quantity !== undefined) {
+      return this.product.Quantity;
+    }
     if (this.product?.ItemUnits?.length > 0) {
       const unit = this.product.ItemUnits[0];
       return unit.Quantity ?? unit.Stock ?? unit.AvailableQuantity ?? 0;
     }
-    return 0;
+    return 1;
   }
 
   isOutOfStock(): boolean {
     return this.getAvailableStock() <= 0;
   }
 
-  getProductPrice(product: Item): number {
-    return product.ItemUnits && product.ItemUnits.length > 0
-      ? product.ItemUnits[0].Price
-      : 0;
-  }
-
-  getProductImage(product: Item): string {
-    if (this.hasImages(product)) {
-      const unit = product.ItemUnits.find(
-        (u) => u.ItemImages && u.ItemImages.length > 0,
-      );
-      return unit?.ItemImages[0]?.Image || '';
+  getProductPrice(): number {
+    if (this.product?.Price && this.product.Price > 0) {
+      return this.product.Price;
     }
-    return '';
+    if (this.product?.ItemUnits && this.product.ItemUnits.length > 0) {
+      return this.product.ItemUnits[0].Price || 0;
+    }
+    return 0;
   }
 
-  hasImages(product: Item): boolean {
-    return (
-      product.ItemUnits?.some(
-        (u: ItemUnit) => u.ItemImages && u.ItemImages.length > 0,
-      ) ?? false
-    );
+  getProductImage(): string {
+    return this.product?.ImagePath || this.product?.Image || '';
   }
 }

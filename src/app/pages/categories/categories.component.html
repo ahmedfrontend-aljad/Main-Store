@@ -1,9 +1,8 @@
 <div class="container m-auto px-4 sm:px-6">
   <section class="w-full mt-8 md:mt-16">
-    <!-- Header Section -->
     <div class="heading text-center">
       <h3
-        class="font-weight-bolder font-serif text-2xl sm:text-3xl md:text-4xl text-base"
+        class="font-weight-bolder font-serif text-2xl sm:text-3xl md:text-4xl"
       >
         {{ "homecom.allcategories" | translate }}
       </h3>
@@ -25,52 +24,49 @@
       </button>
     </div>
 
-    <!-- Categories Grid -->
     <div
       class="section-content mt-10 md:mt-16 grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
     >
-      @for (category of filteredItems; track category.Id) {
+      @for (item of filteredItems(); track item.Id) {
         <div class="flex justify-center w-full">
           <div
-            class="product-card category-card"
-            [routerLink]="['/catDetails', category.Code]"
+            class="product-card category-card relative flex flex-col justify-between p-3 rounded-lg border bg-white shadow-sm hover:shadow-md transition-all cursor-pointer w-full"
+            [routerLink]="['/catDetails', item.Code]"
             [state]="{ from: currentUrl }"
           >
-            <!-- Wishlist Icon -->
-            <div class="wishIcon">
+            <div class="wishIcon absolute top-2 right-2 z-10">
               <i
-                class="fa-solid fa-heart text-lg sm:text-xl cursor-pointer"
+                class="fa-solid fa-heart text-lg sm:text-xl text-gray-400 hover:text-red-500 cursor-pointer"
               ></i>
             </div>
 
-            <!-- Image Container -->
-            <div class="image-container cursor-pointer">
+            <div
+              class="image-container mb-3 flex justify-center items-center h-36"
+            >
               <img
-                src="./assets/images/Category.png"
-                [alt]="category.NameAr || 'Category Image'"
+                [src]="'./assets/images/Category.png'"
+                [alt]="item.NameAr || 'Item Image'"
+                class="max-h-full object-contain"
               />
             </div>
 
-            <!-- Card Content -->
-            <div class="product-body text-end">
-              <div class="cursor-pointer">
-                <div class="product-title">
-                  <h3>{{ category.NameAr }}</h3>
-                </div>
-
-                <div class="brand">
-                  <img src="./assets/images/Category.png" alt="Brand Logo" />
-                  <span class="truncate">{{ category.BranchName }}</span>
-                </div>
+            <div class="product-body text-end flex flex-col gap-1">
+              <div class="product-title">
+                <h3 class="font-bold text-gray-800 line-clamp-1">
+                  {{ item.NameAr }}
+                </h3>
               </div>
             </div>
           </div>
+        </div>
+      } @empty {
+        <div class="col-span-full text-center py-8 text-gray-500">
+          {{ "noresultsmatchedthesearchratio" | translate }}
         </div>
       }
     </div>
   </section>
 
-  <!-- Pagination -->
   @if (pagination && pagination.TotalCount! > pagination.PageSize!) {
     <div class="my-8 md:my-12 flex justify-center pagination-wrapper">
       <ngb-pagination

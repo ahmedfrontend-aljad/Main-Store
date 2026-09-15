@@ -10,6 +10,7 @@ import { LoadingService } from '../../Core/Services/loading.service';
 import { ProductCardComponent } from '../../Shared/components/product-card/product-card.component';
 import { PAGE_SIZE } from '../../Shared/constants/general.constant';
 import { IPagination } from '../../Shared/models/IPagination.model';
+import { ProductDetailsComponent } from '../product-details/product-details.component';
 
 @Component({
   selector: 'app-products',
@@ -20,6 +21,7 @@ import { IPagination } from '../../Shared/models/IPagination.model';
     TranslateModule,
     NgbPaginationModule,
     ProductCardComponent,
+    ProductDetailsComponent,
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
@@ -37,6 +39,7 @@ export class ProductsComponent implements OnInit {
   private readonly _AllProductsService = inject(AllProductsService);
   private readonly _Router = inject(Router);
   private readonly _LoadingService = inject(LoadingService);
+  selectedProductId: number | string | null = null;
 
   ngOnInit(): void {
     this.currentUrl = this._Router.url;
@@ -80,5 +83,13 @@ export class ProductsComponent implements OnInit {
   page(ev: any): void {
     this.pageNo = ev;
     this.loadItems();
+  }
+
+  openProductModal(id: number | string): void {
+    this.selectedProductId = id;
+  }
+
+  closeProductModal(): void {
+    this.selectedProductId = null;
   }
 }

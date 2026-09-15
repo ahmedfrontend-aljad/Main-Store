@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { FooterComponent } from '../../pages/footer/footer.component';
-import { NavAuthComponent } from '../../Shared/components/nav-auth/nav-auth.component';
+import { NavAuthComponent } from '../../Shared/components/navbars/nav-auth/nav-auth.component';
 
 @Component({
   selector: 'app-notfound',

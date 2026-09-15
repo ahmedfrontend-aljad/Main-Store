@@ -1,140 +1,88 @@
-import { DatePipe } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { DatePipe, NgClass } from '@angular/common';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
-import { Subscription } from 'rxjs';
 import {
   IitemsDetailes,
   ItemUnit,
 } from '../../Core/Interfaces/iitems-detailes';
 import { AllProductsService } from '../../Core/Services/all-products.service';
-import { CartService } from '../../Core/Services/cart.service';
-import { LoadingService } from '../../Core/Services/loading.service';
 import { AddToCartComponent } from '../../Shared/components/add-to-cart/add-to-cart.component';
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [DatePipe, TranslateModule, AddToCartComponent],
+  imports: [DatePipe, TranslateModule, AddToCartComponent, NgClass],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.scss',
 })
-export class ProductDetailsComponent implements OnInit, OnDestroy {
-  private readonly _Router = inject(Router);
-  private readonly _ActivatedRoute = inject(ActivatedRoute);
+export class ProductDetailsComponent implements OnChanges {
+  @Input() productId: any = null;
+  @Output() closeDialog = new EventEmitter<void>();
+
   private readonly _AllProductsService = inject(AllProductsService);
-  private readonly _CartService = inject(CartService);
-  private readonly _ToastrService = inject(ToastrService);
-  private readonly _LoadingService = inject(LoadingService);
 
-  detailsProduct: IitemsDetailes | undefined;
-  productId: string | null = null;
-
+  detailsProduct: any = null;
   selectedImage: string | null = null;
-  selectedUnit: ItemUnit | null = null;
+  selectedUnit: any = null;
+  isLoading: boolean = false;
 
-  private subscription = new Subscription();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['productId'] && this.productId) {
+      this.loadProductDetails();
+    }
+  }
 
-  ngOnInit(): void {
-    const routeSub = this._ActivatedRoute.paramMap.subscribe({
-      next: (p) => {
-        this.productId = p.get('id');
+  loadProductDetails(): void {
+    this.isLoading = true;
+    this._AllProductsService.getProductDetails(this.productId).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        if (res?.Obj?.item) {
+          this.detailsProduct = res.Obj.item;
 
-        const productSub = this._AllProductsService
-          .getProductDetails(this.productId)
-          .subscribe({
-            next: (res) => {
-              this.detailsProduct = res.Obj.item;
+          if (this.detailsProduct?.ItemUnits?.length > 0) {
+            this.selectedUnit = this.detailsProduct.ItemUnits[0];
 
-              if (
-                this.detailsProduct?.ItemUnits &&
-                this.detailsProduct.ItemUnits.length > 0
-              ) {
-                this.selectedUnit = this.detailsProduct.ItemUnits[0];
-
-                if (
-                  this.selectedUnit.ItemImages &&
-                  this.selectedUnit.ItemImages.length > 0
-                ) {
-                  this.selectedImage = this.selectedUnit.ItemImages[0].Image;
-                }
-              }
-            },
-            error: (err) => {
-              console.error('Error fetching product details:', err);
-            },
-          });
-
-        this.subscription.add(productSub);
+            if (
+              this.selectedUnit?.ItemImages?.length > 0 &&
+              this.selectedUnit.ItemImages[0]?.Image
+            ) {
+              this.selectedImage = this.selectedUnit.ItemImages[0].Image;
+            } else if (this.detailsProduct?.CardImage) {
+              this.selectedImage = this.detailsProduct.CardImage;
+            } else {
+              this.selectedImage = null;
+            }
+          }
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Error fetching details:', err);
       },
     });
-
-    this.subscription.add(routeSub);
   }
 
-  changeMainImage(imgBase64: string) {
-    this.selectedImage = imgBase64;
-  }
-
-  selectUnit(unit: ItemUnit) {
+  selectUnit(unit: any): void {
     this.selectedUnit = unit;
-    if (
-      unit.ItemImages &&
-      unit.ItemImages.length > 0 &&
-      unit.ItemImages[0].Image
-    ) {
+    if (unit?.ItemImages?.length > 0 && unit.ItemImages[0]?.Image) {
       this.selectedImage = unit.ItemImages[0].Image;
     }
   }
 
-  selected() {
-    if (history.state.from) {
-      this._Router.navigateByUrl(history.state.from);
-    } else {
-      this._Router.navigate(['/']);
-    }
+  changeMainImage(imgBase64: string): void {
+    this.selectedImage = imgBase64;
   }
 
-  addToCart(productId: number, price: number, quantity: number = 1): void {
-    this._LoadingService.start();
-    const userId = localStorage.getItem('userId');
-
-    try {
-      const data = {
-        UserId: userId,
-        ProductId: productId,
-        Quantity: quantity,
-        Price: price,
-        UnitId: this.selectedUnit?.UnitId,
-      };
-
-      this._CartService.addToCart(data).subscribe({
-        next: (res) => {
-          this._LoadingService.stop();
-
-          if (res && res.IsSuccess) {
-            this._ToastrService.success(res.Message);
-          } else {
-            this._ToastrService.error(res.Message);
-          }
-        },
-        error: (err) => {
-          this._LoadingService.stop();
-          console.error('Error while adding to cart:', err);
-          this._ToastrService.error('فشل الاتصال بالخادم');
-        },
-      });
-    } catch (error) {
-      this._LoadingService.stop();
-      this._ToastrService.error(
-        'جلسة المستخدم غير صالحة، يرجى تسجيل الدخول مرة أخرى.',
-      );
-      this._Router.navigate(['/login']);
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+  closeModal(): void {
+    this.closeDialog.emit();
   }
 }

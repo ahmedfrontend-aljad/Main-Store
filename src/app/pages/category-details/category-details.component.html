@@ -3,11 +3,11 @@
     <div class="w-full mt-8 md:mt-16 products">
       <div class="heading text-center">
         <h3
-          class="font-weight-bolder font-serif text-2xl sm:text-3xl md:text-4xl text-base"
+          class="font-weight-bolder font-serif text-2xl sm:text-3xl md:text-4xl"
         >
           {{ "homecomponent.Shopamongmanyproducts" | translate }}
         </h3>
-        <p class="mb-6 md:mb-8 mt-2 text-muted text-sm sm:text-base">
+        <p class="mb-6 md:mb-8 mt-2 text-sm sm:text-base">
           {{ "homecomponent.enjoythemostpopularproducts" | translate }}
         </p>
       </div>
@@ -31,6 +31,7 @@
           <app-product-card
             [product]="product"
             [currentUrl]="currentUrl"
+            (showDetails)="openProductModal($event)"
           ></app-product-card>
         }
       </div>
@@ -50,5 +51,12 @@
       >
       </ngb-pagination>
     </div>
+  }
+
+  @if (selectedProductId) {
+    <app-product-details
+      [productId]="selectedProductId"
+      (closeDialog)="closeProductModal()"
+    ></app-product-details>
   }
 </div>

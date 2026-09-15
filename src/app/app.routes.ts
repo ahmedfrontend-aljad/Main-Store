@@ -75,14 +75,6 @@ export const routes: Routes = [
         title: 'offers',
       },
       {
-        path: 'details/:id',
-        loadComponent: () =>
-          import('./pages/product-details/product-details.component').then(
-            (c) => c.ProductDetailsComponent,
-          ),
-        title: 'itemDetails',
-      },
-      {
         path: 'catDetails/:code',
         loadComponent: () =>
           import('./pages/category-details/category-details.component').then(

@@ -17,6 +17,7 @@ import { LoadingService } from '../../Core/Services/loading.service';
 import { ProductCardComponent } from '../../Shared/components/product-card/product-card.component';
 import { PAGE_SIZE } from '../../Shared/constants/general.constant';
 import { IPagination } from '../../Shared/models/IPagination.model';
+import { ProductDetailsComponent } from '../product-details/product-details.component';
 
 @Component({
   selector: 'app-category-details',
@@ -26,6 +27,7 @@ import { IPagination } from '../../Shared/models/IPagination.model';
     TranslateModule,
     NgbPaginationModule,
     ProductCardComponent,
+    ProductDetailsComponent,
   ],
   templateUrl: './category-details.component.html',
   styleUrl: './category-details.component.scss',
@@ -42,6 +44,7 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
   currentUrl: string = '';
   itemsInCategories: WritableSignal<Item[]> = signal([]);
   text: string = '';
+  selectedProductId: number | string | null = null;
 
   private subscriptions: Subscription = new Subscription();
 
@@ -62,7 +65,7 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
             next: (res) => {
               this._LoadingService.stop();
 
-              const allGroups = res?.Obj?.Groups || res?.Obj || [];
+              const allGroups = res?.Obj?.Groups || [];
 
               const selectedGroup = allGroups.find(
                 (group: any) =>
@@ -123,6 +126,14 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
 
   page(ev: number): void {
     this.pageNo = ev;
+  }
+
+  openProductModal(id: number | string): void {
+    this.selectedProductId = id;
+  }
+
+  closeProductModal(): void {
+    this.selectedProductId = null;
   }
 
   ngOnDestroy(): void {

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FooterComponent } from '../../pages/footer/footer.component';
-import { NavBlankComponent } from '../../Shared/components/nav-blank/nav-blank.component';
+import { NavBlankComponent } from '../../Shared/components/navbars/nav-blank/nav-blank.component';
 
 @Component({
   selector: 'app-blank',

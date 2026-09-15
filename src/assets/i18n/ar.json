@@ -107,8 +107,6 @@
     "blend": "الخليط",
     "category": "الفئة",
     "categoryname": "اسم الفئة",
-    "OldPriceEGP": "السعر القديم (ج.م)",
-    "priceEGP": "السعر (ج.م)",
     "totalquentity:": "إجمالي الكمية:",
     "pice": "قطعة",
     "createdat": "تاريخ الإضافة:"
@@ -286,5 +284,6 @@
   "STATUS_READY": "جاهز",
   "STATUS_OUT_FOR_DELIVERY": "جاري التوصيل",
   "STATUS_CANCELED": "ملغي",
-  "deliverd": "تم التوصيل"
+  "deliverd": "تم التوصيل",
+  "noresultsmatchedthesearchratio": "لا توجد نتائج مطابقة لنسبة البحث"
 }

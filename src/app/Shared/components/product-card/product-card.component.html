@@ -1,50 +1,77 @@
-<div class="flex justify-center">
-  <div class="product-card px-1">
-    @if (isOutOfStock()) {
-      <span class="out-of-stock-badge">
-        {{ "unAvaliable" | translate }}
-      </span>
+<div
+  class="group relative flex flex-col justify-between h-full bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+>
+  <div
+    class="absolute top-3 inset-x-3 flex justify-between items-center z-10 pointer-events-none"
+  >
+    <div>
+      @if (isOutOfStock()) {
+        <span
+          class="bg-red-500 text-white text-[10px] md:text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm"
+        >
+          {{ "unAvaliable" | translate }}
+        </span>
+      }
+    </div>
+
+    <button
+      type="button"
+      class="pointer-events-auto w-8 h-8 md:w-9 md:h-9 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-white transition-all shadow-sm"
+      aria-label="Add to Wishlist"
+    >
+      <i class="fa-solid fa-heart text-sm md:text-base"></i>
+    </button>
+  </div>
+
+  <div
+    class="relative aspect-square w-full bg-gray-50 dark:bg-gray-900 overflow-hidden cursor-pointer p-4"
+    (click)="openDetails()"
+  >
+    @if (getProductImage()) {
+      <img
+        [src]="
+          getProductImage().startsWith('http')
+            ? getProductImage()
+            : 'data:image/jpeg;base64,' + getProductImage()
+        "
+        [alt]="product.NameAr"
+        class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+      />
+    } @else {
+      <img
+        src="assets/images/Product.png"
+        [alt]="product.NameAr"
+        class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+      />
     }
+  </div>
 
-    <div class="wishIcon px-2 text-right py-1">
-      <i class="fa-solid fa-heart text-xl cursor-pointer"></i>
-    </div>
+  <div class="p-4 flex flex-col flex-grow justify-between">
+    <div class="cursor-pointer" (click)="openDetails()">
+      <h3
+        class="font-semibold text-sm md:text-base text-gray-800 line-clamp-1 mb-1 group-hover:text-primary transition-colors"
+      >
+        {{ product.NameAr }}
+      </h3>
 
-    <div class="image-container cursor-pointer" (click)="openDetails()">
-      @if (getProductImage(product)) {
-        <img
-          [src]="'data:image/jpeg;base64,' + getProductImage(product)"
-          [alt]="product.NameAr"
-        />
-      } @else {
-        <img src="assets/images/Product.png" [alt]="product.NameAr" />
+      @if (product.Description) {
+        <p
+          class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mb-3 h-8"
+        >
+          {{ product.Description }}
+        </p>
       }
-    </div>
 
-    <div class="product-body">
-      <div (click)="openDetails()" class="cursor-pointer">
-        <div class="product-title">
-          <h3>{{ product.NameAr }}</h3>
-        </div>
-
-        @if (product.Description) {
-          <p class="text-xs text-gray-500 my-1 line-clamp-2">
-            {{ product.Description }}
-          </p>
-        }
-
-        @if (product.ItemUnits && product.ItemUnits.length > 0) {
-          <div class="price my-2">
-            <span class="current-price">
-              {{ product.ItemUnits[0].Price }} EGP
-            </span>
-          </div>
-        }
+      <div class="flex items-baseline gap-2 mb-3">
+        <span class="text-base md:text-lg font-bold text-primary">
+          {{ getProductPrice() }}
+          <span class="text-xs font-normal">£</span>
+        </span>
       </div>
+    </div>
 
-      @if (product.ItemUnits && product.ItemUnits.length > 0) {
-        <app-add-to-cart [product]="product"></app-add-to-cart>
-      }
+    <div class="mt-2 pt-2 border-t border-gray-50 dark:border-gray-700">
+      <app-add-to-cart [product]="product"></app-add-to-cart>
     </div>
   </div>
 </div>

@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   inject,
   OnDestroy,
   OnInit,
@@ -8,64 +9,79 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { IallCategories } from '../../Core/Interfaces/iall-categories';
-import { CategoriesService } from '../../Core/Services/categories.service';
-import { TranslateModule } from '@ngx-translate/core';
-import { PAGE_SIZE } from '../../Shared/constants/general.constant';
-import { LoadingService } from '../../Core/Services/loading.service';
-import { IPagination } from '../../Shared/models/IPagination.model';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateModule } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+import { CategoriesService } from '../../Core/Services/categories.service';
+import { LoadingService } from '../../Core/Services/loading.service';
+import { PAGE_SIZE } from '../../Shared/constants/general.constant';
+import { IPagination } from '../../Shared/models/IPagination.model';
 
 @Component({
   selector: 'app-categories',
+  standalone: true,
   imports: [FormsModule, RouterLink, TranslateModule, NgbPaginationModule],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.scss',
 })
 export class CategoriesComponent implements OnInit, OnDestroy {
-  text: string = '';
-  currentUrl: string = '';
+  searchTerm = signal<string>('');
+
+  get text(): string {
+    return this.searchTerm();
+  }
+  set text(value: string) {
+    this.searchTerm.set(value);
+  }
+
+  currentUrl = '';
   pageNo = 1;
   pageSize = PAGE_SIZE;
-  allCategories: WritableSignal<IallCategories[]> = signal([]);
-  private readonly subscription = new Subscription();
+
+  groups: WritableSignal<any[]> = signal([]);
   pagination?: IPagination;
+
+  private fetchSub?: Subscription;
   private readonly _CategoriesService = inject(CategoriesService);
   private readonly _LoadingService = inject(LoadingService);
   private readonly _Router = inject(Router);
 
+  filteredItems = computed(() => {
+    const query = this.searchTerm().toLowerCase().trim();
+    if (!query) return this.groups();
+
+    return this.groups().filter((category) =>
+      category.NameAr?.toLowerCase().includes(query),
+    );
+  });
+
   ngOnInit(): void {
-    this._LoadingService.start();
     this.currentUrl = this._Router.url;
-
-    this.subscription.add(
-      this._CategoriesService.getAllCategories().subscribe({
-        next: (res) => {
-          console.log(res);
-          this.allCategories.set(res.Obj.Groups);
-          this._LoadingService.stop();
-        },
-        error: (err) => {
-          console.log(err);
-          this._LoadingService.stop();
-        },
-      }),
-    );
+    this.loadCategories(this.pageNo);
   }
 
-  page(ev: any) {
+  loadCategories(page: number): void {
+    this._LoadingService.start();
+    this.fetchSub?.unsubscribe();
+
+    this.fetchSub = this._CategoriesService.getAllCategories().subscribe({
+      next: (res) => {
+        this.groups.set(res.Obj.Groups || []);
+        this._LoadingService.stop();
+      },
+      error: (err) => {
+        console.error(err);
+        this._LoadingService.stop();
+      },
+    });
+  }
+
+  page(ev: number): void {
     this.pageNo = ev;
-    this._CategoriesService.getAllCategories();
-  }
-
-  get filteredItems() {
-    return this.allCategories().filter((category) =>
-      category.NameAr?.toLowerCase().includes(this.text.toLowerCase()),
-    );
+    this.loadCategories(this.pageNo);
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.fetchSub?.unsubscribe();
   }
 }

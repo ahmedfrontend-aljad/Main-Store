@@ -46,7 +46,6 @@
   }
 }
 
-// Category Card Extensions
 .category-card {
   width: 100%;
   cursor: pointer;
@@ -75,7 +74,6 @@
       font-size: 1.05rem !important;
       font-weight: 600;
       margin-bottom: 0.25rem;
-      color: var(--color-text);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -102,7 +100,6 @@
   }
 }
 
-// Pagination Deep Overrides for Responsiveness
 .pagination-wrapper {
   ::ng-deep {
     .pagination {

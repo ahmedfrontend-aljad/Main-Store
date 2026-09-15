@@ -13,11 +13,11 @@ import {
   RouterLink,
   RouterLinkActive,
 } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { filter, Subscription } from 'rxjs';
-import { CartService } from '../../../Core/Services/cart.service';
-import { MyTranslateService } from '../../../Core/Services/my-translate.service';
-import { ThemeService } from '../../../Core/Services/theme.service';
+import { CartService } from '../../../../Core/Services/cart.service';
+import { MyTranslateService } from '../../../../Core/Services/my-translate.service';
+import { ThemeService } from '../../../../Core/Services/theme.service';
 
 @Component({
   selector: 'app-nav-blank',
@@ -39,24 +39,28 @@ export class NavBlankComponent implements OnInit, OnDestroy {
 
   private cartSub!: Subscription;
   private routerSub!: Subscription;
+  private langSub!: Subscription;
 
   private readonly _PLATFORM_ID = inject(PLATFORM_ID);
   private readonly _Router = inject(Router);
   private readonly _MyTranslateService = inject(MyTranslateService);
+  private readonly _TranslateService = inject(TranslateService);
   private readonly _themeService = inject(ThemeService);
   private readonly _CartService = inject(CartService);
 
   constructor() {
-    if (isPlatformBrowser(this._PLATFORM_ID)) {
-      const savedLang = localStorage.getItem('lang') || 'en';
-      this.selectedLanguage = savedLang === 'ar' ? 'عربي' : 'English';
-    }
+    this.updateLanguageLabel();
   }
 
   ngOnInit(): void {
     this._themeService.loadTheme();
     this.updateThemeState();
     this.checkAuthStatus();
+    this.updateLanguageLabel();
+
+    this.langSub = this._TranslateService.onLangChange.subscribe((event) => {
+      this.selectedLanguage = event.lang === 'ar' ? 'عربي' : 'English';
+    });
 
     this.routerSub = this._Router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
@@ -71,6 +75,17 @@ export class NavBlankComponent implements OnInit, OnDestroy {
     if (this.userId && this.isUserLogged) {
       this._CartService.getLoggedCart(this.userId).subscribe();
     }
+  }
+
+  private updateLanguageLabel(): void {
+    const currentLang =
+      this._TranslateService.currentLang ||
+      (isPlatformBrowser(this._PLATFORM_ID)
+        ? localStorage.getItem('lang')
+        : null) ||
+      'en';
+
+    this.selectedLanguage = currentLang === 'ar' ? 'عربي' : 'English';
   }
 
   checkAuthStatus(): void {
@@ -91,6 +106,7 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.cartSub) this.cartSub.unsubscribe();
     if (this.routerSub) this.routerSub.unsubscribe();
+    if (this.langSub) this.langSub.unsubscribe();
   }
 
   toggleTheme(): void {
@@ -100,9 +116,19 @@ export class NavBlankComponent implements OnInit, OnDestroy {
 
   private updateThemeState(): void {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
-      this.isDarkMode =
-        document.documentElement.classList.contains('dark') ||
-        document.body.classList.contains('dark-theme');
+      const html = document.documentElement;
+      const body = document.body;
+
+      const hasDarkClass =
+        html.classList.contains('dark') ||
+        body.classList.contains('dark') ||
+        body.classList.contains('dark-theme');
+      const hasDarkAttr =
+        html.getAttribute('data-bs-theme') === 'dark' ||
+        html.getAttribute('data-theme') === 'dark';
+      const savedTheme = localStorage.getItem('theme');
+
+      this.isDarkMode = hasDarkClass || hasDarkAttr || savedTheme === 'dark';
     }
   }
 
@@ -127,7 +153,7 @@ export class NavBlankComponent implements OnInit, OnDestroy {
 
   signout(): void {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
-      localStorage.clear(); 
+      localStorage.clear();
       this.isUserLogged = false;
       this.isGuest = true;
       this._CartService.updateCartCount(0);

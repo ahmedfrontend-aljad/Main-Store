@@ -1,9 +1,25 @@
 <nav>
-  <div class="col-12 pb-2 pt-2 px-5 flex justify-between items-center">
+  <div class="col-12 pb-1 pt-1 px-4 flex justify-between items-center">
     <div class="mainlogo">
-      <a href="" class="flex items-center gap-1.5">
+      <a
+        routerLink="/home"
+        class="d-flex align-items-center gap-2 text-decoration-none"
+      >
         <i class="fa-solid fa-cart-shopping fa-xl iconsColor"></i>
-        <h2 class="text-2xl font-semibold font-serif">Ebtikar Store</h2>
+
+        @if (isDarkMode) {
+          <img
+            style="height: 55px"
+            src="./assets/images/storeLogo.png"
+            alt="Store Logo"
+          />
+        } @else {
+          <img
+            style="height: 55px; filter: invert(1) brightness(0.2)"
+            src="./assets/images/storeLogo.png"
+            alt="Store Logo"
+          />
+        }
       </a>
     </div>
 
