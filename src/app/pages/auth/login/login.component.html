@@ -2,16 +2,13 @@
   <div class="login-wrapper">
     <div class="login-card">
       <h2 class="login-title font-semibold font-serif">
-        {{ "auth.login.loginnow" | translate }}
+        {{ "loginnow" | translate }}
       </h2>
-      <form
-        class="login-form"
-        [formGroup]="loginForm!"
-      >
+      <form class="login-form" [formGroup]="loginForm!">
         <div class="fv-row">
           <app-store-input
-            [label]="'auth.login.username'"
-            [placeholder]="'auth.login.placeholders.username'"
+            [label]="'username'"
+            [placeholder]="'username'"
             [control]="loginForm.get('userName')!"
           >
           </app-store-input>
@@ -20,8 +17,8 @@
         <div class="fv-row mb-2">
           <app-store-input
             [type]="'password'"
-            [label]="'auth.login.password'"
-            [placeholder]="'auth.login.placeholders.password'"
+            [label]="'password'"
+            [placeholder]="'password'"
             [control]="loginForm.get('password')!"
           >
           </app-store-input>
@@ -34,21 +31,19 @@
               checked
               class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
             />
-            <span class="text-sm px-1">
-              {{ "auth.login.rememberme" | translate }}</span
-            >
+            <span class="text-sm px-1"> {{ "rememberme" | translate }}</span>
           </label>
 
           <div class="links">
             <a routerLink="/auth/forgetpassword">
-              {{ "auth.login.forgetpassword?" | translate }}</a
+              {{ "forgetpassword?" | translate }}</a
             >
           </div>
         </div>
 
         <div class="col-12">
           <app-submit-button
-            [buttonText]="'auth.login.login'"
+            [buttonText]="'login'"
             [isDisabled]="loginForm.invalid"
             (btnClick)="sendLoginData()"
           >
@@ -57,17 +52,17 @@
 
         <hr class="divider" />
         <button (click)="guestLogin()" type="button" class="btn btn-info">
-          {{ "auth.login.continueasguest" | translate }}
+          {{ "continueasguest" | translate }}
         </button>
 
         <p class="text-center">
-          {{ "auth.login.notamember" | translate }}
+          {{ "notamember" | translate }}
           <a
             type="button"
             routerLink="/auth/register"
             class="links text-blue-500"
           >
-            {{ "auth.login.registernow" | translate }}</a
+            {{ "registernow" | translate }}</a
           >
         </p>
       </form>

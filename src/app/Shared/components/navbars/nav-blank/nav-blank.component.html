@@ -52,7 +52,7 @@
             [routerLinkActiveOptions]="{ exact: true }"
             (click)="showMobileMenu && toggleMenu()"
           >
-            {{ "homecom.navbar.home" | translate }}
+            {{ "home" | translate }}
           </a>
         </li>
         <li class="nav-item">
@@ -63,7 +63,7 @@
             [routerLinkActiveOptions]="{ exact: true }"
             (click)="showMobileMenu && toggleMenu()"
           >
-            {{ "homecom.navbar.products" | translate }}
+            {{ "products" | translate }}
           </a>
         </li>
         <li class="nav-item">
@@ -74,7 +74,7 @@
             [routerLinkActiveOptions]="{ exact: true }"
             (click)="showMobileMenu && toggleMenu()"
           >
-            {{ "homecom.navbar.categories" | translate }}
+            {{ "categories" | translate }}
           </a>
         </li>
         <li class="nav-item">
@@ -85,7 +85,7 @@
             [routerLinkActiveOptions]="{ exact: true }"
             (click)="showMobileMenu && toggleMenu()"
           >
-            {{ "homecom.navbar.offers" | translate }}
+            {{ "offers" | translate }}
           </a>
         </li>
       </ul>
@@ -176,7 +176,7 @@
                   >
                     <i class="fas fa-user" ngSkipHydration></i>
                     <span>{{
-                      "homecom.navbar.profile.profile" | translate
+                      "profile" | translate
                     }}</span>
                   </a>
                 </li>
@@ -188,7 +188,7 @@
                   >
                     <i class="fa-solid fa-box" ngSkipHydration></i>
                     <span>{{
-                      "homecom.navbar.profile.allorders" | translate
+                      "allorders" | translate
                     }}</span>
                   </a>
                 </li>
@@ -200,7 +200,7 @@
                   >
                     <i class="fa-solid fa-shield-heart" ngSkipHydration></i>
                     <span>{{
-                      "homecom.navbar.profile.wishlist" | translate
+                      "wishlist" | translate
                     }}</span>
                   </a>
                 </li>
@@ -208,7 +208,7 @@
                   <button class="dropdown-item" (click)="signout()">
                     <i class="fas fa-sign-out-alt" ngSkipHydration></i>
                     <span>{{
-                      "homecom.navbar.profile.signout" | translate
+                      "signout" | translate
                     }}</span>
                   </button>
                 </li>
@@ -222,13 +222,13 @@
                 (click)="guestLogin()"
                 class="btn btn-primary btn-sm px-3"
               >
-                {{ "homecom.navbar.login" | translate }}
+                {{ "login" | translate }}
               </button>
               <button
                 (click)="guestRegister()"
                 class="btn btn-outline-primary btn-sm px-3"
               >
-                {{ "homecom.navbar.register" | translate }}
+                {{ "register" | translate }}
               </button>
             </div>
           }

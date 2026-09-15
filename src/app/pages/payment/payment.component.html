@@ -1,13 +1,13 @@
 <div class="login-wrapper">
   <div class="login-card" [formGroup]="InvoiceForm">
-    <h2 class="login-title">{{ "cart.invoice.title" | translate }}</h2>
+    <h2 class="login-title">{{ "title" | translate }}</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
       <div>
         <app-store-input
           [control]="$any(InvoiceForm.get('clientName'))"
-          [placeholder]="'cart.invoice.clientName'"
-          [label]="'cart.invoice.clientName'"
+          [placeholder]="'clientName'"
+          [label]="'clientName'"
           [type]="'text'"
         >
         </app-store-input>
@@ -16,8 +16,8 @@
       <div>
         <app-store-input
           [control]="$any(InvoiceForm.get('docDate'))"
-          [placeholder]="'cart.invoice.invoiceDate'"
-          [label]="'cart.invoice.invoiceDate'"
+          [placeholder]="'invoiceDate'"
+          [label]="'invoiceDate'"
           [type]="'text'"
         >
         </app-store-input>
@@ -27,30 +27,30 @@
     <h3
       class="text-lg font-semibold text-primary border-b border-border mb-2 pb-2"
     >
-      {{ "cart.invoice.payinfo" | translate }}
+      {{ "payinfo" | translate }}
     </h3>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
       <div class="mb-4">
         <label for="paymentType" class="font-medium">
-          {{ "cart.invoice.paymentMethod" | translate }}
+          {{ "paymentMethod" | translate }}
         </label>
         <select
           formControlName="paymentType"
           class="form-select w-full p-1 mt-2 border rounded"
         >
           <option [ngValue]="1">
-            {{ "cart.invoice.cashOnDelivery" | translate }}
+            {{ "cashOnDelivery" | translate }}
           </option>
-          <option [ngValue]="2">{{ "cart.invoice.visa" | translate }}</option>
+          <option [ngValue]="2">{{ "visa" | translate }}</option>
         </select>
       </div>
 
       <div *ngIf="selectedPaymentMethod === '1'">
         <app-store-input
           [control]="$any(InvoiceForm.get('cash'))"
-          [placeholder]="'cart.invoice.cash'"
-          [label]="'cart.invoice.cash'"
+          [placeholder]="'cash'"
+          [label]="'cash'"
           [type]="'text'"
         >
         </app-store-input>
@@ -59,8 +59,8 @@
       <div *ngIf="selectedPaymentMethod === '2'">
         <app-store-input
           [control]="$any(InvoiceForm.get('visa'))"
-          [placeholder]="'cart.invoice.visa'"
-          [label]="'cart.invoice.visa'"
+          [placeholder]="'visa'"
+          [label]="'visa'"
           [type]="'text'"
         >
         </app-store-input>
@@ -69,8 +69,8 @@
       <div *ngIf="selectedPaymentMethod === '2'">
         <app-store-input
           [control]="$any(InvoiceForm.get('visaTrxNo'))"
-          [placeholder]="'cart.invoice.visaTrxNo'"
-          [label]="'cart.invoice.visaTrxNo'"
+          [placeholder]="'visaTrxNo'"
+          [label]="'visaTrxNo'"
           [type]="'text'"
         >
         </app-store-input>
@@ -79,14 +79,14 @@
 
     <div class="mb-2">
       <label for="notes" class="block text-sm font-medium">
-        {{ "cart.invoice.notes" | translate }}
+        {{ "notes" | translate }}
       </label>
       <textarea
         id="notes"
         formControlName="notes"
         class="form-control w-full mt-1 border rounded p-2"
         rows="3"
-        placeholder="{{ 'cart.invoice.notesPlaceholder' | translate }}"
+        placeholder="{{ 'notesPlaceholder' | translate }}"
       ></textarea>
     </div>
 
@@ -94,14 +94,14 @@
       <h3
         class="text-lg font-semibold text-primary border-b border-border mb-4 pb-2"
       >
-        {{ "cart.invoice.reviewTitle" | translate }}
+        {{ "reviewTitle" | translate }}
       </h3>
 
       <div
         *ngIf="cartproducts.length === 0"
         class="p-4 text-center border rounded-lg bg-gray-50"
       >
-        <p>{{ "cart.invoice.emptyCart" | translate }}</p>
+        <p>{{ "emptyCart" | translate }}</p>
       </div>
 
       <div *ngIf="cartproducts.length > 0" class="space-y-3">
@@ -112,9 +112,9 @@
           <div>
             <p class="font-semibold text-base">{{ item.ProductName }}</p>
             <p class="text-sm">
-              {{ "cart.invoice.quantity" | translate }}:
+              {{ "quantity" | translate }}:
               {{ item.Quantity }} &times;
-              {{ "cart.invoice.price" | translate }}:
+              {{ "price" | translate }}:
               {{ item.Price | currency: "SAR" }}
             </p>
           </div>
@@ -130,7 +130,7 @@
           <div class="flex items-center">
             <i class="fas fa-money-bill-wave fa-2x text-green-600 mx-2"></i>
             <h5 class="mb-0 font-semibold">
-              {{ "cart.carttotal" | translate }}
+              {{ "carttotal" | translate }}
             </h5>
           </div>
           <span class="text-lg font-bold">
@@ -142,7 +142,7 @@
 
     <div class="mt-3">
       <app-submit-button
-        [buttonText]="'cart.invoice.confirmButton'"
+        [buttonText]="'confirmButton'"
         [isDisabled]="InvoiceForm.invalid"
         (btnClick)="createInvoice()"
       >

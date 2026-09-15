@@ -19,7 +19,7 @@ import { AddToCartComponent } from '../../Shared/components/add-to-cart/add-to-c
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [DatePipe, TranslateModule, AddToCartComponent, NgClass],
+  imports: [TranslateModule, AddToCartComponent],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.scss',
 })
@@ -30,7 +30,6 @@ export class ProductDetailsComponent implements OnChanges {
   private readonly _AllProductsService = inject(AllProductsService);
 
   detailsProduct: any = null;
-  selectedImage: string | null = null;
   selectedUnit: any = null;
   isLoading: boolean = false;
 
@@ -50,17 +49,6 @@ export class ProductDetailsComponent implements OnChanges {
 
           if (this.detailsProduct?.ItemUnits?.length > 0) {
             this.selectedUnit = this.detailsProduct.ItemUnits[0];
-
-            if (
-              this.selectedUnit?.ItemImages?.length > 0 &&
-              this.selectedUnit.ItemImages[0]?.Image
-            ) {
-              this.selectedImage = this.selectedUnit.ItemImages[0].Image;
-            } else if (this.detailsProduct?.CardImage) {
-              this.selectedImage = this.detailsProduct.CardImage;
-            } else {
-              this.selectedImage = null;
-            }
           }
         }
       },
@@ -69,17 +57,6 @@ export class ProductDetailsComponent implements OnChanges {
         console.error('Error fetching details:', err);
       },
     });
-  }
-
-  selectUnit(unit: any): void {
-    this.selectedUnit = unit;
-    if (unit?.ItemImages?.length > 0 && unit.ItemImages[0]?.Image) {
-      this.selectedImage = unit.ItemImages[0].Image;
-    }
-  }
-
-  changeMainImage(imgBase64: string): void {
-    this.selectedImage = imgBase64;
   }
 
   closeModal(): void {

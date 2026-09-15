@@ -47,6 +47,6 @@ export class ProductCardComponent {
   }
 
   getProductImage(): string {
-    return this.product?.ImagePath || this.product?.Image || '';
+    return this.product?.Image || this.product?.ImagePath || '';
   }
 }

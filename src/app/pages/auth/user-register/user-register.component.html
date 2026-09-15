@@ -2,42 +2,39 @@
   <div class="login-wrapper">
     <div class="login-card" style="width: 50%">
       <h2 class="login-title font-semibold font-serif">
-        {{ "auth.register.registerNewAccount" | translate }}
+        {{ "registerNewAccount" | translate }}
       </h2>
       <form class="login-form" [formGroup]="registerForm" (ngSubmit)="submit()">
-        <!-- Username -->
         <div class="input-group">
           <app-store-input
             [type]="'text'"
             [control]="this.registerForm.get('userName')!"
-            [placeholder]="'auth.login.placeholders.username'"
-            [label]="'auth.login.username'"
+            [placeholder]="'username'"
+            [label]="'username'"
           >
           </app-store-input>
         </div>
 
-        <!-- Email -->
         <div class="input-group">
           <app-store-input
             [control]="this.registerForm.get('email')!"
-            [placeholder]="'auth.register.enteryouremail'"
-            [label]="'auth.register.email'"
+            [placeholder]="'enteryouremail'"
+            [label]="'email'"
           ></app-store-input>
         </div>
 
-        <!-- Password -->
         <div class="input-group">
           <app-store-input
             [type]="'password'"
             [control]="this.registerForm.get('password')!"
-            [placeholder]="'auth.login.password'"
-            [label]="'auth.login.password'"
+            [placeholder]="'password'"
+            [label]="'password'"
           >
           </app-store-input>
         </div>
         <div class="col-12 mt-3">
           <app-submit-button
-            [buttonText]="'auth.register.registernow'"
+            [buttonText]="'registernow'"
             [isDisabled]="registerForm.invalid"
             (btnClick)="submit()"
           >
@@ -47,9 +44,9 @@
         <hr class="divider" />
 
         <p class="text-center">
-          {{ "auth.register.alreadyamember?" | translate }}
+          {{ "alreadyamember?" | translate }}
           <a routerLink="/auth/login" class="links text-primary">
-            {{ "auth.login.loginnow" | translate }}
+            {{ "loginnow" | translate }}
           </a>
         </p>
       </form>

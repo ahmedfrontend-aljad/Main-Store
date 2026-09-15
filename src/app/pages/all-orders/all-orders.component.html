@@ -1,21 +1,20 @@
-<div class="container m-auto px-4 sm:px-6">
+<div class="mx-auto">
   <section
-    class="max-w-7xl mx-auto space-y-8"
+    class="max-w-7xl mx-auto space-y-6"
     [attr.dir]="currentLang === 'ar' ? 'rtl' : 'ltr'"
   >
-    <div
-      class="app-toolbar mb-1 d-flex flex-stack flex-wrap align-items-center"
-    >
-      <div class="page-title">
-        <h1 class="page-heading d-flex fw-bold fs-3 my-0 font-serif">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="h4 fw-bold text-dark m2-1">
           {{ "ALL_ORDERS" | translate }}
-        </h1>
+        </h2>
+        <p class="text-muted small">{{'trackYourOrders' | translate}}</p>
       </div>
     </div>
 
-    <form [formGroup]="filtersForm" class="mb-5">
-      <div class="row g-2 align-items-center">
-        <div class="col-md-3">
+    <div class="card border-0 shadow-sm rounded-4 p-2 mb-4 bg-white">
+      <form [formGroup]="filtersForm" class="row g-3 align-items-end">
+        <div class="col-md-4 col-sm-6">
           <app-store-input
             [control]="filtersForm.get('fromDate')!"
             [type]="'date'"
@@ -25,7 +24,7 @@
           </app-store-input>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-4 col-sm-6">
           <app-store-input
             [control]="filtersForm.get('toDate')!"
             [type]="'date'"
@@ -35,36 +34,34 @@
           </app-store-input>
         </div>
 
-        <div class="mt-9 col-md-3">
+        <div class="col-md-4 col-sm-12 d-flex gap-2">
           <button
             type="button"
             [disabled]="!hasFiltersSelected"
-            class="btn btn-primary"
+            class="btn btn-primary w-100 py-2 fw-medium rounded-3"
             (click)="applyFilter()"
           >
-            {{ "APPLY" | translate }}
+            <i class="bi bi-funnel me-1"></i> {{ "APPLY" | translate }}
           </button>
 
           <button
             *ngIf="showClearFilters"
             type="button"
-            class="btn btn-danger me-3 ms-3"
+            class="btn btn-outline-danger w-100 py-2 fw-medium rounded-3"
             (click)="clearFilters()"
           >
             {{ "CLEAR" | translate }}
           </button>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
 
-    <div class="bg-white rounded shadow-sm">
+    <div class="space-y-4">
       <p-tabs [(value)]="value">
-        <p-tablist>
+        <p-tablist class="mb-4">
           @for (tab of tabs; track tab.id) {
             <p-tab [value]="tab.id">
-              <span class="fw-bold fs-6">
-                {{ tab.translationKey | translate }}
-              </span>
+              <span>{{ tab.translationKey | translate }}</span>
             </p-tab>
           }
         </p-tablist>
@@ -74,14 +71,12 @@
             <p-tabpanel [value]="tab.id">
               <div
                 *ngIf="getOrdersByStatus(tab.status).length === 0"
-                class="text-center py-5 text-muted"
+                class="text-center py-5 bg-white rounded-4 border"
               >
-                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                <p class="fs-5">
-                  {{ "NO_ORDERS_FOUND" | translate }} ({{
-                    tab.translationKey | translate
-                  }})
-                </p>
+                <i class="bi bi-inbox text-muted display-5 d-block mb-3"></i>
+                <h5 class="text-secondary fw-normal">
+                  {{ "NO_ORDERS_FOUND" | translate }}
+                </h5>
               </div>
 
               <div
@@ -92,124 +87,117 @@
                   order of getOrdersByStatus(tab.status);
                   track order.Id || order.DocNo
                 ) {
-                  <div class="col-6 col-md-6 col-lg-4 px-1 px-sm-2">
+                  <div class="col-12 col-md-6 col-xl-4">
                     <div
-                      class="card h-100 border shadow-sm rounded-3 overflow-hidden"
+                      class="order-card h-100 d-flex flex-column justify-content-between p-4"
                     >
-                      <div
-                        class="card-header bg-light d-flex justify-content-between align-items-center py-3"
-                      >
-                        <div>
-                          <span class="fw-bold text-primary">
-                            {{ "ORDER_NO" | translate }}: #{{
-                              order.DocNo || order.Id
-                            }}
+                      <div>
+                        <div
+                          class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom"
+                        >
+                          <span
+                            class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill fs-7"
+                          >
+                            #{{ order.DocNo || order.Id }}
                           </span>
+                          <small
+                            class="text-muted d-flex align-items-center gap-1 fs-7"
+                          >
+                            <i class="bi bi-clock"></i>
+                            {{ order.DocDate | date: "yyyy/MM/dd - HH:mm" }}
+                          </small>
                         </div>
-                        <small class="text-muted">
-                          {{ order.DocDate | date: "yyyy/MM/dd HH:mm" }}
-                        </small>
+
+                        <div class="mb-3">
+                          <div class="fw-semibold text-dark fs-6">
+                            <i class="bi bi-person me-1 text-secondary"></i>
+                            {{
+                              order.ClientName || ("CASH_CLIENT" | translate)
+                            }}
+                          </div>
+                          <div
+                            *ngIf="order.ClientPhoneNo"
+                            class="text-muted small mt-1"
+                          >
+                            <i class="bi bi-telephone me-1"></i>
+                            {{ order.ClientPhoneNo }}
+                          </div>
+                        </div>
+
+                        <div class="bg-light-subtle rounded-3 p-3 mb-3 border">
+                          <div
+                            class="text-uppercase fs-8 fw-bold text-muted mb-2"
+                          >
+                            {{ "ITEMS" | translate }} ({{
+                              (order.SaleInvoiceDetails || order.Details)
+                                ?.length || 0
+                            }})
+                          </div>
+                          <div class="space-y-2">
+                            @for (
+                              item of order.SaleInvoiceDetails || order.Details;
+                              track item.Id || item.ItemNo
+                            ) {
+                              <div
+                                class="item-row py-1 d-flex justify-content-between align-items-center fs-7"
+                              >
+                                <span class="text-dark fw-medium">
+                                  {{
+                                    currentLang === "ar"
+                                      ? item.NameAr || item.ItemName
+                                      : item.NameEn || item.ItemName
+                                  }}
+                                  <span class="text-muted ms-1"
+                                    >x{{ item.Quantity || item.Qty }}</span
+                                  >
+                                </span>
+                                <span class="fw-semibold text-dark">
+                                  {{
+                                    item.TotalPriceAfterVat ||
+                                      item.TotalWithVat ||
+                                      item.TotalPrice | number: "1.2-2"
+                                  }}
+                                </span>
+                              </div>
+                            }
+                          </div>
+                        </div>
                       </div>
 
-                      <div class="card-body">
-                        <p class="mb-2">
-                          <i class="bi bi-person text-muted me-1 ms-1"></i>
-                          <strong>{{ "CLIENT" | translate }}:</strong>
-                          {{ order.ClientName || ("CASH_CLIENT" | translate) }}
-                        </p>
-
-                        <p class="mb-2" *ngIf="order.ClientPhoneNo">
-                          <i class="bi bi-telephone text-muted me-1 ms-1"></i>
-                          <strong>{{ "PHONE" | translate }}:</strong>
-                          {{ order.ClientPhoneNo }}
-                        </p>
-
-                        <hr class="my-3" />
-
-                        <h6 class="fw-bold mb-2 fs-7 text-secondary">
-                          {{ "ITEMS" | translate }} ({{
-                            (order.SaleInvoiceDetails || order.Details)
-                              ?.length || 0
-                          }}):
-                        </h6>
-
-                        <ul class="list-group list-group-flush mb-3">
-                          @for (
-                            item of order.SaleInvoiceDetails || order.Details;
-                            track item.Id || item.ItemNo
-                          ) {
-                            <li
-                              class="list-group-item d-flex justify-content-between align-items-center px-0 py-1 bg-transparent fs-7"
-                            >
-                              <span>
-                                {{
-                                  currentLang === "ar"
-                                    ? item.NameAr || item.ItemName
-                                    : item.NameEn ||
-                                      item.ItemName ||
-                                      item.NameAr
-                                }}
-                                (x{{ item.Quantity || item.Qty }})
-                              </span>
-                              <span class="fw-semibold">
-                                {{
-                                  item.TotalPriceAfterVat ||
-                                    item.TotalWithVat ||
-                                    item.TotalPrice | number: "1.2-2"
-                                }}
-                                {{
-                                  order.CurrencyName || ("CURRENCY" | translate)
-                                }}
-                              </span>
-                            </li>
-                          }
-                        </ul>
-
-                        <div class="bg-light p-3 rounded-2 space-y-1">
-                          <div
-                            class="d-flex justify-content-between text-muted fs-7"
-                          >
-                            <span>{{ "TOTAL_BEFORE_TAX" | translate }}:</span>
-                            <span>
-                              {{
-                                order.TotalInvoiceAfterDisc ||
-                                  order.TotalBeforeVat ||
-                                  order.NetTotal | number: "1.2-2"
-                              }}
-                              {{
-                                order.CurrencyName || ("CURRENCY" | translate)
-                              }}
-                            </span>
-                          </div>
-                          <div
-                            class="d-flex justify-content-between text-muted fs-7"
-                          >
-                            <span>{{ "VAT_AMOUNT" | translate }}:</span>
-                            <span>
-                              {{
-                                order.TotalInvoiceVatAmount || order.VatAmount
-                                  | number: "1.2-2"
-                              }}
-                              {{
-                                order.CurrencyName || ("CURRENCY" | translate)
-                              }}
-                            </span>
-                          </div>
-                          <div
-                            class="d-flex justify-content-between fw-bold text-dark fs-6 mt-1 border-top pt-1"
-                          >
-                            <span>{{ "TOTAL_INCLUSIVE" | translate }}:</span>
-                            <span class="text-success">
-                              {{
-                                order.TotalInvoiceAfterVat ||
-                                  order.NetTotalWithVat ||
-                                  order.Total | number: "1.2-2"
-                              }}
-                              {{
-                                order.CurrencyName || ("CURRENCY" | translate)
-                              }}
-                            </span>
-                          </div>
+                      <div class="pt-2 border-top">
+                        <div
+                          class="d-flex justify-content-between text-muted fs-7 mb-1"
+                        >
+                          <span>{{ "TOTAL_BEFORE_TAX" | translate }}</span>
+                          <span>{{
+                            order.TotalInvoiceAfterDisc ||
+                              order.TotalBeforeVat ||
+                              order.NetTotal | number: "1.2-2"
+                          }}</span>
+                        </div>
+                        <div
+                          class="d-flex justify-content-between text-muted fs-7 mb-2"
+                        >
+                          <span>{{ "VAT_AMOUNT" | translate }}</span>
+                          <span>{{
+                            order.TotalInvoiceVatAmount || order.VatAmount
+                              | number: "1.2-2"
+                          }}</span>
+                        </div>
+                        <div
+                          class="d-flex justify-content-between fw-bold text-dark fs-6 pt-1 border-top"
+                        >
+                          <span>{{ "TOTAL_INCLUSIVE" | translate }}</span>
+                          <span class="text-primary fs-5">
+                            {{
+                              order.TotalInvoiceAfterVat ||
+                                order.NetTotalWithVat ||
+                                order.Total | number: "1.2-2"
+                            }}
+                            <small class="fs-8 fw-normal">{{
+                              order.CurrencyName || ("CURRENCY" | translate)
+                            }}</small>
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -221,7 +209,7 @@
                 getTotalCountByStatus(tab.status) > pageSize &&
                 getOrdersByStatus(tab.status).length > 0
               ) {
-                <div class="d-flex justify-content-center mt-4">
+                <div class="d-flex justify-content-center mt-5">
                   <ngb-pagination
                     [(page)]="pageNo"
                     [pageSize]="pageSize"

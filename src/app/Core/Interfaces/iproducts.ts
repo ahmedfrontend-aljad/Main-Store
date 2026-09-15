@@ -1,17 +1,23 @@
 export interface Iproducts {
   Id: number;
+  Code: string;
   NameAr: string;
   NameEn: string;
-  Description: null;
+  Description: string;
+  Notes: string;
+  Quantity: number;
+  ImagePath: null;
+  Image: null;
   ItemUnits: ItemUnit[];
 }
 
 export interface ItemUnit {
   Id: number;
+  UnitId: number;
+  UnitName: string;
+  Barcode: string;
   Price: number;
-  ItemImages: ItemImage[];
-}
-
-export interface ItemImage {
-  Image: string;
+  PriceTax: number;
+  Vat: number;
+  ItemImages: any[];
 }
