@@ -27,13 +27,9 @@
     class="relative aspect-square w-full bg-gray-50 dark:bg-gray-900 overflow-hidden cursor-pointer p-4"
     (click)="openDetails()"
   >
-    @if (getProductImage()) {
+    @if (product.Image) {
       <img
-        [src]="
-          getProductImage().startsWith('http')
-            ? getProductImage()
-            : 'data:image/jpeg;base64,' + getProductImage()
-        "
+        [src]="'data:image/jpeg;base64,' + product.Image"
         [alt]="product.NameAr"
         class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
       />
@@ -64,7 +60,7 @@
 
       <div class="flex items-baseline gap-2 mb-3">
         <span class="text-base md:text-lg font-bold text-primary">
-          {{ getProductPrice() }}
+          {{ product.Price || "0.00" }}
           <span class="text-xs font-normal">£</span>
         </span>
       </div>

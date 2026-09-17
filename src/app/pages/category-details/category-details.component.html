@@ -27,7 +27,7 @@
       <div
         class="section-content mt-16 grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
       >
-        @for (product of filteredItems; track product.Id) {
+        @for (product of filteredItems(); track product.Id) {
           <app-product-card
             [product]="product"
             [currentUrl]="currentUrl"

@@ -15,7 +15,7 @@ export class AuthService {
     return this._DataService.post(`${apiUrl}/Login`, data).pipe(
       catchError((err) => {
         console.error('Login error:', err);
-        this._ToastrService.show(err.Message);
+        this._ToastrService.show(err?.error?.Message);
         return throwError(() => err);
       }),
     );
@@ -25,7 +25,7 @@ export class AuthService {
     return this._DataService.post(`${apiUrl}/CreateUserForStore`, data).pipe(
       catchError((err) => {
         console.error('Register error:', err);
-        this._ToastrService.show(err.Message);
+        this._ToastrService.show(err?.error?.Message);
         return throwError(() => err);
       }),
     );
@@ -35,7 +35,7 @@ export class AuthService {
     return this._DataService.post(`${StoreUrl}/User/ResetPassword`, data).pipe(
       catchError((err) => {
         console.error('Rest Password error:', err);
-        this._ToastrService.show(err.Message);
+        this._ToastrService.show(err?.error?.Message);
         return throwError(() => err);
       }),
     );

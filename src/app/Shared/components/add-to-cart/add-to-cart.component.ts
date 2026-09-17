@@ -3,6 +3,7 @@ import { Component, Input, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
+import { Iproducts } from '../../../Core/Interfaces/iproducts';
 import { CartService } from '../../../Core/Services/cart.service';
 
 @Component({
@@ -13,7 +14,7 @@ import { CartService } from '../../../Core/Services/cart.service';
   styleUrl: './add-to-cart.component.scss',
 })
 export class AddToCartComponent {
-  @Input({ required: true }) product!: any;
+  @Input({ required: true }) product!: Iproducts;
   @Input() quantity!: number;
 
   private readonly _spinnerInterceptor = inject(NgxSpinnerService);
@@ -21,11 +22,13 @@ export class AddToCartComponent {
   private readonly _ToastrService = inject(ToastrService);
 
   getAvailableStock(): number {
-    if (this.product?.ItemUnits?.length > 0) {
-      const unit = this.product.ItemUnits[0];
-      return unit.Quantity ?? unit.Stock ?? unit.AvailableQuantity ?? 0;
+    if (this.product?.Quantity !== undefined) {
+      return this.product.Quantity;
     }
-    return 0;
+    if (this.product.Quantity > 0) {
+      return this.product.Quantity ?? 0;
+    }
+    return 1;
   }
 
   isOutOfStock(): boolean {
@@ -35,21 +38,14 @@ export class AddToCartComponent {
   addToCart() {
     const userId = localStorage.getItem('userId');
 
-
-    const firstUnit = this.product?.ItemUnits?.[0];
-    if (!firstUnit) {
-      this._ToastrService.error('بيانات السعر غير متوفرة لهذا المنتج');
-      return;
-    }
-
     const dataToSend = {
       productId: this.product.Id,
       productName: this.product.NameAr || this.product.NameEn || '',
       userId: userId,
-      price: firstUnit.Price ?? 0,
+      price: this.product.Price ?? 0,
       quantity: 1,
-      unitId: firstUnit.Id ?? 0,
-      unitName: firstUnit.NameAr ?? '',
+      unitId: this.product.Id ?? 0,
+      unitName: this.product.NameAr ?? '',
     };
 
     this._spinnerInterceptor.show();
@@ -67,8 +63,8 @@ export class AddToCartComponent {
       error: (err: any) => {
         this._spinnerInterceptor.hide();
 
-        const errorMessage = err?.error?.Message || err?.Message;
-        this._ToastrService.error(errorMessage);
+        const errorMessage = err?.error?.Message;
+        this._ToastrService.warning(errorMessage);
       },
     });
   }

@@ -122,7 +122,7 @@ export class ProfileComponent implements OnInit {
       }
     } catch (error: any) {
       console.error(error);
-      this._ToastrService.error(error.Message);
+      this._ToastrService.error(error.error.Message);
     }
   }
 
@@ -231,7 +231,7 @@ export class ProfileComponent implements OnInit {
       }
     } catch (error: any) {
       console.error(error);
-      this._ToastrService.error(error.Message);
+      this._ToastrService.error(error.error.Message);
     }
   }
 }

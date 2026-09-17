@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
+import { Iproducts } from '../../../Core/Interfaces/iproducts';
 import { AddToCartComponent } from '../add-to-cart/add-to-cart.component';
 
 @Component({
@@ -10,7 +12,9 @@ import { AddToCartComponent } from '../add-to-cart/add-to-cart.component';
   styleUrl: './product-card.component.scss',
 })
 export class ProductCardComponent {
-  @Input({ required: true }) product!: any;
+  private readonly _ToastrService = inject(ToastrService);
+
+  @Input({ required: true }) product!: Iproducts;
   @Input({ required: true }) currentUrl!: any;
 
   @Output() showDetails = new EventEmitter<number | string>();
@@ -18,6 +22,9 @@ export class ProductCardComponent {
   openDetails(): void {
     if (this.product?.Id) {
       this.showDetails.emit(this.product.Id);
+    } else {
+      this._ToastrService.error('خطأ اثناء عرض المنتج');
+      return;
     }
   }
 
@@ -25,28 +32,13 @@ export class ProductCardComponent {
     if (this.product?.Quantity !== undefined) {
       return this.product.Quantity;
     }
-    if (this.product?.ItemUnits?.length > 0) {
-      const unit = this.product.ItemUnits[0];
-      return unit.Quantity ?? unit.Stock ?? unit.AvailableQuantity ?? 0;
+    if (this.product.Quantity > 0) {
+      return this.product.Quantity ?? 0;
     }
     return 1;
   }
 
   isOutOfStock(): boolean {
     return this.getAvailableStock() <= 0;
-  }
-
-  getProductPrice(): number {
-    if (this.product?.Price && this.product.Price > 0) {
-      return this.product.Price;
-    }
-    if (this.product?.ItemUnits && this.product.ItemUnits.length > 0) {
-      return this.product.ItemUnits[0].Price || 0;
-    }
-    return 0;
-  }
-
-  getProductImage(): string {
-    return this.product?.Image || this.product?.ImagePath || '';
   }
 }

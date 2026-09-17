@@ -1,20 +1,22 @@
 import {
   Component,
+  computed,
   inject,
   OnDestroy,
   OnInit,
   signal,
-  WritableSignal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
-import { Item } from '../../Core/Interfaces/iall-categories';
-import { CategoriesService } from '../../Core/Services/categories.service';
+import { Iproducts } from '../../Core/Interfaces/iproducts';
+import { DataService } from '../../Core/Services/data.service';
 import { LoadingService } from '../../Core/Services/loading.service';
 import { ProductCardComponent } from '../../Shared/components/product-card/product-card.component';
+import { apiUrl } from '../../Shared/constants/api.constant';
 import { PAGE_SIZE } from '../../Shared/constants/general.constant';
 import { IPagination } from '../../Shared/models/IPagination.model';
 import { ProductDetailsComponent } from '../product-details/product-details.component';
@@ -33,69 +35,95 @@ import { ProductDetailsComponent } from '../product-details/product-details.comp
   styleUrl: './category-details.component.scss',
 })
 export class CategoryDetailsComponent implements OnInit, OnDestroy {
-  private readonly _CategoriesService = inject(CategoriesService);
+  private readonly _LoadingService = inject(LoadingService);
+  private readonly _DataService = inject(DataService);
+  private readonly _ToastrService = inject(ToastrService);
   private readonly _ActivatedRoute = inject(ActivatedRoute);
   private readonly _Router = inject(Router);
-  private readonly _LoadingService = inject(LoadingService);
-
-  pagination!: IPagination;
-  pageNo = 1;
-  pageSize = PAGE_SIZE;
-  currentUrl: string = '';
-  itemsInCategories: WritableSignal<Item[]> = signal([]);
-  text: string = '';
-  selectedProductId: number | string | null = null;
 
   private subscriptions: Subscription = new Subscription();
+
+  pagination!: IPagination;
+  currentUrl!: string;
+  pageNo = signal<number>(1);
+  pageSize = PAGE_SIZE;
+  searchTerm = signal<string>('');
+  selectedProductId: number | string | null = null;
+
+  selectedGroupProducts = signal<Iproducts[]>([]);
 
   ngOnInit(): void {
     this.currentUrl = this._Router.url;
     this.getallProducts();
   }
 
-  getallProducts() {
-    this._LoadingService.start();
+  get text(): string {
+    return this.searchTerm();
+  }
+  set text(val: string) {
+    this.searchTerm.set(val);
+  }
 
+  getallProducts(): void {
     const sub = this._ActivatedRoute.paramMap.subscribe({
       next: (params) => {
-        const routeParam = params.get('code')?.toString().trim();
+        const routeParam = (params.get('id') || params.get('Id'))
+          ?.toString()
+          .trim();
 
         if (routeParam) {
-          const catSub = this._CategoriesService.getAllCategories().subscribe({
-            next: (res) => {
-              this._LoadingService.stop();
+          this._LoadingService.start();
 
-              const allGroups = res?.Obj?.Groups || [];
+          const apiSub = this._DataService
+            .get(
+              `${apiUrl}/XtraAndPOS_Store/GetItemsByGroupId?groupId=${routeParam}`,
+            )
+            .subscribe({
+              next: (res) => {
+                this._LoadingService.stop();
+                if (res?.IsSuccess) {
+                  const mappedItems = res.Obj.Items;
+                  this.selectedGroupProducts.set(mappedItems);
+                  this.setData(mappedItems.length);
+                } else {
+                  this.selectedGroupProducts.set([]);
+                  this._ToastrService.error(res?.Message);
+                }
+              },
+              error: (err) => {
+                this._LoadingService.stop();
+                this.selectedGroupProducts.set([]);
+                console.error(err);
+                this._ToastrService.error(err?.error?.Message);
+              },
+            });
 
-              const selectedGroup = allGroups.find(
-                (group: any) =>
-                  group.Code?.toString() === routeParam ||
-                  group.Id?.toString() === routeParam,
-              );
-
-              if (selectedGroup && selectedGroup.Items) {
-                const items: Item[] = selectedGroup.Items;
-                this.itemsInCategories.set(items);
-                this.setData(items.length);
-              } else {
-                this.itemsInCategories.set([]);
-                this.setData(0);
-              }
-            },
-            error: (err) => {
-              console.error(err);
-              this._LoadingService.stop();
-            },
-          });
-          this.subscriptions.add(catSub);
-        } else {
-          this._LoadingService.stop();
+          this.subscriptions.add(apiSub);
         }
       },
     });
 
     this.subscriptions.add(sub);
   }
+
+  filteredItems = computed(() => {
+    const products = this.selectedGroupProducts();
+    const query = this.searchTerm().trim().toLowerCase();
+    const currentPage = this.pageNo();
+
+    const filtered = products.filter((item) => {
+      const matchAr = item.NameAr?.toLowerCase().includes(query);
+      const matchEn = item.NameEn?.toLowerCase().includes(query);
+      return matchAr || matchEn;
+    });
+
+    if (this.pagination) {
+      this.pagination.TotalCount = filtered.length;
+    }
+
+    const startIndex = (currentPage - 1) * this.pageSize;
+    return filtered.slice(startIndex, startIndex + this.pageSize);
+  });
 
   setData(totalCount: number): void {
     this.pagination = {
@@ -104,28 +132,8 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
     };
   }
 
-  get filteredItems(): Item[] {
-    const searchText = this.text.trim().toLowerCase();
-    let items = this.itemsInCategories();
-
-    if (searchText) {
-      items = items.filter((product) => {
-        const matchAr = product.NameAr?.toLowerCase().includes(searchText);
-        const matchEn = product.NameEn?.toLowerCase().includes(searchText);
-        return matchAr || matchEn;
-      });
-    }
-
-    if (this.pagination) {
-      this.pagination.TotalCount = items.length;
-    }
-
-    const startIndex = (this.pageNo - 1) * this.pageSize;
-    return items.slice(startIndex, startIndex + this.pageSize);
-  }
-
   page(ev: number): void {
-    this.pageNo = ev;
+    this.pageNo.set(ev);
   }
 
   openProductModal(id: number | string): void {

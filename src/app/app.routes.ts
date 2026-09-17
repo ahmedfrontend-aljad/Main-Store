@@ -75,7 +75,7 @@ export const routes: Routes = [
         title: 'offers',
       },
       {
-        path: 'catDetails/:code',
+        path: 'catDetails/:id',
         loadComponent: () =>
           import('./pages/category-details/category-details.component').then(
             (c) => c.CategoryDetailsComponent,

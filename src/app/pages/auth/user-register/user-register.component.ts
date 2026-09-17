@@ -70,7 +70,7 @@ export class UserRegisterComponent implements OnDestroy {
         error: (err) => {
           this._LoadingService.stop();
           console.log(err);
-          this._ToastrService.error(err.Message, 'Failed');
+          this._ToastrService.error(err?.error?.Message, 'Failed');
         },
       });
   }

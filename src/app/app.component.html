@@ -5,7 +5,9 @@
   type="ball-scale-multiple"
   [fullScreen]="true"
 >
-  <p class="spinner-text">{{ 'loading...' | translate }}</p>
+  <p class="spinner-text fw-bold" style="color: #10b981">
+    {{ "loading..." | translate }}
+  </p>
 </ngx-spinner>
 <router-outlet></router-outlet>
 <app-scroll-top></app-scroll-top>

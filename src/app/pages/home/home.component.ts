@@ -131,7 +131,7 @@ export class HomeComponent implements OnInit {
       );
     } catch (error: any) {
       console.error(error);
-      this._ToastrService.error(error?.Message || 'Error fetching home data');
+      this._ToastrService.error(error?.error.Message);
     }
   }
 
@@ -149,7 +149,7 @@ export class HomeComponent implements OnInit {
       }
     } catch (err: any) {
       console.error(err);
-      this._ToastrService.error(err?.Message || 'Error fetching products');
+      this._ToastrService.error(err?.error.Message);
     }
   }
 

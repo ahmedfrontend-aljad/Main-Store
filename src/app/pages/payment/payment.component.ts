@@ -46,9 +46,11 @@ export class paymentComponent implements OnInit {
   totalPrice: number = 0;
   userId: string | null = null;
   clientId: any;
+
   get selectedPaymentMethod(): string {
     return this.InvoiceForm.get('paymentType')?.value?.toString() || '1';
   }
+
   token = localStorage.getItem('userToken')!;
   decodedToken: any = jwtDecode(this.token);
 
@@ -59,6 +61,7 @@ export class paymentComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
+    this.listenToPaymentTypeChanges();
 
     if (!this.token) {
       this._ToastrService.error('User not logged in!');
@@ -121,6 +124,7 @@ export class paymentComponent implements OnInit {
       equivalent: [0],
       clientId: [this.clientId, [Validators.required]],
       clientName: [this.userName],
+      clienName: [this.userName],
       userId: [''],
       paymentType: [1],
       workByPriceWithVat: [false],
@@ -155,6 +159,28 @@ export class paymentComponent implements OnInit {
       banquetDate: [nowISO],
       saleInvoiceDetails: this._formBuilder.array([]),
       saleInvNotesDto: this._formBuilder.array([]),
+    });
+  }
+
+  private listenToPaymentTypeChanges(): void {
+    this.InvoiceForm.get('paymentType')?.valueChanges.subscribe((type) => {
+      const grandTotal =
+        this.InvoiceForm.get('totalInvoiceAfterVat')?.value || this.totalPrice;
+      if (Number(type) === 2) {
+        this.InvoiceForm.patchValue({
+          cash: 0,
+          visa: grandTotal,
+          paid: grandTotal,
+          isPendingPayment: true,
+        });
+      } else {
+        this.InvoiceForm.patchValue({
+          cash: grandTotal,
+          visa: 0,
+          paid: grandTotal,
+          isPendingPayment: false,
+        });
+      }
     });
   }
 
@@ -213,17 +239,22 @@ export class paymentComponent implements OnInit {
     const total = cartObj.TotalPrice || this.totalPrice;
     const vat = cartObj.TotalVat || 0;
     const grandTotal = cartObj.TotalPriceAfterVat || total;
+    const isVisa = this.selectedPaymentMethod === '2';
 
     this.InvoiceForm.patchValue({
       clientId: this.clientId,
       userId: this.userId || '',
+      clientName: this.userName,
+      clienName: this.userName,
       totalInvoice: total,
       totalInvoiceVatAmount: vat,
       totalInvoiceAfterVat: grandTotal,
       totalInvoiceAfterDisc: total,
       equivalent: grandTotal,
       paid: grandTotal,
-      cash: grandTotal,
+      cash: isVisa ? 0 : grandTotal,
+      visa: isVisa ? grandTotal : 0,
+      isPendingPayment: isVisa,
     });
   }
 
@@ -236,37 +267,99 @@ export class paymentComponent implements OnInit {
       return;
     }
 
-    let createdInvoiceId: string = '';
-    this._loadingService.start();
+    const isVisa = this.selectedPaymentMethod === '2';
+    const grandTotal =
+      this.InvoiceForm.get('totalInvoiceAfterVat')?.value || this.totalPrice;
 
-    this._PaymentService
-      .createPaymentInvoice(this.InvoiceForm.value)
-      .pipe(
-        switchMap((res: any) => {
-          if (res?.IsSuccess || res?.isSuccess || res?.Obj) {
-            createdInvoiceId = res?.Obj?.Id || res?.Id || res?.id || '';
-            return this._cartService.clearCart(this.userId!);
-          } else {
-            this._ToastrService.error(res?.Message);
-            return EMPTY;
-          }
-        }),
-        finalize(() => this._loadingService.stop()),
-      )
-      .subscribe({
-        next: (res) => {
-          this._ToastrService.success(this._translate.instant(res?.Message));
-          localStorage.removeItem('items');
-          localStorage.removeItem('cartCount');
-
-          this._router.navigate(['/allOrders'], {
-            queryParams: { invoiceId: createdInvoiceId },
-          });
-        },
-        error: (err) => {
-          console.error(err);
-          this._ToastrService.error(err?.error?.Message);
-        },
+    if (isVisa) {
+      this.InvoiceForm.patchValue({
+        cash: 0,
+        visa: grandTotal,
+        paid: grandTotal,
+        isPendingPayment: true,
       });
+    } else {
+      this.InvoiceForm.patchValue({
+        cash: grandTotal,
+        visa: 0,
+        paid: grandTotal,
+        isPendingPayment: false,
+      });
+    }
+    const body = {
+      invoice: {
+        ...this.InvoiceForm.value,
+      },
+    };
+
+    if (isVisa) {
+      this._loadingService.start();
+
+      localStorage.setItem(
+        'pendingInvoiceVisaData',
+        JSON.stringify(this.InvoiceForm.value),
+      );
+
+      this._PaymentService
+        .getPaymobUrl(body)
+        .pipe(finalize(() => this._loadingService.stop()))
+        .subscribe({
+          next: (res: any) => {
+            if (
+              res?.IsSuccess &&
+              (res?.Obj?.iframeUrl ||
+                res?.Obj?.paymentRedirectUrl ||
+                res?.paymentUrl)
+            ) {
+              const redirectUrl =
+                res?.Obj?.iframeUrl ||
+                res?.Obj?.paymentRedirectUrl ||
+                res?.paymentUrl;
+
+              window.location.href = redirectUrl;
+            } else {
+              this._ToastrService.error(res?.Message);
+            }
+          },
+          error: (err) => {
+            console.error(err);
+            this._ToastrService.error(err?.error?.Message);
+          },
+        });
+    } else {
+      this._loadingService.start();
+
+      this._PaymentService
+        .createPaymentInvoice(this.InvoiceForm.value)
+        .pipe(
+          switchMap((res: any) => {
+            if (res?.IsSuccess) {
+              const createdInvoiceId = res?.Obj?.Id;
+              this._ToastrService.success(res.Message);
+              return this._cartService
+                .clearCart(this.userId!)
+                .pipe(switchMap(() => [{ res, createdInvoiceId }]));
+            } else {
+              this._ToastrService.error(res?.Message);
+              return EMPTY;
+            }
+          }),
+          finalize(() => this._loadingService.stop()),
+        )
+        .subscribe({
+          next: ({ createdInvoiceId }) => {
+            localStorage.removeItem('items');
+            localStorage.removeItem('cartCount');
+
+            this._router.navigate(['/allOrders'], {
+              queryParams: { invoiceId: createdInvoiceId },
+            });
+          },
+          error: (err) => {
+            console.error(err);
+            this._ToastrService.error(err?.error?.Message);
+          },
+        });
+    }
   }
 }

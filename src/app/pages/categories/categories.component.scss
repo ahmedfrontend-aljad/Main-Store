@@ -100,39 +100,3 @@
   }
 }
 
-.pagination-wrapper {
-  ::ng-deep {
-    .pagination {
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 4px;
-
-      .page-item {
-        .page-link {
-          background-color: var(--color-bg);
-          color: var(--color-text);
-          border-color: var(--color-border);
-          border-radius: 6px;
-          padding: 0.4rem 0.75rem;
-          font-size: 0.875rem;
-
-          @media (max-width: 575.98px) {
-            padding: 0.3rem 0.6rem;
-            font-size: 0.8rem;
-          }
-        }
-
-        &.active .page-link {
-          background-color: var(--color-primary);
-          border-color: var(--color-primary);
-          color: #ffffff;
-        }
-
-        &.disabled .page-link {
-          background-color: var(--color-bg);
-          opacity: 0.5;
-        }
-      }
-    }
-  }
-}

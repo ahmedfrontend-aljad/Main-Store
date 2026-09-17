@@ -117,7 +117,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
         if (res?.IsSuccess && res?.Obj?.AccessToken) {
           this._ToastrService.success(
-            this._TranslateService.instant('auth.loginSuccess'),
+            this._TranslateService.instant(res.Message),
           );
 
           localStorage.removeItem('guestToken');
@@ -142,7 +142,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         this._LoadingService.stop();
         this.isloading = false;
         console.error('HTTP Error:', err);
-        this._ToastrService.error(this._TranslateService.instant(err.Message));
+        this._ToastrService.error(
+          this._TranslateService.instant(err?.error?.Message),
+        );
       },
     });
   }

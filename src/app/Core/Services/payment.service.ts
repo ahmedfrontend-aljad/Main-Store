@@ -15,4 +15,8 @@ export class PaymentService {
       body,
     );
   }
+
+  getPaymobUrl(body: any) {
+    return this._DataService.post(`${apiUrl}/NewStore/Payment/Initiate`, body);
+  }
 }

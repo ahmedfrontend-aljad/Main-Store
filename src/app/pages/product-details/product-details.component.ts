@@ -1,4 +1,3 @@
-import { DatePipe, NgClass } from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -9,10 +8,9 @@ import {
   inject,
 } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  IitemsDetailes,
-  ItemUnit,
-} from '../../Core/Interfaces/iitems-detailes';
+import { ToastrService } from 'ngx-toastr';
+import { IitemsDetailes } from '../../Core/Interfaces/iitems-detailes';
+import { Iproducts } from '../../Core/Interfaces/iproducts';
 import { AllProductsService } from '../../Core/Services/all-products.service';
 import { AddToCartComponent } from '../../Shared/components/add-to-cart/add-to-cart.component';
 
@@ -28,9 +26,9 @@ export class ProductDetailsComponent implements OnChanges {
   @Output() closeDialog = new EventEmitter<void>();
 
   private readonly _AllProductsService = inject(AllProductsService);
+  private readonly _ToastrService = inject(ToastrService);
 
-  detailsProduct: any = null;
-  selectedUnit: any = null;
+  detailsProduct!: IitemsDetailes;
   isLoading: boolean = false;
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -44,21 +42,30 @@ export class ProductDetailsComponent implements OnChanges {
     this._AllProductsService.getProductDetails(this.productId).subscribe({
       next: (res) => {
         this.isLoading = false;
-        if (res?.Obj?.item) {
-          this.detailsProduct = res.Obj.item;
-
-          if (this.detailsProduct?.ItemUnits?.length > 0) {
-            this.selectedUnit = this.detailsProduct.ItemUnits[0];
-          }
+        if (res?.Obj) {
+          this.detailsProduct = res.Obj;
         }
       },
       error: (err) => {
         this.isLoading = false;
-        console.error('Error fetching details:', err);
+        this._ToastrService.error(err?.error?.Message);
+        console.error(err);
       },
     });
   }
 
+  get formattedProduct(): Iproducts {
+    const item = this.detailsProduct?.item;
+    const unit = item?.ItemUnits?.[0];
+
+    return {
+      Id: item?.Id,
+      NameAr: item?.NameAr,
+      NameEn: item?.NameEn,
+      Price: unit?.Price ?? 0,
+      Quantity: item?.Balance ?? 0,
+    } as Iproducts;
+  }
   closeModal(): void {
     this.closeDialog.emit();
   }

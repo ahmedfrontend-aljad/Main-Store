@@ -25,7 +25,20 @@ import { IPagination } from '../../Shared/models/IPagination.model';
   styleUrl: './categories.component.scss',
 })
 export class CategoriesComponent implements OnInit, OnDestroy {
+  private readonly _CategoriesService = inject(CategoriesService);
+  private readonly _LoadingService = inject(LoadingService);
+  groups: WritableSignal<any[]> = signal([]);
+  pagination?: IPagination;
+
   searchTerm = signal<string>('');
+  private fetchSub?: Subscription;
+
+  pageNo = 1;
+  pageSize = PAGE_SIZE;
+
+  ngOnInit(): void {
+    this.loadCategories();
+  }
 
   get text(): string {
     return this.searchTerm();
@@ -33,18 +46,6 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   set text(value: string) {
     this.searchTerm.set(value);
   }
-
-  currentUrl = '';
-  pageNo = 1;
-  pageSize = PAGE_SIZE;
-
-  groups: WritableSignal<any[]> = signal([]);
-  pagination?: IPagination;
-
-  private fetchSub?: Subscription;
-  private readonly _CategoriesService = inject(CategoriesService);
-  private readonly _LoadingService = inject(LoadingService);
-  private readonly _Router = inject(Router);
 
   filteredItems = computed(() => {
     const query = this.searchTerm().toLowerCase().trim();
@@ -55,12 +56,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     );
   });
 
-  ngOnInit(): void {
-    this.currentUrl = this._Router.url;
-    this.loadCategories(this.pageNo);
-  }
-
-  loadCategories(page: number): void {
+  loadCategories(): void {
     this._LoadingService.start();
     this.fetchSub?.unsubscribe();
 
@@ -78,7 +74,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   page(ev: number): void {
     this.pageNo = ev;
-    this.loadCategories(this.pageNo);
+    this.loadCategories();
   }
 
   ngOnDestroy(): void {

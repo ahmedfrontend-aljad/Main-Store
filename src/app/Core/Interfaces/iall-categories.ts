@@ -14,17 +14,18 @@ export interface Item {
   Id: number;
   Code: string;
   NameAr: string;
-  NameEn: null | string;
+  NameEn: string;
   ItemGroupId: number;
   UnitId: number;
   ItemUnitId: number;
   UnitName: string;
-  Barcode: null | string;
+  Barcode: string;
   Price: number;
   PriceTax: number;
   Vat: number;
-  ImagePath: null;
-  Description: null | string;
-  Notes: null | string;
+  ImagePath: string;
+  Image: string;
+  Description: string;
+  Notes: string;
   Quantity: number;
 }

@@ -2,7 +2,7 @@
   type="button"
   [disabled]="isOutOfStock()"
   (click)="addToCart()"
-  class="w-full h-10 px-4 rounded-xl font-medium text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-70 disabled:shadow-none"
+  class="w-full h-9 sm:h-10 md:h-12 px-2 sm:px-4 text-xs sm:text-sm md:text-base rounded-lg sm:rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-70 disabled:shadow-none"
   [ngClass]="{
     'bg-primary hover:bg-emerald-600 text-white shadow-emerald-200 dark:shadow-none':
       !isOutOfStock(),
@@ -11,10 +11,14 @@
   }"
 >
   @if (!isOutOfStock()) {
-    <i class="fa-solid fa-cart-shopping text-xs md:text-sm"></i>
-    <span>{{ "addtocart" | translate }}</span>
+    <i class="fa-solid fa-cart-shopping text-xs sm:text-sm md:text-base"></i>
+    <span class="truncate">{{ "addtocart" | translate }}</span>
   } @else {
-    <i class="fa-solid fa-ban text-red-500 dark:text-red-400"></i>
-    <span class="text-xs">{{ "notAvaliableRightNow" | translate }}</span>
+    <i
+      class="fa-solid fa-ban text-xs sm:text-sm text-red-500 dark:text-red-400"
+    ></i>
+    <span class="text-[10px] sm:text-xs truncate">{{
+      "notAvaliableRightNow" | translate
+    }}</span>
   }
 </button>

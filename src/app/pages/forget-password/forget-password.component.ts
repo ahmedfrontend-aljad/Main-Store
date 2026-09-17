@@ -79,7 +79,7 @@ export class ForgetPasswordComponent implements OnInit {
       error: (err) => {
         this._LoadingService.stop();
         console.log(err);
-        this._ToastrService.error(err.Message, 'Failed');
+        this._ToastrService.error(err?.error?.Message, 'Failed');
       },
     });
   }

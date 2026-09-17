@@ -29,16 +29,19 @@
           <div
             class="w-full h-80 bg-gray-100 dark:bg-slate-800/80 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-slate-700 p-2"
           >
-            @if (detailsProduct) {
+            @if (detailsProduct.item.ItemUnits?.[0]?.ItemImages?.[0]?.Image) {
               <img
-                [src]="'data:image/png;base64,' + detailsProduct.Image"
-                [alt]="detailsProduct.NameAr"
+                [src]="
+                  'data:image/png;base64,' +
+                  detailsProduct.item.ItemUnits[0].ItemImages[0].Image
+                "
+                [alt]="detailsProduct.item.NameAr"
                 class="max-h-full max-w-full object-contain"
               />
             } @else {
               <img
-                src="assets/images/Product.png"
-                [alt]="detailsProduct.NameAr"
+                src="./assets/images/Product.png"
+                [alt]="detailsProduct.item.NameAr"
                 class="max-h-full max-w-full object-contain opacity-90"
               />
             }
@@ -51,13 +54,13 @@
               <h2
                 class="text-xl md:text-2xl font-bold text-gray-900 leading-snug"
               >
-                {{ detailsProduct.NameAr }}
+                {{ detailsProduct.item.NameAr }}
               </h2>
-              @if (detailsProduct.Code) {
+              @if (detailsProduct.item.Code) {
                 <span
                   class="text-xs bg-gray-100 dark:bg-slate-800 text-white px-2.5 py-1 rounded-md font-mono shrink-0 border border-gray-200 dark:border-slate-700"
                 >
-                  #{{ detailsProduct.Code }}
+                  #{{ detailsProduct.item.Code }}
                 </span>
               }
             </div>
@@ -66,12 +69,12 @@
               <span
                 class="text-2xl font-extrabold text-blue-950 dark:text-blue-400"
               >
-                {{ selectedUnit?.Price ?? detailsProduct.Price ?? 0 }}
+                {{ detailsProduct.item.ItemUnits[0].Price }}
               </span>
               <span class="text-sm font-semibold text-gray-700">£</span>
-              @if (selectedUnit?.UnitName) {
+              @if (detailsProduct.item.ItemUnits[0]?.UnitName) {
                 <span class="text-xs text-gray-700"
-                  >/ {{ selectedUnit.UnitName }}</span
+                  >/ {{ detailsProduct.item.ItemUnits[0].UnitName }}</span
                 >
               }
             </div>
@@ -83,11 +86,11 @@
                 <span class="text-gray-300 font-medium">
                   {{ "remainingStock" | translate }}:
                 </span>
-                @if (detailsProduct.Balance > 0) {
+                @if (detailsProduct.item.Balance > 0) {
                   <span
                     class="font-bold text-emerald-600 dark:text-emerald-400"
                   >
-                    {{ detailsProduct.Balance }}
+                    {{ detailsProduct.item.Balance }}
                     {{ "availableItems" | translate }}
                   </span>
                 } @else {
@@ -97,22 +100,20 @@
                 }
               </div>
 
-              @if (detailsProduct.TotalOutQty) {
+              @if (detailsProduct.item.TotalOutQty) {
                 <div
                   class="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-slate-700 text-gray-300 dark:text-gray-300"
                 >
                   <span>{{ "totalSales" | translate }}:</span>
                   <span
                     class="font-semibold text-gray-800 dark:text-gray-200"
-                    >{{ detailsProduct.TotalOutQty }}</span
+                    >{{ detailsProduct.item.TotalOutQty }}</span
                   >
                 </div>
               }
             </div>
 
-            @if (
-              detailsProduct.Description || detailsProduct.ProductDescription
-            ) {
+            @if (detailsProduct.item.Description) {
               <div>
                 <h4
                   class="font-semibold text-xs text-gray-900 dark:text-gray-200 mb-1"
@@ -122,17 +123,14 @@
                 <p
                   class="text-xs text-gray-600 leading-relaxed max-h-24 overflow-y-auto"
                 >
-                  {{
-                    detailsProduct.Description ||
-                      detailsProduct.ProductDescription
-                  }}
+                  {{ detailsProduct.item.Description }}
                 </p>
               </div>
             }
           </div>
 
           <div class="pt-4 border-t border-gray-200 dark:border-slate-800">
-            <app-add-to-cart [product]="detailsProduct"></app-add-to-cart>
+            <app-add-to-cart [product]="formattedProduct"></app-add-to-cart>
           </div>
         </div>
       </div>
