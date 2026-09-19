@@ -166,7 +166,7 @@ export class paymentComponent implements OnInit {
     this.InvoiceForm.get('paymentType')?.valueChanges.subscribe((type) => {
       const grandTotal =
         this.InvoiceForm.get('totalInvoiceAfterVat')?.value || this.totalPrice;
-      if (Number(type) === 2) {
+      if (Number(type) === 3) {
         this.InvoiceForm.patchValue({
           cash: 0,
           visa: grandTotal,
@@ -206,7 +206,7 @@ export class paymentComponent implements OnInit {
       offerItemchek: [0],
       uniteId: [item.unitId || 1],
       uniteName: [item.unitName || ''],
-      nameAr: [item.name || item.productName || item.ProductName || ''],
+      nameAr: [item.productName || item.ProductName || ''],
       productId: [item.productId || item.id || item.ProductId || 0],
       productBarcode: [''],
       productCode: [''],
@@ -239,7 +239,7 @@ export class paymentComponent implements OnInit {
     const total = cartObj.TotalPrice || this.totalPrice;
     const vat = cartObj.TotalVat || 0;
     const grandTotal = cartObj.TotalPriceAfterVat || total;
-    const isVisa = this.selectedPaymentMethod === '2';
+    const isVisa = this.selectedPaymentMethod === '3';
 
     this.InvoiceForm.patchValue({
       clientId: this.clientId,
@@ -267,7 +267,7 @@ export class paymentComponent implements OnInit {
       return;
     }
 
-    const isVisa = this.selectedPaymentMethod === '2';
+    const isVisa = this.selectedPaymentMethod === '3';
     const grandTotal =
       this.InvoiceForm.get('totalInvoiceAfterVat')?.value || this.totalPrice;
 
@@ -305,18 +305,19 @@ export class paymentComponent implements OnInit {
         .pipe(finalize(() => this._loadingService.stop()))
         .subscribe({
           next: (res: any) => {
-            if (
-              res?.IsSuccess &&
-              (res?.Obj?.iframeUrl ||
-                res?.Obj?.paymentRedirectUrl ||
-                res?.paymentUrl)
-            ) {
-              const redirectUrl =
-                res?.Obj?.iframeUrl ||
-                res?.Obj?.paymentRedirectUrl ||
-                res?.paymentUrl;
+            const checkoutUrl = res?.Obj?.CheckoutUrl || res?.CheckoutUrl;
 
-              window.location.href = redirectUrl;
+            if (res?.IsSuccess && checkoutUrl) {
+              this._cartService.clearCart(this.userId!).subscribe({
+                next: () => {
+                  localStorage.removeItem('items');
+                  localStorage.removeItem('cartCount');
+                  window.location.href = checkoutUrl;
+                },
+                error: () => {
+                  window.location.href = checkoutUrl;
+                },
+              });
             } else {
               this._ToastrService.error(res?.Message);
             }

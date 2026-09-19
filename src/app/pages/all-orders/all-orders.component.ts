@@ -10,7 +10,6 @@ import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { TabsModule } from 'primeng/tabs';
-import { finalize } from 'rxjs';
 import { DataService } from '../../Core/Services/data.service';
 import { HelperService } from '../../Core/Services/helper.service';
 import { LoadingService } from '../../Core/Services/loading.service';
@@ -82,14 +81,15 @@ export class AllOrdersComponent implements OnInit {
   }
 
   loadAllData(): void {
-    this.getAllOrdersByStatus();
+    this.getAllOrders();
     this.getDeliverdOrders();
   }
 
-  getDeliverdOrders(): void {
+  getAllOrders(): void {
     const { fromDate, toDate } = this.filtersForm.value;
-
+    const clientId = Number(localStorage.getItem('profileData'));
     const rawParams = {
+      clientId: clientId,
       pageNumber: this.pageNo,
       pageSize: this.pageSize,
       fromDate: this.formatDateToISO(fromDate),
@@ -99,14 +99,47 @@ export class AllOrdersComponent implements OnInit {
     const cleanedParams = this._HelperService.cleanNullValues(rawParams);
 
     this._DataService
-      .get(`${apiUrl}/XtraAndPos_MobileLookups/GetPagedSaleInvoicesByDate`, {
+      .get(`${apiUrl}/NewStore/Invoices/GetPagedByClient`, {
+        params: cleanedParams,
+      })
+      .subscribe({
+        next: (res: any) => {
+          if (res?.IsSuccess) {
+            this.allOrders = res.Obj?.trx || [];
+            this.totalOrdersCount = res.Obj?.totalCount || 0;
+          } else {
+            this._ToastrService.error(res?.Message);
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this._ToastrService.error(err?.Message || err?.message);
+        },
+      });
+  }
+
+  getDeliverdOrders(): void {
+    const { fromDate, toDate } = this.filtersForm.value;
+    const clientId = Number(localStorage.getItem('profileData'));
+    const rawParams = {
+      clientId: clientId,
+      pageNumber: this.pageNo,
+      pageSize: this.pageSize,
+      fromDate: this.formatDateToISO(fromDate),
+      toDate: this.formatDateToISO(toDate),
+    };
+
+    const cleanedParams = this._HelperService.cleanNullValues(rawParams);
+
+    this._DataService
+      .get(`${apiUrl}/NewStore/Invoices/GetPagedByClient`, {
         params: cleanedParams,
       })
       .subscribe({
         next: (res: any) => {
           if (res?.IsSuccess) {
             this.deliverdOrders = res.Obj?.trx || [];
-            this.totalDeliveredCount = res.Obj?.totalCount;
+            this.totalDeliveredCount = res.Obj?.totalCount || 0;
           } else {
             this._ToastrService.error(res?.Message);
           }
@@ -118,49 +151,16 @@ export class AllOrdersComponent implements OnInit {
       });
   }
 
-  getAllOrdersByStatus(): void {
-    this._LoadingService.start();
-
-    const { fromDate, toDate } = this.filtersForm.value;
-    const defaultToDate = new Date().toISOString().split('T')[0];
-
-    const rawParams = {
-      pageNumber: this.pageNo,
-      pageSize: this.pageSize,
-      fromDate: this.formatDateToISO(fromDate),
-      toDate: this.formatDateToISO(toDate) || defaultToDate,
-    };
-
-    const cleanedParams = this._HelperService.cleanNullValues(rawParams);
-
-    this._DataService
-      .get(
-        `${apiUrl}/XtraAndPOS_SaleInvoiceReqNew/GetPagedSaleInvoiceReqByDate`,
-        { params: cleanedParams },
-      )
-      .pipe(finalize(() => this._LoadingService.stop()))
-      .subscribe({
-        next: (res: any) => {
-          if (res?.IsSuccess) {
-            this.allOrders = res.Obj?.trx || [];
-            this.totalOrdersCount = res.Obj?.totalCount;
-          } else {
-            this._ToastrService.error(res?.Message);
-          }
-        },
-        error: (err) => {
-          console.error(err);
-          this._ToastrService.error(err?.Message || err?.message);
-        },
-      });
-  }
-
-  getOrdersByStatus(status: number): any[] {
-    if (status === 5) {
+  getOrdersByStatus(StoreOrderStatus: number): any[] {
+    if (StoreOrderStatus === 5) {
       return this.deliverdOrders || [];
     }
     if (!this.allOrders) return [];
-    return this.allOrders.filter((order) => order.Status === status);
+
+    return this.allOrders.filter((order) => {
+      const status = order.StoreOrderStatus ?? 1;
+      return status === StoreOrderStatus;
+    });
   }
 
   getTotalCountByStatus(status: number): number {

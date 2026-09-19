@@ -82,6 +82,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           'profileData',
           JSON.stringify(response.Obj?.Client?.Id),
         );
+        console.log(response);
       } else {
         this._ToastrService.error(response?.Message);
       }
@@ -125,6 +126,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
           try {
             const decoded: any = jwtDecode(res.Obj.AccessToken);
+            console.log(decoded?.Id);
+
             if (decoded?.Id) {
               localStorage.setItem('userId', decoded.Id);
               await this.getProfileData(decoded.Id);

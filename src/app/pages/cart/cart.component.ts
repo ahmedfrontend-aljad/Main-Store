@@ -83,24 +83,24 @@ export class CartComponent implements OnInit, OnDestroy {
   async deleteAllItems(): Promise<void> {
     const trans = await firstValueFrom(
       this._TranslateService.get([
-        'swal.deleteTitle',
-        'swal.deleteText',
-        'swal.deleteConfirm',
-        'swal.cancel',
-        'swal.clearedTitle',
-        'swal.clearedText',
+        'deleteTitle',
+        'deleteText',
+        'deleteConfirm',
+        'cancel',
+        'clearedTitle',
+        'clearedText',
       ]),
     );
 
     Swal.fire({
-      title: trans['swal.deleteTitle'],
-      text: trans['swal.deleteText'],
+      title: trans['deleteTitle'],
+      text: trans['deleteText'],
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: trans['swal.deleteConfirm'],
-      cancelButtonText: trans['swal.cancel'],
+      confirmButtonText: trans['deleteConfirm'],
+      cancelButtonText: trans['cancel'],
     }).then((result) => {
       if (result.isConfirmed) {
         this._LoadingService.start();
@@ -132,26 +132,26 @@ export class CartComponent implements OnInit, OnDestroy {
   async deleteItem(productId: number): Promise<void> {
     const trans = await firstValueFrom(
       this._TranslateService.get([
-        'swal.deleteTitle',
-        'swal.deleteSingleText',
-        'swal.deleteConfirm',
-        'swal.cancel',
-        'swal.deletedTitle',
-        'swal.deletedText',
-        'swal.deleteErrorTitle',
-        'swal.deleteErrorText',
+        'deleteTitle',
+        'deleteSingleText',
+        'deleteConfirm',
+        'cancel',
+        'deletedTitle',
+        'deletedText',
+        'deleteErrorTitle',
+        'deleteErrorText',
       ]),
     );
 
     Swal.fire({
-      title: trans['swal.deleteTitle'],
-      text: trans['swal.deleteSingleText'],
+      title: trans['deleteTitle'],
+      text: trans['deleteSingleText'],
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: trans['swal.deleteConfirm'],
-      cancelButtonText: trans['swal.cancel'],
+      confirmButtonText: trans['deleteConfirm'],
+      cancelButtonText: trans['cancel'],
     }).then((result) => {
       if (result.isConfirmed) {
         const currentCart = this.cardUserItems();

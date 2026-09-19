@@ -44,8 +44,8 @@ export class AddToCartComponent {
       userId: userId,
       price: this.product.Price ?? 0,
       quantity: 1,
-      unitId: this.product.Id ?? 0,
-      unitName: this.product.NameAr ?? '',
+      unitId: 1,
+      unitName: this.product.UnitName ?? '',
     };
 
     this._spinnerInterceptor.show();
