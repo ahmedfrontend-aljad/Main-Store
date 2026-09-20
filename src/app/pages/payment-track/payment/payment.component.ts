@@ -11,13 +11,13 @@ import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import jwtDecode from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
-import { EMPTY, finalize, switchMap } from 'rxjs';
-import { Icart } from '../../Core/Interfaces/icart';
-import { CartService } from '../../Core/Services/cart.service';
-import { LoadingService } from '../../Core/Services/loading.service';
-import { PaymentService } from '../../Core/Services/payment.service';
-import { StoreInputComponent } from '../../Shared/components/store-input/store-input.component';
-import { SubmitButtonComponent } from '../../Shared/components/submit-button/submit-button.component';
+import { finalize, tap } from 'rxjs';
+import { Icart } from '../../../Core/Interfaces/icart';
+import { CartService } from '../../../Core/Services/cart.service';
+import { LoadingService } from '../../../Core/Services/loading.service';
+import { PaymentService } from '../../../Core/Services/payment.service';
+import { StoreInputComponent } from '../../../Shared/components/store-input/store-input.component';
+import { SubmitButtonComponent } from '../../../Shared/components/submit-button/submit-button.component';
 
 @Component({
   selector: 'app-payment',
@@ -93,10 +93,8 @@ export class paymentComponent implements OnInit {
             this.totalPrice = res.Obj.TotalPrice || 0;
             this.populateFormWithCartData(res.Obj);
           } else {
-            this._ToastrService.info(
-              this._translate.instant('cart.invoice.emptyCart'),
-            );
-            this.cartproducts = [];
+            this._ToastrService.info(this._translate.instant('emptyCart'));
+            this._router.navigate(['/home']);
             this.totalPrice = 0;
           }
         },
@@ -258,12 +256,22 @@ export class paymentComponent implements OnInit {
     });
   }
 
+  get hasItems(): boolean {
+    return this.cartproducts && this.cartproducts.length > 0;
+  }
+
+  handleButtonClick(): void {
+    if (this.hasItems) {
+      this.createInvoice();
+    } else {
+      this._router.navigate(['/home']);
+    }
+  }
+
   createInvoice(): void {
     if (this.InvoiceForm.invalid) {
       this.InvoiceForm.markAllAsTouched();
-      this._ToastrService.error(
-        this._translate.instant('cart.invoice.validationError'),
-      );
+      this._ToastrService.error(this._translate.instant('validationError'));
       return;
     }
 
@@ -271,30 +279,17 @@ export class paymentComponent implements OnInit {
     const grandTotal =
       this.InvoiceForm.get('totalInvoiceAfterVat')?.value || this.totalPrice;
 
-    if (isVisa) {
-      this.InvoiceForm.patchValue({
-        cash: 0,
-        visa: grandTotal,
-        paid: grandTotal,
-        isPendingPayment: true,
-      });
-    } else {
-      this.InvoiceForm.patchValue({
-        cash: grandTotal,
-        visa: 0,
-        paid: grandTotal,
-        isPendingPayment: false,
-      });
-    }
-    const body = {
-      invoice: {
-        ...this.InvoiceForm.value,
-      },
-    };
+    this.InvoiceForm.patchValue({
+      cash: isVisa ? 0 : grandTotal,
+      visa: isVisa ? grandTotal : 0,
+      paid: grandTotal,
+      isPendingPayment: isVisa,
+    });
+
+    const body = { invoice: { ...this.InvoiceForm.value } };
+    this._loadingService.start();
 
     if (isVisa) {
-      this._loadingService.start();
-
       localStorage.setItem(
         'pendingInvoiceVisaData',
         JSON.stringify(this.InvoiceForm.value),
@@ -306,7 +301,6 @@ export class paymentComponent implements OnInit {
         .subscribe({
           next: (res: any) => {
             const checkoutUrl = res?.Obj?.CheckoutUrl || res?.CheckoutUrl;
-
             if (res?.IsSuccess && checkoutUrl) {
               this._cartService.clearCart(this.userId!).subscribe({
                 next: () => {
@@ -328,34 +322,28 @@ export class paymentComponent implements OnInit {
           },
         });
     } else {
-      this._loadingService.start();
-
       this._PaymentService
         .createPaymentInvoice(this.InvoiceForm.value)
         .pipe(
-          switchMap((res: any) => {
+          tap((res: any) => {
             if (res?.IsSuccess) {
               const createdInvoiceId = res?.Obj?.Id;
               this._ToastrService.success(res.Message);
-              return this._cartService
-                .clearCart(this.userId!)
-                .pipe(switchMap(() => [{ res, createdInvoiceId }]));
+              localStorage.removeItem('items');
+              localStorage.removeItem('cartCount');
+
+              this._cartService.clearCart(this.userId!).subscribe();
+
+              this._router.navigate(['/orderSuccess'], {
+                queryParams: { invoiceId: createdInvoiceId },
+              });
             } else {
               this._ToastrService.error(res?.Message);
-              return EMPTY;
             }
           }),
           finalize(() => this._loadingService.stop()),
         )
         .subscribe({
-          next: ({ createdInvoiceId }) => {
-            localStorage.removeItem('items');
-            localStorage.removeItem('cartCount');
-
-            this._router.navigate(['/allOrders'], {
-              queryParams: { invoiceId: createdInvoiceId },
-            });
-          },
           error: (err) => {
             console.error(err);
             this._ToastrService.error(err?.error?.Message);

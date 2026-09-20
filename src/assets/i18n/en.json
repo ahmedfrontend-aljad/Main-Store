@@ -210,5 +210,16 @@
   "STATUS_CANCELED": "Canceled",
   "deliverd": "Deliverd",
   "noresultsmatchedthesearchratio": "No results matched the search ratio",
-  "trackYourOrders": "track Your Orders..."
+  "trackYourOrders": "track Your Orders...",
+  "thankyou": "Thank You",
+  "ordersuccessfullyplaced": "Your order has been successfully placed and will be processed soon",
+  "ordernumber": "Order Number",
+  "totalamount": "Total Amount",
+  "paymentmethod": "Payment Method",
+  "trackorder": "Track Order",
+  "continueshopping": "Continue Shopping",
+  "paymentfailed": "Payment Failed",
+  "paymentfailedmessage": "Sorry, we could not process your payment. Please try again or choose another payment method.",
+  "tryagain": "Try Again",
+  "backtocart": "Back to Cart"
 }

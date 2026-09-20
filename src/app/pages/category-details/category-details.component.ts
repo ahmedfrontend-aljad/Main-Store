@@ -45,7 +45,7 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
 
   pagination!: IPagination;
   currentUrl!: string;
-  pageNo = signal<number>(1);
+  pageNo = 1;
   pageSize = PAGE_SIZE;
   searchTerm = signal<string>('');
   selectedProductId: number | string | null = null;
@@ -109,7 +109,7 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
   filteredItems = computed(() => {
     const products = this.selectedGroupProducts();
     const query = this.searchTerm().trim().toLowerCase();
-    const currentPage = this.pageNo();
+    const currentPage = this.pageNo;
 
     const filtered = products.filter((item) => {
       const matchAr = item.NameAr?.toLowerCase().includes(query);
@@ -133,7 +133,7 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
   }
 
   page(ev: number): void {
-    this.pageNo.set(ev);
+    this.pageNo = ev;
   }
 
   openProductModal(id: number | string): void {

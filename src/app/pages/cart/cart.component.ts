@@ -1,41 +1,31 @@
 import { CurrencyPipe } from '@angular/common';
-import {
-  Component,
-  inject,
-  OnDestroy,
-  OnInit,
-  signal,
-  WritableSignal,
-} from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { firstValueFrom, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { Icart } from '../../Core/Interfaces/icart';
 import { CartService } from '../../Core/Services/cart.service';
 import { LoadingService } from '../../Core/Services/loading.service';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [TranslateModule, CurrencyPipe],
+  imports: [TranslateModule, CurrencyPipe, RouterLink],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.scss',
 })
 export class CartComponent implements OnInit, OnDestroy {
-  isCartHasProducts: boolean = false;
-  cardUserItems: WritableSignal<Icart[]> = signal([]);
-
   private readonly _CartService = inject(CartService);
-  private readonly _Router = inject(Router);
   private readonly _TranslateService = inject(TranslateService);
   private readonly _ToastrService = inject(ToastrService);
   private readonly _LoadingService = inject(LoadingService);
   private subscriptions = new Subscription();
 
-  totalPrice: number = 0;
   userId = localStorage.getItem('userId');
+  isCartHasProducts: boolean = false;
+  cardUserItems: any[] = [];
+  totalPrice: any;
 
   ngOnInit(): void {
     const token = localStorage.getItem('userToken')!;
@@ -44,8 +34,10 @@ export class CartComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+  resetLocalCartState(): void {
+    this.cardUserItems = [];
+    localStorage.removeItem('items');
+    this.isCartHasProducts = false;
   }
 
   getCartItems(): void {
@@ -55,8 +47,8 @@ export class CartComponent implements OnInit, OnDestroy {
         next: (res) => {
           this._LoadingService.stop();
           if (res?.IsSuccess && res?.Obj?.Items) {
-            this.cardUserItems.set(res.Obj.Items);
-            this.recalculateTotalPrice();
+            this.totalPrice = res.Obj.TotalPrice;
+            this.cardUserItems = res.Obj.Items;
             localStorage.setItem('items', JSON.stringify(res.Obj.Items));
             this.isCartHasProducts = res.Obj.Items.length > 0;
           } else {
@@ -68,13 +60,12 @@ export class CartComponent implements OnInit, OnDestroy {
           console.error('Error fetching cart:', err);
           const localCart = localStorage.getItem('items');
           if (localCart) {
-            this.cardUserItems.set(JSON.parse(localCart));
-            this.recalculateTotalPrice();
-            this.isCartHasProducts = this.cardUserItems().length > 0;
+            this.cardUserItems = JSON.parse(localCart);
+            this.isCartHasProducts = this.cardUserItems.length > 0;
           } else {
             this.resetLocalCartState();
           }
-          this._ToastrService.error('فشل جلب السلة من الخادم.');
+          this._ToastrService.error(err.error.Message);
         },
       }),
     );
@@ -110,11 +101,7 @@ export class CartComponent implements OnInit, OnDestroy {
             next: (res) => {
               this._LoadingService.stop();
               this.resetLocalCartState();
-              Swal.fire(
-                trans['swal.clearedTitle'],
-                trans['swal.clearedText'],
-                'success',
-              );
+              Swal.fire(trans['clearedTitle'], trans['clearedText'], 'success');
             },
             error: (err) => {
               this._LoadingService.stop();
@@ -154,7 +141,7 @@ export class CartComponent implements OnInit, OnDestroy {
       cancelButtonText: trans['cancel'],
     }).then((result) => {
       if (result.isConfirmed) {
-        const currentCart = this.cardUserItems();
+        const currentCart = this.cardUserItems;
         const updatedCart = currentCart.filter(
           (i) => i.ProductId !== productId,
         );
@@ -170,24 +157,23 @@ export class CartComponent implements OnInit, OnDestroy {
               next: (res) => {
                 this._LoadingService.stop();
                 if (res?.IsSuccess) {
-                  this.cardUserItems.set(updatedCart);
-                  this.recalculateTotalPrice();
+                  this.cardUserItems = updatedCart;
                   localStorage.setItem('items', JSON.stringify(updatedCart));
                   this.isCartHasProducts = updatedCart.length > 0;
 
                   Swal.fire(
-                    trans['swal.deletedTitle'],
-                    trans['swal.deletedText'],
+                    trans['deletedTitle'],
+                    trans['deletedText'],
                     'success',
                   );
                 } else {
-                  this._ToastrService.error(res?.Message || 'فشل حذف المنتج.');
+                  this._ToastrService.error(res?.Message);
                 }
               },
               error: (err) => {
                 this._LoadingService.stop();
-                console.error('Failed to delete item:', err);
-                this._ToastrService.error('فشل الاتصال بالخادم.');
+                console.error(err);
+                this._ToastrService.error(err.error.Message);
               },
             }),
         );
@@ -196,71 +182,49 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   updateQuantityItem(action: 'plus' | 'minus', productId: number): void {
-    const currentCart = this.cardUserItems();
+    const currentCart = [...this.cardUserItems];
     const productIndex = currentCart.findIndex(
       (item) => item.ProductId === productId,
     );
 
-    if (productIndex !== -1) {
-      const updatedCart = [...currentCart];
-      const productToUpdate = { ...updatedCart[productIndex] };
+    if (productIndex === -1) return;
 
-      if (action === 'plus') {
-        productToUpdate.Quantity++;
-      } else if (action === 'minus') {
-        if (productToUpdate.Quantity > 1) {
-          productToUpdate.Quantity--;
-        } else {
-          this._ToastrService.info('لا يمكن أن تكون الكمية أقل من 1.');
-          return;
-        }
+    const productToUpdate = { ...currentCart[productIndex] };
+
+    if (action === 'plus') {
+      productToUpdate.Quantity++;
+    } else if (action === 'minus') {
+      if (productToUpdate.Quantity > 1) {
+        productToUpdate.Quantity--;
+      } else {
+        this._ToastrService.info('لا يمكن أن تكون الكمية أقل من 1.');
+        return;
       }
-
-      updatedCart[productIndex] = productToUpdate;
-
-      this.subscriptions.add(
-        this._CartService
-          .SyncCartFromLocal({
-            items: updatedCart,
-            userId: this.userId,
-          })
-          .subscribe({
-            next: (res) => {
-              if (res?.IsSuccess) {
-                this.cardUserItems.set(updatedCart);
-                this.recalculateTotalPrice();
-                localStorage.setItem('items', JSON.stringify(updatedCart));
-                this._CartService.getLoggedCart(this.userId);
-                this._ToastrService.success(res?.Message);
-              } else {
-                this._ToastrService.error(res?.Message);
-              }
-            },
-            error: (err) => {
-              console.error('Failed to update quantity:', err);
-              this._ToastrService.error('فشل الاتصال بالخادم لتحديث الكمية.');
-            },
-          }),
-      );
     }
+
+    currentCart[productIndex] = productToUpdate;
+
+    this.subscriptions.add(
+      this._CartService
+        .SyncCartFromLocal({ items: currentCart, userId: this.userId })
+        .subscribe({
+          next: (res) => {
+            if (res?.IsSuccess) {
+              this.getCartItems();
+              this._ToastrService.success(res?.Message);
+            } else {
+              this._ToastrService.error(res?.Message);
+            }
+          },
+          error: (err) => {
+            console.error(err);
+            this._ToastrService.error(err?.error?.Message);
+          },
+        }),
+    );
   }
 
-  goToPayment(): void {
-    this._LoadingService.start();
-    this._Router.navigate(['/payment']);
-    this._LoadingService.stop();
-  }
-
-  recalculateTotalPrice(): void {
-    this.totalPrice = this.cardUserItems().reduce((total, item) => {
-      return total + item.Price * item.Quantity;
-    }, 0);
-  }
-
-  private resetLocalCartState(): void {
-    this.cardUserItems.set([]);
-    this.recalculateTotalPrice();
-    localStorage.removeItem('items');
-    this.isCartHasProducts = false;
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

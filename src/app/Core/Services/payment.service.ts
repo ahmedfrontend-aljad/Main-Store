@@ -19,4 +19,11 @@ export class PaymentService {
   getPaymobUrl(body: any) {
     return this._DataService.post(`${apiUrl}/NewStore/Payment/Initiate`, body);
   }
+
+  getInvoiceById(body: any) {
+    return this._DataService.get(
+      `${apiUrl}/SaleInvoiceServiceNew/GetSaleInvoicesByIdOrDocNo`,
+      body,
+    );
+  }
 }

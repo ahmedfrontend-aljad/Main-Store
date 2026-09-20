@@ -113,10 +113,19 @@ export const routes: Routes = [
         path: 'payment',
         canActivate: [blankGuard],
         loadComponent: () =>
-          import('./pages/payment/payment.component').then(
+          import('./pages/payment-track/payment/payment.component').then(
             (c) => c.paymentComponent,
           ),
         title: 'payment',
+      },
+      {
+        path: 'orderSuccess',
+        canActivate: [blankGuard],
+        loadComponent: () =>
+          import('./pages/payment-track/order-success/order-success.component').then(
+            (c) => c.OrderSuccessComponent,
+          ),
+        title: 'orderSuccess',
       },
       {
         path: 'profile',

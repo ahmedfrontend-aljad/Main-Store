@@ -38,15 +38,14 @@ export class AllOrdersComponent implements OnInit {
   private readonly _FormBuilder = inject(FormBuilder);
   private readonly _LoadingService = inject(LoadingService);
   private readonly _HelperService = inject(HelperService);
-  public readonly translate = inject(TranslateService);
+  public readonly _TranslateService = inject(TranslateService);
 
   allOrders: any[] = [];
-  deliverdOrders: any[] = [];
 
   pageNo = 1;
   pageSize = PAGE_SIZE;
-  totalOrdersCount = 0;
-  totalDeliveredCount = 0;
+  totalOrdersCount: any;
+  totalDeliveredCount: any;
 
   filtersForm!: FormGroup;
   showClearFilters: boolean = false;
@@ -73,27 +72,34 @@ export class AllOrdersComponent implements OnInit {
     });
   }
 
-  private formatDateToISO(date: any): string | null {
-    if (!date) return null;
-    const d = new Date(date);
-    if (isNaN(d.getTime())) return null;
-    return d.toISOString().split('T')[0];
+  get currentLang(): string {
+    return this._TranslateService.currentLang || 'ar';
+  }
+
+  get hasFiltersSelected(): boolean {
+    const { fromDate, toDate } = this.filtersForm.value;
+    return !!fromDate || !!toDate;
+  }
+
+  page(pageIndex: number): void {
+    this.pageNo = pageIndex;
+    this.loadAllData();
   }
 
   loadAllData(): void {
     this.getAllOrders();
-    this.getDeliverdOrders();
   }
 
   getAllOrders(): void {
+    this._LoadingService.start();
     const { fromDate, toDate } = this.filtersForm.value;
     const clientId = Number(localStorage.getItem('profileData'));
     const rawParams = {
       clientId: clientId,
       pageNumber: this.pageNo,
       pageSize: this.pageSize,
-      fromDate: this.formatDateToISO(fromDate),
-      toDate: this.formatDateToISO(toDate),
+      fromDate: this._HelperService.formatDateToISO(fromDate),
+      toDate: this._HelperService.formatDateToISO(toDate),
     };
 
     const cleanedParams = this._HelperService.cleanNullValues(rawParams);
@@ -104,56 +110,25 @@ export class AllOrdersComponent implements OnInit {
       })
       .subscribe({
         next: (res: any) => {
+          this._LoadingService.stop();
           if (res?.IsSuccess) {
             this.allOrders = res.Obj?.trx || [];
-            this.totalOrdersCount = res.Obj?.totalCount || 0;
+            this.totalOrdersCount = res.Obj?.totalCount;
           } else {
             this._ToastrService.error(res?.Message);
           }
         },
         error: (err) => {
+          this._LoadingService.stop();
           console.error(err);
-          this._ToastrService.error(err?.Message || err?.message);
-        },
-      });
-  }
-
-  getDeliverdOrders(): void {
-    const { fromDate, toDate } = this.filtersForm.value;
-    const clientId = Number(localStorage.getItem('profileData'));
-    const rawParams = {
-      clientId: clientId,
-      pageNumber: this.pageNo,
-      pageSize: this.pageSize,
-      fromDate: this.formatDateToISO(fromDate),
-      toDate: this.formatDateToISO(toDate),
-    };
-
-    const cleanedParams = this._HelperService.cleanNullValues(rawParams);
-
-    this._DataService
-      .get(`${apiUrl}/NewStore/Invoices/GetPagedByClient`, {
-        params: cleanedParams,
-      })
-      .subscribe({
-        next: (res: any) => {
-          if (res?.IsSuccess) {
-            this.deliverdOrders = res.Obj?.trx || [];
-            this.totalDeliveredCount = res.Obj?.totalCount || 0;
-          } else {
-            this._ToastrService.error(res?.Message);
-          }
-        },
-        error: (err) => {
-          console.error(err);
-          this._ToastrService.error(err?.Message || err?.message);
+          this._ToastrService.error(err?.error.Message);
         },
       });
   }
 
   getOrdersByStatus(StoreOrderStatus: number): any[] {
     if (StoreOrderStatus === 5) {
-      return this.deliverdOrders || [];
+      return this.allOrders || [];
     }
     if (!this.allOrders) return [];
 
@@ -165,20 +140,6 @@ export class AllOrdersComponent implements OnInit {
 
   getTotalCountByStatus(status: number): number {
     return status === 5 ? this.totalDeliveredCount : this.totalOrdersCount;
-  }
-
-  get currentLang(): string {
-    return this.translate.currentLang || 'ar';
-  }
-
-  get hasFiltersSelected(): boolean {
-    const { fromDate, toDate } = this.filtersForm.value;
-    return !!fromDate || !!toDate;
-  }
-
-  page(pageIndex: number): void {
-    this.pageNo = pageIndex;
-    this.loadAllData();
   }
 
   applyFilter(): void {

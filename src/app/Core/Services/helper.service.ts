@@ -41,4 +41,11 @@ export class HelperService {
       maximumFractionDigits: 2,
     });
   }
+
+  formatDateToISO(date: any): string | null {
+    if (!date) return null;
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return null;
+    return d.toISOString().split('T')[0];
+  }
 }

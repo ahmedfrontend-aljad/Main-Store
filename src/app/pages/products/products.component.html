@@ -1,9 +1,8 @@
 <div class="container m-auto">
-  <!-- Heading -->
   <section>
-    <div class="w-full mt-16 products">
+    <div class="w-full mt-6 products">
       <div class="heading text-center">
-        <h3 class="mt-8 font-weight-bolder font-serif text-4xl">
+        <h3 class="font-weight-bolder font-serif text-4xl">
           {{ "Shopamongmanyproducts" | translate }}
         </h3>
         <p class="mb-8 mt-1 text-1xl">
@@ -11,7 +10,6 @@
         </p>
       </div>
 
-      <!-- Search -->
       <div class="search-wrapper m-auto">
         <input
           type="search"
@@ -24,9 +22,8 @@
         </button>
       </div>
 
-      <!-- Products Grid -->
       <div
-        class="section-content mt-16 grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
+        class="section-content mt-8 grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
       >
         @for (product of filteredItems; track product.Id) {
           <app-product-card
@@ -39,7 +36,6 @@
     </div>
   </section>
 
-  <!-- Pagination -->
   @if (pagination && pagination.TotalCount! > pagination.PageSize!) {
     <div class="my-9 d-flex justify-content-center">
       <ngb-pagination

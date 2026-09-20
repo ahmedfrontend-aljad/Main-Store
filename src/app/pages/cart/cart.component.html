@@ -1,165 +1,172 @@
-<section class="cart-section sm:mt-20">
+<section class="cart-section">
   <div
-    class="w-full max-w-7xl h-full bg-main-light shadow-md rounded-lg mb-5 mx-auto px-3 sm:px-6"
+    class="w-full max-w-7xl h-full bg-main-light shadow-md rounded-lg mb-2 mx-auto px-1 sm:px-6 py-2"
   >
-    <div class="flex justify-center items-center h-full">
-      <div class="w-full lg:w-11/12 py-4">
-        <div
-          class="flex justify-between items-center mb-6 pb-2 border-b border-gray-200"
-        >
-          <h3 class="font-bold text-lg sm:text-2xl mb-0">
-            {{ "shoppingcart" | translate }}
-          </h3>
+    <div
+      class="flex justify-between items-center mb-6 pb-2 border-b border-gray-200"
+    >
+      <h3 class="font-bold text-lg sm:text-2xl mb-0">
+        {{ "shoppingcart" | translate }}
+      </h3>
 
-          @if (isCartHasProducts) {
-            <button
-              (click)="deleteAllItems()"
-              class="border border-red-500 text-red-500 hover:bg-red-50 text-xs sm:text-sm px-3 py-1.5 rounded-md transition-colors flex items-center gap-1"
+      @if (isCartHasProducts) {
+        <button
+          (click)="deleteAllItems()"
+          class="border border-red-500 text-red-500 hover:bg-red-50 text-xs sm:text-sm px-3 py-1.5 rounded-md transition-colors flex items-center gap-1"
+        >
+          <span>{{ "deleteallitems" | translate }}</span>
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+      } @else {
+        <h3 class="text-xl sm:text-2xl font-serif font-bold text-red-600">
+          {{ "cartisempty" | translate }}
+        </h3>
+      }
+    </div>
+
+    @if (isCartHasProducts) {
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-8 flex flex-col gap-3">
+          @for (product of cardUserItems; track product.ProductId) {
+            <div
+              class="card shadow-sm rounded-xl bg-gray-50 border border-gray-100 p-3 sm:p-4"
             >
-              <span>{{ "deleteallitems" | translate }}</span>
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          } @else {
-            <h3 class="text-xl sm:text-2xl font-serif font-bold text-red-600">
-              {{ "cartisempty" | translate }}
-            </h3>
+              <div
+                class="flex flex-col sm:flex-row items-center justify-between gap-4"
+              >
+                <div class="flex items-center gap-3 w-full sm:w-5/12">
+                  <div class="img-container flex-shrink-0">
+                    <img
+                      [src]="product.ImageUrl || './assets/images/Product.png'"
+                      [alt]="product.ProductName"
+                      class="cart-item-img object-contain rounded-lg"
+                    />
+                  </div>
+                  <div class="text-start">
+                    <h5
+                      class="font-semibold text-gray-800 text-sm sm:text-base line-clamp-2"
+                    >
+                      {{ product.ProductName }}
+                    </h5>
+                  </div>
+                </div>
+
+                <div
+                  class="flex items-center justify-center gap-2 sm:gap-3 w-full sm:w-3/12"
+                >
+                  <button
+                    type="button"
+                    (click)="updateQuantityItem('minus', product.ProductId)"
+                    class="text-red-500 hover:text-red-600 transition-colors p-1"
+                  >
+                    <i
+                      class="fa-solid fa-square-minus text-2xl sm:text-3xl"
+                    ></i>
+                  </button>
+
+                  <div
+                    class="flex items-center justify-center gap-1 px-3 py-1 bg-white rounded border border-gray-200 min-w-[70px]"
+                  >
+                    <span class="font-bold text-sm sm:text-base text-gray-800">
+                      {{ product.Quantity }}
+                    </span>
+                    <span class="text-xs text-gray-500 font-medium">
+                      {{ product.UnitName || "" }}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    (click)="updateQuantityItem('plus', product.ProductId)"
+                    class="text-green-500 hover:text-green-600 transition-colors p-1"
+                  >
+                    <i class="fa-solid fa-square-plus text-2xl sm:text-3xl"></i>
+                  </button>
+                </div>
+
+                <div
+                  class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-4/12 border-t sm:border-0 pt-2 sm:pt-0"
+                >
+                  <div class="flex flex-col items-end">
+                    <h6
+                      class="font-bold text-sm sm:text-lg text-green-600 mb-0"
+                    >
+                      {{ product.Price * product.Quantity | currency: "GBP" }}
+                    </h6>
+                    @if (product.Quantity > 1) {
+                      <span class="text-xs text-gray-400">
+                        ({{ product.Price | currency: "GBP" }} /
+                        {{ product.UnitName || "حبة" }})
+                      </span>
+                    }
+                  </div>
+
+                  <button
+                    type="button"
+                    (click)="deleteItem(product.ProductId)"
+                    class="text-red-500 hover:text-red-700 p-2 transition-colors"
+                    title="Remove Item"
+                  >
+                    <i class="fas fa-trash text-lg sm:text-xl"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
           }
         </div>
 
-        @for (product of cardUserItems(); track product.ProductId) {
+        <div class="lg:col-span-4 lg:sticky lg:top-4 flex flex-col gap-4">
           <div
-            class="card shadow-sm rounded-xl mb-4 bg-gray-50 border border-gray-100 p-3 sm:p-4"
+            class="card shadow-sm rounded-xl bg-white p-4 border border-gray-100 flex flex-col gap-4"
           >
-            <div
-              class="flex flex-col sm:flex-row items-center justify-between gap-4"
-            >
-              <div class="flex items-center gap-3 w-full sm:w-5/12">
-                <div class="img-container flex-shrink-0">
-                  <img
-                    src="./assets/images/Product.png"
-                    [alt]="product.ProductName"
-                    class="cart-item-img object-contain rounded-lg"
-                  />
-                </div>
-                <div class="text-start">
-                  <h5
-                    class="font-semibold text-gray-800 text-sm sm:text-base line-clamp-2"
-                  >
-                    {{ product.ProductName }}
-                  </h5>
-                </div>
-              </div>
-
-              <div
-                class="flex items-center justify-center gap-3 w-full sm:w-3/12"
-              >
-                <button
-                  type="button"
-                  (click)="updateQuantityItem('minus', product.ProductId)"
-                  class="text-red-500 hover:text-red-600 transition-colors p-1"
-                >
-                  <i class="fa-solid fa-square-minus text-2xl sm:text-3xl"></i>
-                </button>
-
-                <span
-                  class="font-bold text-sm sm:text-base px-3 py-1 bg-white rounded border border-gray-200 min-w-[36px] text-center"
-                >
-                  {{ product.Quantity }}
-                </span>
-
-                <button
-                  type="button"
-                  (click)="updateQuantityItem('plus', product.ProductId)"
-                  class="text-green-500 hover:text-green-600 transition-colors p-1"
-                >
-                  <i class="fa-solid fa-square-plus text-2xl sm:text-3xl"></i>
-                </button>
-              </div>
-
-              <div
-                class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-4/12 border-t sm:border-0 pt-2 sm:pt-0"
-              >
-                <h6 class="font-bold text-sm sm:text-lg text-green-600 mb-0">
-                  {{ product.Price | currency: "GBP" }}
-                </h6>
-
-                <button
-                  type="button"
-                  (click)="deleteItem(product.ProductId)"
-                  class="text-red-500 hover:text-red-700 p-2 transition-colors"
-                  title="Remove Item"
-                >
-                  <i class="fas fa-trash text-lg sm:text-xl"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        }
-
-        <div
-          class="card shadow-sm rounded-xl mb-4 discount-card bg-white p-4 border border-gray-100"
-        >
-          <div
-            class="flex flex-col sm:flex-row items-end sm:items-center justify-between gap-3"
-          >
-            <div class="w-full flex-1">
+            <div>
               <label
                 for="discount"
                 class="form-label text-xs sm:text-sm font-semibold text-gray-700 block mb-1"
               >
                 {{ "discountcode" | translate }}
               </label>
-              <input
-                type="text"
-                id="discount"
-                class="form-control w-full border border-gray-300 px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-yellow-500"
-                placeholder="{{ 'entercode' | translate }}"
-              />
+              <div class="flex gap-2">
+                <input
+                  type="text"
+                  id="discount"
+                  class="form-control flex-1 border border-gray-300 px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-yellow-500"
+                  placeholder="{{ 'entercode' | translate }}"
+                />
+                <button
+                  type="button"
+                  class="border border-yellow-500 bg-yellow-500 text-white font-semibold hover:bg-yellow-600 px-4 rounded-lg transition-colors text-sm"
+                >
+                  {{ "apply" | translate }}
+                </button>
+              </div>
             </div>
-            <button
-              type="button"
-              class="w-full sm:w-auto border border-yellow-500 bg-yellow-500 text-white font-semibold hover:bg-yellow-600 py-2 px-6 rounded-lg transition-colors text-sm"
-            >
-              {{ "apply" | translate }}
-            </button>
-          </div>
-        </div>
 
-        <div
-          class="card shadow-sm rounded-xl mb-6 bg-white p-4 border border-gray-100"
-        >
-          <div class="flex justify-between items-center">
-            <div class="flex items-center gap-2">
-              <i
-                class="fas fa-money-bill-wave text-xl sm:text-2xl text-green-600"
-              ></i>
-              <h5 class="mb-0 font-bold text-sm sm:text-lg">
-                {{ "carttotal" | translate }}
-              </h5>
+            <hr class="border-gray-100" />
+
+            <div class="flex justify-between items-center">
+              <div class="flex items-center gap-2">
+                <i class="fas fa-money-bill-wave text-xl text-green-600"></i>
+                <h5 class="mb-0 font-bold text-sm sm:text-base text-gray-800">
+                  {{ "carttotal" | translate }}
+                </h5>
+              </div>
+              <span class="text-lg sm:text-2xl font-extrabold text-green-700">
+                {{ totalPrice | currency: "GBP" }}
+              </span>
             </div>
-            <span class="sm:text-xl font-extrabold text-green-700">
-              {{ totalPrice | currency: "GBP" }}
-            </span>
-          </div>
-        </div>
 
-        @if (isCartHasProducts) {
-          <div
-            data-aos="fade-up"
-            data-aos-delay="200"
-            class="payment-section rounded-xl p-4 sm:p-6 text-center"
-          >
             <button
               type="submit"
-              (click)="goToPayment()"
-              class="checkout-btn w-full sm:w-auto min-w-[240px] py-3.5 px-8 font-bold rounded-lg text-base shadow-md transition-all duration-300"
+              routerLink="/payment"
+              class="checkout-btn w-full py-3.5 px-6 font-bold rounded-lg text-base shadow-md transition-all duration-300 mt-2"
               [disabled]="!isCartHasProducts"
             >
               {{ "purchaseandpaymentconfirmation" | translate }}
             </button>
           </div>
-        }
+        </div>
       </div>
-    </div>
+    }
   </div>
 </section>

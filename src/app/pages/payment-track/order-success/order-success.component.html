@@ -1,0 +1,60 @@
+<section class="min-h-[70vh] flex items-center justify-center py-10 px-4">
+  <div
+    class="max-w-md w-full bg-white shadow-lg rounded-2xl p-6 text-center border border-gray-100"
+  >
+    <div
+      class="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4"
+    >
+      <i class="fa-solid fa-check text-4xl"></i>
+    </div>
+
+    <h2 class="text-2xl font-bold text-gray-800 mb-1">
+      {{ "thankyou" | translate }}!
+    </h2>
+    <p class="text-gray-500 text-sm mb-6">
+      {{ "ordersuccessfullyplaced" | translate }}
+    </p>
+
+    @if (orderId) {
+      <div
+        class="bg-gray-50 rounded-xl p-4 text-start mb-6 space-y-2 text-sm border border-gray-100"
+      >
+        <div class="flex justify-between">
+          <span class="text-gray-500">{{ "ordernumber" | translate }}:</span>
+          <span class="font-bold text-gray-800">#{{ orderId }}</span>
+        </div>
+
+        @if (orderDetails) {
+          <div class="flex justify-between">
+            <span class="text-gray-500">{{ "totalamount" | translate }}:</span>
+            <span class="font-bold text-green-600">{{
+              orderDetails.TotalPrice | currency: "GBP"
+            }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500"
+              >{{ "paymentmethod" | translate }}:</span
+            >
+            <span class="font-medium text-gray-700">Visa / Mastercard</span>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="flex flex-col gap-3">
+      <a
+        [routerLink]="['/allOrders']"
+        class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition-colors shadow-sm block"
+      >
+        {{ "trackorder" | translate }}
+      </a>
+
+      <a
+        routerLink="/"
+        class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-xl transition-colors block"
+      >
+        {{ "continueshopping" | translate }}
+      </a>
+    </div>
+  </div>
+</section>

@@ -211,5 +211,16 @@
   "STATUS_CANCELED": "ملغي",
   "deliverd": "تم التوصيل",
   "noresultsmatchedthesearchratio": "لا توجد نتائج مطابقة لنسبة البحث",
-  "trackYourOrders": "قم بمتابعة حالة طلباتك ..."
+  "trackYourOrders": "قم بمتابعة حالة طلباتك ...",
+  "thankyou": "شكراً لك",
+  "ordersuccessfullyplaced": "تم استلام طلبك بنجاح وسنقوم بتجهيزه قريباً",
+  "ordernumber": "رقم الطلب",
+  "totalamount": "المبلغ الإجمالي",
+  "paymentmethod": "طريقة الدفع",
+  "trackorder": "تتبع الطلب",
+  "continueshopping": "متابعة التسوق",
+  "paymentfailed": "فشلت عملية الدفع",
+  "paymentfailedmessage": "عذراً، لم نتمكن من إتمام عملية الدفع. يرجى المحاولة مرة أخرى أو اختيار طريقة دفع أخرى.",
+  "tryagain": "إعادة المحاولة",
+  "backtocart": "العودة إلى السلة"
 }

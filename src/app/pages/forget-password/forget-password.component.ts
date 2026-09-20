@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -6,17 +7,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
-import { StoreInputComponent } from '../../Shared/components/store-input/store-input.component';
-import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { DataService } from '../../Core/Services/data.service';
-import { firstValueFrom, tap } from 'rxjs';
-import { StoreUrl } from '../../Shared/constants/api.constant';
-import { LoadingService } from '../../Core/Services/loading.service';
-import { SubmitButtonComponent } from '../../Shared/components/submit-button/submit-button.component';
-import { AuthService } from '../../Core/Services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../Core/Services/auth.service';
+import { DataService } from '../../Core/Services/data.service';
+import { LoadingService } from '../../Core/Services/loading.service';
+import { StoreInputComponent } from '../../Shared/components/store-input/store-input.component';
+import { SubmitButtonComponent } from '../../Shared/components/submit-button/submit-button.component';
 
 @Component({
   selector: 'app-forget-password',
@@ -70,16 +68,16 @@ export class ForgetPasswordComponent implements OnInit {
       next: (res) => {
         this._LoadingService.stop();
         if (res.IsSuccess) {
-          this._ToastrService.success(res.Message, 'Success');
+          this._ToastrService.success(res.Message);
           this._Router.navigate(['/auth/login']);
         } else {
-          this._ToastrService.error(res.Message, 'Failed');
+          this._ToastrService.error(res.Message);
         }
       },
       error: (err) => {
         this._LoadingService.stop();
         console.log(err);
-        this._ToastrService.error(err?.error?.Message, 'Failed');
+        this._ToastrService.error(err?.error?.Message);
       },
     });
   }

@@ -1,19 +1,13 @@
-import {
-  Component,
-  computed,
-  inject,
-  OnDestroy,
-  OnInit,
-  signal,
-  WritableSignal,
-} from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
-import { CategoriesService } from '../../Core/Services/categories.service';
+import { DataService } from '../../Core/Services/data.service';
 import { LoadingService } from '../../Core/Services/loading.service';
+import { apiUrl } from '../../Shared/constants/api.constant';
 import { PAGE_SIZE } from '../../Shared/constants/general.constant';
 import { IPagination } from '../../Shared/models/IPagination.model';
 
@@ -25,12 +19,14 @@ import { IPagination } from '../../Shared/models/IPagination.model';
   styleUrl: './categories.component.scss',
 })
 export class CategoriesComponent implements OnInit, OnDestroy {
-  private readonly _CategoriesService = inject(CategoriesService);
   private readonly _LoadingService = inject(LoadingService);
-  groups: WritableSignal<any[]> = signal([]);
-  pagination?: IPagination;
+  private readonly _ToastrService = inject(ToastrService);
+  private readonly _DataService = inject(DataService);
 
-  searchTerm = signal<string>('');
+  groups: any[] = [];
+  filteredItems: any[] = [];
+  searchTerm: string = '';
+  pagination?: IPagination;
   private fetchSub?: Subscription;
 
   pageNo = 1;
@@ -40,36 +36,45 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.loadCategories();
   }
 
-  get text(): string {
-    return this.searchTerm();
-  }
-  set text(value: string) {
-    this.searchTerm.set(value);
-  }
-
-  filteredItems = computed(() => {
-    const query = this.searchTerm().toLowerCase().trim();
-    if (!query) return this.groups();
-
-    return this.groups().filter((category) =>
-      category.NameAr?.toLowerCase().includes(query),
-    );
-  });
-
   loadCategories(): void {
     this._LoadingService.start();
     this.fetchSub?.unsubscribe();
 
-    this.fetchSub = this._CategoriesService.getAllCategories().subscribe({
-      next: (res) => {
-        this.groups.set(res.Obj.Groups || []);
-        this._LoadingService.stop();
-      },
-      error: (err) => {
-        console.error(err);
-        this._LoadingService.stop();
-      },
-    });
+    this.fetchSub = this._DataService
+      .get(
+        `${apiUrl}/XtraAndPos_GeneralLookups/GetStoreItemGroupsAndItemsAndUnits`,
+      )
+      .subscribe({
+        next: (res) => {
+          this._LoadingService.stop();
+          if (res?.IsSuccess) {
+            this.groups = res.Obj?.Groups || [];
+            this.filterCategories();
+          } else {
+            console.error(res);
+            this._ToastrService.error(res.Message);
+          }
+        },
+        error: (err) => {
+          this._LoadingService.stop();
+          this._ToastrService.error(err?.error?.Message);
+          console.error(err);
+        },
+      });
+  }
+
+  filterCategories(): void {
+    const query = this.searchTerm.toLowerCase().trim();
+    if (!query) {
+      this.filteredItems = this.groups;
+      return;
+    }
+
+    this.filteredItems = this.groups.filter(
+      (category: any) =>
+        category.NameAr?.toLowerCase().includes(query) ||
+        category.NameEn?.toLowerCase().includes(query),
+    );
   }
 
   page(ev: number): void {

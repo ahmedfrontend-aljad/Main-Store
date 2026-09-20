@@ -1,5 +1,5 @@
 <div class="container m-auto px-4 sm:px-6">
-  <section class="w-full mt-8 md:mt-16">
+  <section class="w-full mt-8 md:mt-2">
     <div class="heading text-center">
       <h3
         class="font-weight-bolder font-serif text-2xl sm:text-3xl md:text-4xl"
@@ -14,7 +14,7 @@
     <div class="search-wrapper m-auto relative">
       <input
         type="search"
-        [(ngModel)]="text"
+        [(ngModel)]="searchTerm"
         class="form-control search-input"
         [placeholder]="'searchbycategoryname...' | translate"
       />
@@ -26,7 +26,7 @@
     <div
       class="section-content mt-10 md:mt-16 grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
     >
-      @for (item of filteredItems(); track item.Id) {
+      @for (item of filteredItems; track item.Id) {
         <div class="flex justify-center w-full">
           <div
             class="product-card category-card relative flex flex-col justify-between p-3 rounded-lg border bg-white shadow-sm hover:shadow-md transition-all cursor-pointer w-full"
