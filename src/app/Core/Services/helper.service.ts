@@ -4,10 +4,16 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class HelperService {
-  getItemFromLocalStorage(name: string): any {
-    return JSON.parse(localStorage.getItem(name)!);
-  }
+  getItemFromLocalStorage(key: string) {
+    const item = localStorage.getItem(key);
+    if (!item) return null;
 
+    try {
+      return JSON.parse(item);
+    } catch (e) {
+      return item;
+    }
+  }
   cleanNullValues(formValue: any): any {
     Object.keys(formValue).forEach((key) => {
       let value = formValue[key];
@@ -47,5 +53,9 @@ export class HelperService {
     const d = new Date(date);
     if (isNaN(d.getTime())) return null;
     return d.toISOString().split('T')[0];
+  }
+
+  removeItemFromLocalStorage(name: string): any {
+    localStorage.removeItem(name);
   }
 }

@@ -1,11 +1,24 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChildren,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
+import {
+  LangChangeEvent,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { firstValueFrom, Subscription, tap } from 'rxjs';
+import { register } from 'swiper/element/bundle';
 import { AllProductsService } from '../../Core/Services/all-products.service';
 import { DataService } from '../../Core/Services/data.service';
 import { GuestAuthService } from '../../Core/Services/guest-auth.service';
@@ -14,21 +27,23 @@ import { StoreUrl } from '../../Shared/constants/api.constant';
 import { PAGE_SIZE } from '../../Shared/constants/general.constant';
 import { ProductDetailsComponent } from '../product-details/product-details.component';
 
+register();
+
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
-    CarouselModule,
     FormsModule,
     RouterLink,
     TranslateModule,
     ProductCardComponent,
     ProductDetailsComponent,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   private readonly _TranslateService = inject(TranslateService);
   private readonly _Router = inject(Router);
   private readonly _ToastrService = inject(ToastrService);
@@ -36,69 +51,67 @@ export class HomeComponent implements OnInit {
   private readonly _spinnerInterceptor = inject(NgxSpinnerService);
   private readonly _GuestAuthService = inject(GuestAuthService);
   private readonly _AllProductsService = inject(AllProductsService);
-  selectedProductId: number | string | null = null;
 
+  @ViewChildren('swiperRef') swiperElements!: QueryList<ElementRef>;
+
+  selectedProductId: number | string | null = null;
   products: any[] = [];
   categories: any[] = [];
   offers: any[] = [];
 
   text: string = '';
-  sub!: Subscription;
+  private langSub!: Subscription;
   currentUrl: string = '';
   bannersData: any;
   pageNo = 1;
   PageSize = PAGE_SIZE;
 
-  customOptionsCat: OwlOptions = {
-    loop: true,
-    mouseDrag: true,
-    touchDrag: true,
-    autoplay: true,
-    autoplayHoverPause: true,
-    autoplayTimeout: 3000,
-    rtl: true,
-    smartSpeed: 1000,
-    pullDrag: false,
-    dots: false,
-    navSpeed: 700,
-    responsive: {
-      0: { items: 1 },
-      400: { items: 2 },
-      740: { items: 3 },
-      940: { items: 6 },
-    },
-    nav: false,
-  };
-
-  customOptionsBanners: OwlOptions = {
-    loop: true,
-    mouseDrag: true,
-    touchDrag: true,
-    autoplay: true,
-    autoplayHoverPause: true,
-    autoplayTimeout: 5000,
-    smartSpeed: 900,
-    dots: true,
-    nav: false,
-    rtl: true,
-    items: 1,
-    responsive: {
-      0: { items: 1 },
-      768: { items: 1 },
-    },
-  };
-
   async ngOnInit() {
     this.currentUrl = this._Router.url;
+
+    // الاستماع لتغيير اللغة
+    this.langSub = this._TranslateService.onLangChange.subscribe(
+      (event: LangChangeEvent) => {
+        setTimeout(() => {
+          this.updateSwipers();
+        }, 150);
+      },
+    );
 
     this._spinnerInterceptor.show();
 
     try {
       await this._GuestAuthService.ensureGuestToken();
-
-      await Promise.all([this.getHomeData(), this.loadItems()]);
+      await this.getHomeData();
     } finally {
       this._spinnerInterceptor.hide();
+    }
+  }
+
+  private updateSwipers() {
+    if (this.swiperElements && this.swiperElements.length > 0) {
+      const isRtl = this.currentLang === 'ar';
+
+      this.swiperElements.forEach((swiperEl) => {
+        const nativeEl = swiperEl.nativeElement;
+
+        if (nativeEl) {
+          nativeEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+
+          if (nativeEl.swiper) {
+            nativeEl.swiper.changeLanguageDirection(isRtl ? 'rtl' : 'ltr');
+            nativeEl.swiper.updateSize();
+            nativeEl.swiper.updateSlides();
+            nativeEl.swiper.update();
+
+            if (nativeEl.swiper.autoplay && nativeEl.swiper.autoplay.running) {
+              nativeEl.swiper.autoplay.start();
+            }
+          } else if (typeof nativeEl.initialize === 'function') {
+            nativeEl.initialize();
+          }
+        }
+      });
     }
   }
 
@@ -123,33 +136,18 @@ export class HomeComponent implements OnInit {
       const res: any = await firstValueFrom(
         this._DataService.get(`${StoreUrl}/Home/GetHome`).pipe(
           tap((res) => {
-            this.bannersData = res?.Obj?.Banners;
-            this.categories = res?.Obj?.Groups;
-            this.offers = res?.Obj?.Offers;
+            this.bannersData = res?.Obj?.Banners || [];
+            this.categories = res?.Obj?.Groups || [];
+            this.offers = res?.Obj?.Offers || [];
+            this.products = res.Obj.LatestItems || [];
+
+            setTimeout(() => this.updateSwipers(), 250);
           }),
         ),
       );
     } catch (error: any) {
       console.error(error);
-      this._ToastrService.error(error?.error.Message);
-    }
-  }
-
-  async loadItems() {
-    try {
-      const res: any = await firstValueFrom(
-        this._AllProductsService.getPagedItem(
-          this.pageNo,
-          PAGE_SIZE,
-          this.text,
-        ),
-      );
-      if (res?.IsSuccess) {
-        this.products = res?.Obj?.PagedResult || [];
-      }
-    } catch (err: any) {
-      console.error(err);
-      this._ToastrService.error(err?.error.Message);
+      this._ToastrService.error(error?.error?.Message);
     }
   }
 
@@ -159,5 +157,11 @@ export class HomeComponent implements OnInit {
 
   closeProductModal(): void {
     this.selectedProductId = null;
+  }
+
+  ngOnDestroy(): void {
+    if (this.langSub) {
+      this.langSub.unsubscribe();
+    }
   }
 }

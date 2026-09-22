@@ -92,22 +92,3 @@
     }
   }
 }
-ngx-owl-carousel-o {
-  display: block;
-  width: 100%;
-  overflow: hidden;
-}
-
-.owl-carousel .owl-stage {
-  display: flex !important;
-}
-
-.owl-carousel .owl-item {
-  flex-shrink: 0;
-}
-
-.owl-carousel .owl-item img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-}

@@ -37,7 +37,11 @@
                 <div class="flex items-center gap-3 w-full sm:w-5/12">
                   <div class="img-container flex-shrink-0">
                     <img
-                      [src]="product.ImageUrl || './assets/images/Product.png'"
+                      [src]="
+                        product.Image
+                          ? 'data:image/jpeg;base64,' + product.Image
+                          : './assets/images/Product.png'
+                      "
                       [alt]="product.ProductName"
                       class="cart-item-img object-contain rounded-lg"
                     />

@@ -153,7 +153,7 @@ export class paymentComponent implements OnInit {
       totalDiscRate: [0],
       tobagoVatAmount: [0],
       posType: [1, [Validators.required]],
-      saveAndPost: [false],
+      saveAndPost: [null],
       banquetDate: [nowISO],
       saleInvoiceDetails: this._formBuilder.array([]),
       saleInvNotesDto: this._formBuilder.array([]),
@@ -202,7 +202,7 @@ export class paymentComponent implements OnInit {
       count: [qty],
       itemType_Sale: [1],
       offerItemchek: [0],
-      uniteId: [item.unitId || 1],
+      uniteId: [1],
       uniteName: [item.unitName || ''],
       nameAr: [item.productName || item.ProductName || ''],
       productId: [item.productId || item.id || item.ProductId || 0],
@@ -333,10 +333,6 @@ export class paymentComponent implements OnInit {
               localStorage.removeItem('cartCount');
 
               this._cartService.clearCart(this.userId!).subscribe();
-
-              this._router.navigate(['/orderSuccess'], {
-                queryParams: { invoiceId: createdInvoiceId },
-              });
             } else {
               this._ToastrService.error(res?.Message);
             }

@@ -71,9 +71,18 @@
         </div>
       } @else {
         <div class="main-banner-slider rounded-2xl overflow-hidden shadow-lg">
-          <owl-carousel-o [options]="customOptionsBanners">
+          <swiper-container
+            #swiperRef
+            slides-per-view="1"
+            [attr.dir]="currentLang === 'ar' ? 'rtl' : 'ltr'"
+            loop="true"
+            autoplay-delay="4000"
+            speed="1000"
+            pagination="true"
+            class="rounded-2xl overflow-hidden shadow-lg"
+          >
             @for (banner of bannersData; track banner.Id) {
-              <ng-template carouselSlide [id]="banner.Id.toString()">
+              <swiper-slide>
                 <a
                   [href]="banner.LinkUrl"
                   target="_blank"
@@ -112,9 +121,9 @@
                     </p>
                   </div>
                 </a>
-              </ng-template>
+              </swiper-slide>
             }
-          </owl-carousel-o>
+          </swiper-container>
         </div>
       }
     } @else {
@@ -135,7 +144,7 @@
       <div class="px-1">
         <div class="heading flex justify-between items-end mb-4">
           <div>
-            <h3 class="font-bold font-sans text-xl md:text-3xl ">
+            <h3 class="font-bold font-sans text-xl md:text-3xl">
               {{ "allcategories" | translate }}
             </h3>
             <p class="mt-1 text-gray-500 text-sm">
@@ -145,11 +154,26 @@
         </div>
 
         <div class="section-content">
-          <owl-carousel-o [options]="customOptionsCat">
+          <swiper-container
+            #swiperRef
+            slides-per-view="2"
+            space-between="16"
+            loop="true"
+            autoplay-delay="200"
+            [attr.dir]="currentLang === 'ar' ? 'rtl' : 'ltr'"
+            speed="2500"
+            autoplay-disable-on-interaction="false"
+            breakpoints='{
+              "640": { "slidesPerView": 3 },
+              "768": { "slidesPerView": 4 },
+              "1024": { "slidesPerView": 6 }
+            }'
+            pagination="false"
+          >
             @for (cat of categories; track cat.Code) {
-              <ng-template carouselSlide [id]="cat.Code">
+              <swiper-slide>
                 <div
-                  class="category-slide group p-3 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl transition-all duration-300 text-center cursor-pointer m-2"
+                  class="category-slide group p-3 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl transition-all duration-300 text-center cursor-pointer my-2"
                   [routerLink]="['/catDetails', cat.Id]"
                 >
                   <div
@@ -167,9 +191,9 @@
                     {{ currentLang === "ar" ? cat.NameAr : cat.NameEn }}
                   </h2>
                 </div>
-              </ng-template>
+              </swiper-slide>
             }
-          </owl-carousel-o>
+          </swiper-container>
         </div>
       </div>
     </section>
@@ -190,25 +214,47 @@
         </div>
 
         <div class="section-content">
-          <owl-carousel-o [options]="customOptionsCat">
-            @for (offer of offers; track $index) {
-              <ng-template carouselSlide [id]="offer?.Id">
+          <swiper-container
+            #swiperRef
+            slides-per-view="2"
+            space-between="16"
+            loop="true"
+            autoplay-delay="180"
+            speed="2000"
+            [attr.dir]="currentLang === 'ar' ? 'rtl' : 'ltr'"
+            autoplay-disable-on-interaction="false"
+            breakpoints='{
+              "640": { "slidesPerView": 3 },
+              "768": { "slidesPerView": 4 },
+              "1024": { "slidesPerView": 6 }
+            }'
+            navigation="false"
+            pagination="false"
+          >
+            @for (offer of offers; track offer.Code) {
+              <swiper-slide>
                 <div
-                  class="category-slide mx-1 cursor-pointer"
-                  [routerLink]="['/offerDetails', offer?.Code]"
+                  class="category-slide group p-3 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl transition-all duration-300 text-center cursor-pointer my-2"
+                  [routerLink]="['/offerDetails', offer.Code]"
                 >
-                  <img
-                    class="rounded-lg h-36 mb-2 object-cover w-full"
-                    src="./assets/images/Category.png"
-                    [alt]="currentLang === 'ar' ? offer.NameAr : offer.NameEn"
-                  />
-                  <h2 class="m-auto text-center text-base font-serif font-bold">
+                  <div
+                    class="aspect-square w-full rounded-xl overflow-hidden mb-3 bg-gray-200"
+                  >
+                    <img
+                      class="rounded-lg h-36 mb-2 object-cover w-full"
+                      src="./assets/images/Category.png"
+                      [alt]="currentLang === 'ar' ? offer.NameAr : offer.NameEn"
+                    />
+                  </div>
+                  <h2
+                    class="text-sm md:text-base font-medium text-gray-800 line-clamp-1"
+                  >
                     {{ currentLang === "ar" ? offer.NameAr : offer.NameEn }}
                   </h2>
                 </div>
-              </ng-template>
+              </swiper-slide>
             }
-          </owl-carousel-o>
+          </swiper-container>
         </div>
       </div>
     </section>

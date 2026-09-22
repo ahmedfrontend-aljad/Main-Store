@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
-import { catchError, firstValueFrom, of, tap } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { apiUrl } from '../../Shared/constants/api.constant';
 import { DataService } from './data.service';
 import { LoadingService } from './loading.service';
@@ -10,7 +9,6 @@ import { LoadingService } from './loading.service';
 })
 export class GuestAuthService {
   private readonly _DataService = inject(DataService);
-  private readonly _ToastrService = inject(ToastrService);
   private readonly _LoadingService = inject(LoadingService);
 
   async ensureGuestToken(): Promise<string | null> {
