@@ -9,9 +9,9 @@ import {
 } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { IitemsDetailes } from '../../Core/Interfaces/iitems-detailes';
-import { Iproducts } from '../../Core/Interfaces/iproducts';
-import { AllProductsService } from '../../Core/Services/all-products.service';
+import { IitemsDetailes } from '../../Shared/Interfaces/iitems-detailes';
+import { Iproducts } from '../../Shared/Interfaces/iproducts';
+import { AllProductsService } from '../../Shared/Services/all-products.service';
 import { AddToCartComponent } from '../../Shared/components/add-to-cart/add-to-cart.component';
 
 @Component({

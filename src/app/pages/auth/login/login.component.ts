@@ -10,15 +10,15 @@ import { Router, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, firstValueFrom, Unsubscribable } from 'rxjs';
-import { AuthService } from '../../../Core/Services/auth.service';
+import { AuthService } from '../../../Shared/Services/auth.service';
 import { StoreInputComponent } from '../../../Shared/components/store-input/store-input.component';
 import { SubmitButtonComponent } from '../../../Shared/components/submit-button/submit-button.component';
-import { LoadingService } from '../../../Core/Services/loading.service';
+import { LoadingService } from '../../../Shared/Services/loading.service';
 import { CommonModule } from '@angular/common';
-import { GuestAuthService } from '../../../Core/Services/guest-auth.service';
+import { GuestAuthService } from '../../../Shared/Services/guest-auth.service';
 import jwtDecode from 'jwt-decode';
 import { StoreUrl } from '../../../Shared/constants/api.constant';
-import { DataService } from '../../../Core/Services/data.service';
+import { DataService } from '../../../Shared/Services/data.service';
 
 @Component({
   selector: 'app-login',

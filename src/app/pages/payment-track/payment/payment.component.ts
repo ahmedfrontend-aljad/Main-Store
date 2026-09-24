@@ -12,10 +12,10 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import jwtDecode from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, tap } from 'rxjs';
-import { Icart } from '../../../Core/Interfaces/icart';
-import { CartService } from '../../../Core/Services/cart.service';
-import { LoadingService } from '../../../Core/Services/loading.service';
-import { PaymentService } from '../../../Core/Services/payment.service';
+import { Icart } from '../../../Shared/Interfaces/icart';
+import { CartService } from '../../../Shared/Services/cart.service';
+import { LoadingService } from '../../../Shared/Services/loading.service';
+import { PaymentService } from '../../../Shared/Services/payment.service';
 import { StoreInputComponent } from '../../../Shared/components/store-input/store-input.component';
 import { SubmitButtonComponent } from '../../../Shared/components/submit-button/submit-button.component';
 

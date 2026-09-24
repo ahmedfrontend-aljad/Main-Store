@@ -1,8 +1,8 @@
 import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { MyTranslateService } from '../../../../Core/Services/my-translate.service';
+import { MyTranslateService } from '../../../Services/my-translate.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { isPlatformBrowser } from '@angular/common';
-import { ThemeService } from '../../../../Core/Services/theme.service';
+import { ThemeService } from '../../../Services/theme.service';
 
 @Component({
   selector: 'app-nav-auth',

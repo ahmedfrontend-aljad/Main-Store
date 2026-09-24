@@ -5,8 +5,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { firstValueFrom, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { CartService } from '../../Core/Services/cart.service';
-import { LoadingService } from '../../Core/Services/loading.service';
+import { CartService } from '../../Shared/Services/cart.service';
+import { LoadingService } from '../../Shared/Services/loading.service';
 
 @Component({
   selector: 'app-cart',

@@ -15,9 +15,9 @@ import {
 } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { filter, Subscription } from 'rxjs';
-import { CartService } from '../../../../Core/Services/cart.service';
-import { MyTranslateService } from '../../../../Core/Services/my-translate.service';
-import { ThemeService } from '../../../../Core/Services/theme.service';
+import { CartService } from '../../../Services/cart.service';
+import { MyTranslateService } from '../../../Services/my-translate.service';
+import { ThemeService } from '../../../Services/theme.service';
 
 @Component({
   selector: 'app-nav-blank',

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { LoadingService } from '../../../Core/Services/loading.service';
+import { LoadingService } from '../../Services/loading.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsyncPipe } from '@angular/common';
 

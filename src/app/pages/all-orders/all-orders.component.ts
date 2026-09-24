@@ -10,9 +10,9 @@ import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { TabsModule } from 'primeng/tabs';
-import { DataService } from '../../Core/Services/data.service';
-import { HelperService } from '../../Core/Services/helper.service';
-import { LoadingService } from '../../Core/Services/loading.service';
+import { DataService } from '../../Shared/Services/data.service';
+import { HelperService } from '../../Shared/Services/helper.service';
+import { LoadingService } from '../../Shared/Services/loading.service';
 import { StoreInputComponent } from '../../Shared/components/store-input/store-input.component';
 import { apiUrl } from '../../Shared/constants/api.constant';
 import { PAGE_SIZE } from '../../Shared/constants/general.constant';
@@ -127,19 +127,17 @@ export class AllOrdersComponent implements OnInit {
   }
 
   getOrdersByStatus(StoreOrderStatus: number): any[] {
-    if (StoreOrderStatus === 5) {
-      return this.allOrders || [];
-    }
     if (!this.allOrders) return [];
 
     return this.allOrders.filter((order) => {
       const status = order.StoreOrderStatus ?? 1;
+
       return status === StoreOrderStatus;
     });
   }
 
   getTotalCountByStatus(status: number): number {
-    return status === 5 ? this.totalDeliveredCount : this.totalOrdersCount;
+    return this.getOrdersByStatus(status).length;
   }
 
   applyFilter(): void {

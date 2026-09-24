@@ -9,8 +9,8 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, firstValueFrom } from 'rxjs';
-import { DataService } from '../../Core/Services/data.service';
-import { LoadingService } from '../../Core/Services/loading.service';
+import { DataService } from '../../Shared/Services/data.service';
+import { LoadingService } from '../../Shared/Services/loading.service';
 import { StoreInputComponent } from '../../Shared/components/store-input/store-input.component';
 import { StoreUrl } from '../../Shared/constants/api.constant';
 

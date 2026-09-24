@@ -1,7 +1,7 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { Iproducts } from '../../../Core/Interfaces/iproducts';
+import { Iproducts } from '../../Interfaces/iproducts';
 import { AddToCartComponent } from '../add-to-cart/add-to-cart.component';
 
 @Component({

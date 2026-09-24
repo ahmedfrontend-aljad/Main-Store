@@ -3,8 +3,8 @@ import { Component, Input, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { Iproducts } from '../../../Core/Interfaces/iproducts';
-import { CartService } from '../../../Core/Services/cart.service';
+import { Iproducts } from '../../Interfaces/iproducts';
+import { CartService } from '../../Services/cart.service';
 
 @Component({
   selector: 'app-add-to-cart',

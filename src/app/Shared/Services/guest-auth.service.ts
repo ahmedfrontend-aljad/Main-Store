@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { apiUrl } from '../../Shared/constants/api.constant';
+import { apiUrl } from '../constants/api.constant';
 import { DataService } from './data.service';
 import { LoadingService } from './loading.service';
 

@@ -26,7 +26,7 @@ import {
   SearchCountryField,
 } from 'ngx-intl-tel-input';
 import { Calendar, CalendarModule } from 'primeng/calendar';
-import { HelperService } from '../../../Core/Services/helper.service';
+import { HelperService } from '../../Services/helper.service';
 import { USER_PROFILE } from '../../constants/general.constant';
 
 @Component({

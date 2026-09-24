@@ -2,7 +2,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { PaymentService } from '../../../Core/Services/payment.service';
+import { PaymentService } from '../../../Shared/Services/payment.service';
 
 @Component({
   selector: 'app-order-success',

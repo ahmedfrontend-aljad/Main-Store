@@ -10,9 +10,9 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from '../../Core/Services/auth.service';
-import { DataService } from '../../Core/Services/data.service';
-import { LoadingService } from '../../Core/Services/loading.service';
+import { AuthService } from '../../Shared/Services/auth.service';
+import { DataService } from '../../Shared/Services/data.service';
+import { LoadingService } from '../../Shared/Services/loading.service';
 import { StoreInputComponent } from '../../Shared/components/store-input/store-input.component';
 import { SubmitButtonComponent } from '../../Shared/components/submit-button/submit-button.component';
 

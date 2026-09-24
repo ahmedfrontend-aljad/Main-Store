@@ -1,7 +1,7 @@
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { apiUrl } from '../../Shared/constants/api.constant';
+import { apiUrl } from '../constants/api.constant';
 import { DataService } from './data.service';
 
 @Injectable({

@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, Observable, throwError } from 'rxjs';
-import { apiUrl, StoreUrl } from '../../Shared/constants/api.constant';
+import { apiUrl, StoreUrl } from '../constants/api.constant';
 import { DataService } from './data.service';
 
 @Injectable({
