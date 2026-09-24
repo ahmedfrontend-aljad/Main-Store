@@ -6,20 +6,12 @@
       class="d-flex align-items-center gap-2 text-decoration-none"
     >
       <i class="fa-solid fa-cart-shopping fa-xl iconsColor"></i>
-
-      @if (isDarkMode) {
-        <img
-          style="height: 55px"
-          src="./assets/images/storeLogo.png"
-          alt="Store Logo"
-        />
-      } @else {
-        <img
-          style="height: 55px; filter: invert(1) brightness(0.2)"
-          src="./assets/images/storeLogo.png"
-          alt="Store Logo"
-        />
-      }
+      <img
+        style="height: 55px"
+        [style.filter]="isDarkMode ? 'none' : 'invert(1) brightness(0.2)'"
+        src="./assets/images/storeLogo.png"
+        alt="Store Logo"
+      />
     </a>
 
     <!-- Mobile Toggler Button -->
@@ -118,11 +110,12 @@
             type="button"
             (click)="toggleTheme()"
             class="btn btn-link p-0 border-0 theme-toggle-btn text-decoration-none"
+            [attr.aria-label]="
+              isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
+            "
           >
             <i
-              class="fa-solid fs-5"
-              [class.fa-sun]="isDarkMode"
-              [class.fa-moon]="!isDarkMode"
+              class="fa-solid fs-5 fa-moon"
             ></i>
           </button>
 
@@ -175,9 +168,7 @@
                     (click)="showMobileMenu && toggleMenu()"
                   >
                     <i class="fas fa-user" ngSkipHydration></i>
-                    <span>{{
-                      "profile" | translate
-                    }}</span>
+                    <span>{{ "profile" | translate }}</span>
                   </a>
                 </li>
                 <li>
@@ -187,9 +178,7 @@
                     (click)="showMobileMenu && toggleMenu()"
                   >
                     <i class="fa-solid fa-box" ngSkipHydration></i>
-                    <span>{{
-                      "allorders" | translate
-                    }}</span>
+                    <span>{{ "allorders" | translate }}</span>
                   </a>
                 </li>
                 <li>
@@ -199,17 +188,13 @@
                     (click)="showMobileMenu && toggleMenu()"
                   >
                     <i class="fa-solid fa-shield-heart" ngSkipHydration></i>
-                    <span>{{
-                      "wishlist" | translate
-                    }}</span>
+                    <span>{{ "wishlist" | translate }}</span>
                   </a>
                 </li>
                 <li>
                   <button class="dropdown-item" (click)="signout()">
                     <i class="fas fa-sign-out-alt" ngSkipHydration></i>
-                    <span>{{
-                      "signout" | translate
-                    }}</span>
+                    <span>{{ "signout" | translate }}</span>
                   </button>
                 </li>
               </ul>

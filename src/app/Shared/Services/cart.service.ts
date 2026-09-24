@@ -1,5 +1,4 @@
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { apiUrl } from '../constants/api.constant';
 import { DataService } from './data.service';
@@ -9,14 +8,10 @@ import { DataService } from './data.service';
 })
 export class CartService {
   private readonly _DataService = inject(DataService);
-  private readonly _PLATFORM_ID = inject(PLATFORM_ID);
 
   private getInitialCount(): number {
-    if (isPlatformBrowser(this._PLATFORM_ID)) {
-      const savedCount = localStorage.getItem('cartCount');
-      return savedCount ? parseInt(savedCount, 10) : 0;
-    }
-    return 0;
+    const savedCount = localStorage.getItem('cartCount');
+    return savedCount ? parseInt(savedCount, 10) : 0;
   }
 
   private cartCountSubject = new BehaviorSubject<number>(
@@ -26,9 +21,7 @@ export class CartService {
 
   updateCartCount(count: number): void {
     this.cartCountSubject.next(count);
-    if (isPlatformBrowser(this._PLATFORM_ID)) {
-      localStorage.setItem('cartCount', count.toString());
-    }
+    localStorage.setItem('cartCount', count.toString());
   }
 
   getLoggedCart(userId: any): Observable<any> {

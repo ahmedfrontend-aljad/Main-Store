@@ -1,83 +1,67 @@
-import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { MyTranslateService } from '../../../Services/my-translate.service';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { MyTranslateService } from '../../../Services/my-translate.service';
 import { ThemeService } from '../../../Services/theme.service';
 
 @Component({
   selector: 'app-nav-auth',
+  standalone: true,
   imports: [TranslateModule],
   templateUrl: './nav-auth.component.html',
   styleUrl: './nav-auth.component.scss',
 })
-export class NavAuthComponent implements OnInit {
+export class NavAuthComponent implements OnInit, OnDestroy {
   selectedLanguage = 'English';
   showLangDropdown = false;
-  private readonly _MyTranslateService = inject(MyTranslateService);
-  private readonly _TranslateService = inject(TranslateService);
-  private readonly _PLATFORM_ID = inject(PLATFORM_ID);
   isDarkMode = false;
 
-  constructor(private _themeService: ThemeService) {
-    if (isPlatformBrowser(this._PLATFORM_ID)) {
-      const savedLang = localStorage.getItem('lang') || 'en';
-      this.selectedLanguage = savedLang === 'ar' ? 'عربي' : 'English';
-    }
+  private themeSub!: Subscription;
+  private langSub!: Subscription;
+
+  private readonly _MyTranslateService = inject(MyTranslateService);
+  private readonly _TranslateService = inject(TranslateService);
+  private readonly _themeService = inject(ThemeService);
+
+  constructor() {
+    this.updateLanguageLabel();
   }
 
   ngOnInit(): void {
-    this.updateLanguageLabel();
-    this._themeService.loadTheme();
-    this.updateThemeState();
-    console.log('Nav Auth');
+    this.themeSub = this._themeService.isDarkMode$.subscribe((isDark) => {
+      this.isDarkMode = isDark;
+    });
+
+    this.langSub = this._TranslateService.onLangChange.subscribe((event) => {
+      this.selectedLanguage = event.lang === 'ar' ? 'عربي' : 'English';
+    });
   }
 
   private updateLanguageLabel(): void {
     const currentLang =
       this._TranslateService.currentLang ||
-      (isPlatformBrowser(this._PLATFORM_ID)
-        ? localStorage.getItem('lang')
-        : null) ||
+      localStorage.getItem('lang') ||
       'en';
 
     this.selectedLanguage = currentLang === 'ar' ? 'عربي' : 'English';
   }
 
-  toggleLangDropdown() {
+  toggleLangDropdown(): void {
     this.showLangDropdown = !this.showLangDropdown;
   }
 
   changeLang(lang: string): void {
     this._MyTranslateService.changeLang(lang);
-    if (lang === 'en') {
-      this.selectedLanguage = 'English';
-    } else if (lang === 'ar') {
-      this.selectedLanguage = 'عربي';
-    }
-
+    this.selectedLanguage = lang === 'ar' ? 'عربي' : 'English';
     this.showLangDropdown = false;
   }
 
   toggleTheme(): void {
     this._themeService.toggleTheme();
-    this.updateThemeState();
   }
 
-  private updateThemeState(): void {
-    if (isPlatformBrowser(this._PLATFORM_ID)) {
-      const html = document.documentElement;
-      const body = document.body;
-
-      const hasDarkClass =
-        html.classList.contains('dark') ||
-        body.classList.contains('dark') ||
-        body.classList.contains('dark-theme');
-      const hasDarkAttr =
-        html.getAttribute('data-bs-theme') === 'dark' ||
-        html.getAttribute('data-theme') === 'dark';
-      const savedTheme = localStorage.getItem('theme');
-
-      this.isDarkMode = hasDarkClass || hasDarkAttr || savedTheme === 'dark';
-    }
+  ngOnDestroy(): void {
+    if (this.themeSub) this.themeSub.unsubscribe();
+    if (this.langSub) this.langSub.unsubscribe();
   }
 }

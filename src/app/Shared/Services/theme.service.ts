@@ -1,24 +1,37 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ThemeService {
-  constructor() {}
+  private initialTheme = localStorage.getItem('theme') === 'dark';
+  private isDarkModeSubject = new BehaviorSubject<boolean>(this.initialTheme);
+  isDarkMode$ = this.isDarkModeSubject.asObservable();
 
-  toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    if (currentTheme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'light');
-      localStorage.setItem('theme', 'light');
-    } else {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      localStorage.setItem('theme', 'dark');
-    }
+  constructor() {
+    this.applyTheme(this.initialTheme);
   }
 
-  loadTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
+  toggleTheme(): void {
+    const newStatus = !this.isDarkModeSubject.value;
+    this.applyTheme(newStatus);
+  }
+
+  private applyTheme(isDark: boolean): void {
+    const themeName = isDark ? 'dark' : 'light';
+    const html = document.documentElement;
+
+    html.setAttribute('data-theme', themeName);
+    html.setAttribute('data-bs-theme', themeName);
+
+    if (isDark) {
+      html.classList.add('dark');
+    } else {
+      html.classList.remove('dark');
+    }
+
+    localStorage.setItem('theme', themeName);
+    this.isDarkModeSubject.next(isDark);
   }
 }

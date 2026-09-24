@@ -6,20 +6,12 @@
         class="d-flex align-items-center gap-2 text-decoration-none"
       >
         <i class="fa-solid fa-cart-shopping fa-xl iconsColor"></i>
-
-        @if (isDarkMode) {
-          <img
-            style="height: 55px"
-            src="./assets/images/storeLogo.png"
-            alt="Store Logo"
-          />
-        } @else {
-          <img
-            style="height: 55px; filter: invert(1) brightness(0.2)"
-            src="./assets/images/storeLogo.png"
-            alt="Store Logo"
-          />
-        }
+        <img
+          style="height: 55px"
+          [style.filter]="isDarkMode ? 'none' : 'invert(1) brightness(0.2)'"
+          src="./assets/images/storeLogo.png"
+          alt="Store Logo"
+        />
       </a>
     </div>
 
@@ -31,12 +23,14 @@
       <button
         type="button"
         (click)="toggleTheme()"
-        class="btn btn-link p-1 px-2 border-0 theme-toggle-btn"
+        class="btn btn-link p-0 border-0 theme-toggle-btn text-decoration-none"
+        [attr.aria-label]="
+          isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
+        "
       >
         <i
-          class="fa-solid fs-5"
-          [class.fa-sun]="isDarkMode"
-          [class.fa-moon]="!isDarkMode"
+          class="fa-solid fa-moon fs-5"
+        
         ></i>
       </button>
 

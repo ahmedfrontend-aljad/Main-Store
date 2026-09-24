@@ -159,7 +159,7 @@
   "howToUse": "طريقة الاستخدام",
   "specifications": "المواصفات",
   "createdDate": "تاريخ الإضافة",
-  "loading": "...جاري تحميل تفاصيل المنتج",
+  "loadingProductDetailes": "...جاري تحميل تفاصيل المنتج",
   "notAvaliableRightNow": "غير متاح حاليا",
   "ALL_ORDERS": "طلباتي",
   "unAvaliable": "غير متاح",
@@ -222,5 +222,6 @@
   "paymentfailed": "فشلت عملية الدفع",
   "paymentfailedmessage": "عذراً، لم نتمكن من إتمام عملية الدفع. يرجى المحاولة مرة أخرى أو اختيار طريقة دفع أخرى.",
   "tryagain": "إعادة المحاولة",
-  "backtocart": "العودة إلى السلة"
+  "backtocart": "العودة إلى السلة",
+  "loading":"جارٍ التحميل"
 }

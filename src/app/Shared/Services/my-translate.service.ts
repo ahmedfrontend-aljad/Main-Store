@@ -1,37 +1,35 @@
-import { isPlatformBrowser } from '@angular/common';
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { platformBrowser } from '@angular/platform-browser';
-import {
-  TranslateService as NgxTranslateService,
-  TranslateService,
-} from '@ngx-translate/core';
+import { inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MyTranslateService {
-  private readonly _PLATFORM_ID = inject(PLATFORM_ID);
   private readonly _TranslateService = inject(TranslateService);
 
   constructor() {
-    if (isPlatformBrowser(this._PLATFORM_ID)) {
-      const savedLang = localStorage.getItem('lang') ?? 'ar'!;
-      this._TranslateService.setFallbackLang('ar');
+    const savedLang = localStorage.getItem('lang') ?? 'ar';
 
-      this._TranslateService.use(savedLang);
+    this._TranslateService.setFallbackLang('ar');
+    this._TranslateService.use(savedLang);
 
-      this.changeDirection();
-    }
+    this.changeDirection(savedLang);
   }
 
-  changeDirection() {
-    const savedLang = localStorage.getItem('lang') ?? 'ar';
-    document.documentElement.dir = savedLang === 'en' ? 'ltr' : 'rtl';
+  changeDirection(lang: string): void {
+    document.documentElement.dir = lang === 'en' ? 'ltr' : 'rtl';
+    document.documentElement.lang = lang;
   }
 
   changeLang(lang: string): void {
+    const currentLang = localStorage.getItem('lang') ?? 'ar';
+
+    if (currentLang === lang) return;
+
     localStorage.setItem('lang', lang);
     this._TranslateService.use(lang);
-    this.changeDirection();
+    this.changeDirection(lang);
+
+    window.location.reload();
   }
 }

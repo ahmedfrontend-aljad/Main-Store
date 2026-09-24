@@ -1,11 +1,9 @@
-import { isPlatformBrowser } from '@angular/common';
 import {
   Component,
   HostListener,
   inject,
   OnDestroy,
   OnInit,
-  PLATFORM_ID,
 } from '@angular/core';
 import {
   NavigationEnd,
@@ -40,8 +38,8 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   private cartSub!: Subscription;
   private routerSub!: Subscription;
   private langSub!: Subscription;
+  private themeSub!: Subscription;
 
-  private readonly _PLATFORM_ID = inject(PLATFORM_ID);
   private readonly _Router = inject(Router);
   private readonly _MyTranslateService = inject(MyTranslateService);
   private readonly _TranslateService = inject(TranslateService);
@@ -53,8 +51,10 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this._themeService.loadTheme();
-    this.updateThemeState();
+    this.themeSub = this._themeService.isDarkMode$.subscribe((isDark) => {
+      this.isDarkMode = isDark;
+    });
+
     this.checkAuthStatus();
     this.updateLanguageLabel();
 
@@ -80,63 +80,32 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   private updateLanguageLabel(): void {
     const currentLang =
       this._TranslateService.currentLang ||
-      (isPlatformBrowser(this._PLATFORM_ID)
-        ? localStorage.getItem('lang')
-        : null) ||
+      localStorage.getItem('lang') ||
       'en';
 
     this.selectedLanguage = currentLang === 'ar' ? 'عربي' : 'English';
   }
 
   checkAuthStatus(): void {
-    if (isPlatformBrowser(this._PLATFORM_ID)) {
-      const userToken = localStorage.getItem('userToken');
-      this.userId = localStorage.getItem('userId');
+    const userToken = localStorage.getItem('userToken');
+    this.userId = localStorage.getItem('userId');
 
-      if (userToken) {
-        this.isUserLogged = true;
-        this.isGuest = false;
-      } else {
-        this.isUserLogged = false;
-        this.isGuest = true;
-      }
+    if (userToken) {
+      this.isUserLogged = true;
+      this.isGuest = false;
+    } else {
+      this.isUserLogged = false;
+      this.isGuest = true;
     }
-  }
-
-  ngOnDestroy(): void {
-    if (this.cartSub) this.cartSub.unsubscribe();
-    if (this.routerSub) this.routerSub.unsubscribe();
-    if (this.langSub) this.langSub.unsubscribe();
   }
 
   toggleTheme(): void {
     this._themeService.toggleTheme();
-    this.updateThemeState();
-  }
-
-  private updateThemeState(): void {
-    if (isPlatformBrowser(this._PLATFORM_ID)) {
-      const html = document.documentElement;
-      const body = document.body;
-
-      const hasDarkClass =
-        html.classList.contains('dark') ||
-        body.classList.contains('dark') ||
-        body.classList.contains('dark-theme');
-      const hasDarkAttr =
-        html.getAttribute('data-bs-theme') === 'dark' ||
-        html.getAttribute('data-theme') === 'dark';
-      const savedTheme = localStorage.getItem('theme');
-
-      this.isDarkMode = hasDarkClass || hasDarkAttr || savedTheme === 'dark';
-    }
   }
 
   toggleMenu(): void {
     this.showMobileMenu = !this.showMobileMenu;
-    if (isPlatformBrowser(this._PLATFORM_ID)) {
-      document.body.style.overflow = this.showMobileMenu ? 'hidden' : 'auto';
-    }
+    document.body.style.overflow = this.showMobileMenu ? 'hidden' : 'auto';
   }
 
   toggleDropdown(): void {
@@ -152,13 +121,11 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   }
 
   signout(): void {
-    if (isPlatformBrowser(this._PLATFORM_ID)) {
-      localStorage.clear();
-      this.isUserLogged = false;
-      this.isGuest = true;
-      this._CartService.updateCartCount(0);
-      this._Router.navigate(['/auth/login']);
-    }
+    localStorage.clear();
+    this.isUserLogged = false;
+    this.isGuest = true;
+    this._CartService.updateCartCount(0);
+    this._Router.navigate(['/auth/login']);
   }
 
   toggleLangDropdown(): void {
@@ -196,5 +163,12 @@ export class NavBlankComponent implements OnInit, OnDestroy {
     ) {
       this.showDropdown = false;
     }
+  }
+
+  ngOnDestroy(): void {
+    if (this.themeSub) this.themeSub.unsubscribe();
+    if (this.cartSub) this.cartSub.unsubscribe();
+    if (this.routerSub) this.routerSub.unsubscribe();
+    if (this.langSub) this.langSub.unsubscribe();
   }
 }

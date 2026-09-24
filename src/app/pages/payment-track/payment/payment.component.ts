@@ -124,6 +124,7 @@ export class paymentComponent implements OnInit {
       clientName: [this.userName],
       clienName: [this.userName],
       userId: [''],
+      StoreOrderStatus: [1],
       paymentType: [1],
       workByPriceWithVat: [false],
       docDate: [nowISO],

@@ -6,7 +6,7 @@
 >
   @if (_LoadingService.isLoading$ | async) {
     <span class="indicator-progress" [style.display]="'block'">
-      {{ "wait" | translate }}
+      {{ "loading..." | translate }}
       <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
     </span>
   } @else {
