@@ -1,12 +1,16 @@
 import {
   Component,
+  ElementRef,
   HostListener,
   inject,
   OnDestroy,
   OnInit,
 } from '@angular/core';
 import {
+  NavigationCancel,
   NavigationEnd,
+  NavigationError,
+  NavigationStart,
   Router,
   RouterLink,
   RouterLinkActive,
@@ -14,6 +18,7 @@ import {
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { filter, Subscription } from 'rxjs';
 import { CartService } from '../../../Services/cart.service';
+import { LoadingService } from '../../../Services/loading.service';
 import { MyTranslateService } from '../../../Services/my-translate.service';
 import { ThemeService } from '../../../Services/theme.service';
 
@@ -45,6 +50,8 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   private readonly _TranslateService = inject(TranslateService);
   private readonly _themeService = inject(ThemeService);
   private readonly _CartService = inject(CartService);
+  private readonly _elementRef = inject(ElementRef);
+  private readonly _LoadingService = inject(LoadingService);
 
   constructor() {
     this.updateLanguageLabel();
@@ -75,6 +82,20 @@ export class NavBlankComponent implements OnInit, OnDestroy {
     if (this.userId && this.isUserLogged) {
       this._CartService.getLoggedCart(this.userId).subscribe();
     }
+
+    this._Router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this._LoadingService.start();
+      }
+
+      if (
+        event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError
+      ) {
+        this._LoadingService.stop();
+      }
+    });
   }
 
   private updateLanguageLabel(): void {
@@ -142,6 +163,16 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   onClickOutside(event: MouseEvent): void {
     const target = event.target as HTMLElement;
 
+    if (!this._elementRef.nativeElement.contains(target)) {
+      if (this.showMobileMenu) {
+        this.showMobileMenu = false;
+        document.body.style.overflow = 'auto';
+      }
+      this.showLangDropdown = false;
+      this.showDropdown = false;
+      return;
+    }
+
     const langDropdown = document.querySelector('.dropdown');
     const userDropdown = document.querySelector('.user-dropdown');
     const userToggle = document.querySelector('.user-toggle');
@@ -166,6 +197,7 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    document.body.style.overflow = 'auto';
     if (this.themeSub) this.themeSub.unsubscribe();
     if (this.cartSub) this.cartSub.unsubscribe();
     if (this.routerSub) this.routerSub.unsubscribe();

@@ -1,4 +1,4 @@
-<div class="mx-auto px-2 px-md-3">
+<div class="mx-auto px-2 px-md-3 my-4">
   <section
     class="max-w-7xl mx-auto space-y-5"
     [attr.dir]="currentLang === 'ar' ? 'rtl' : 'ltr'"
@@ -16,7 +16,7 @@
 
     <div class="filter-card rounded-4 p-3 mb-4">
       <form [formGroup]="filtersForm" class="row g-3 align-items-end">
-        <div class="col-md-4 col-sm-6">
+        <div class="col-md-4 col-sm-3">
           <app-store-input
             [control]="filtersForm.get('fromDate')!"
             [type]="'date'"
@@ -26,7 +26,7 @@
           </app-store-input>
         </div>
 
-        <div class="col-md-4 col-sm-6">
+        <div class="col-md-4 col-sm-3">
           <app-store-input
             [control]="filtersForm.get('toDate')!"
             [type]="'date'"

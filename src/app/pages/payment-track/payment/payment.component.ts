@@ -9,7 +9,6 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import jwtDecode from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, tap } from 'rxjs';
 import { Icart } from '../../../Shared/Interfaces/icart';
@@ -18,6 +17,7 @@ import { LoadingService } from '../../../Shared/Services/loading.service';
 import { PaymentService } from '../../../Shared/Services/payment.service';
 import { StoreInputComponent } from '../../../Shared/components/store-input/store-input.component';
 import { SubmitButtonComponent } from '../../../Shared/components/submit-button/submit-button.component';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-payment',

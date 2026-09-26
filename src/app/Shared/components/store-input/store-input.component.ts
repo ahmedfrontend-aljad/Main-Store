@@ -18,6 +18,7 @@ import {
 
 import { CommonModule, NgClass, NgSwitch } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { jwtDecode } from 'jwt-decode';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import {
   CountryISO,
@@ -27,7 +28,6 @@ import {
 } from 'ngx-intl-tel-input';
 import { Calendar, CalendarModule } from 'primeng/calendar';
 import { HelperService } from '../../Services/helper.service';
-import { USER_PROFILE } from '../../constants/general.constant';
 
 @Component({
   selector: 'app-store-input',
@@ -46,7 +46,7 @@ import { USER_PROFILE } from '../../constants/general.constant';
   templateUrl: './store-input.component.html',
   styleUrl: './store-input.component.scss',
 })
-export class StoreInputComponent implements OnInit {
+export class StoreInputComponent {
   validators = Validators;
   @Input({ required: true }) control!: AbstractControl;
   @Input() readonly = false;
@@ -68,21 +68,8 @@ export class StoreInputComponent implements OnInit {
   private readonly _HelperService = inject(HelperService);
   private readonly cdr = inject(ChangeDetectorRef);
   private debounceTimer: any;
-
+  user = this._HelperService.getItemFromLocalStorage('userToken');
   passwordVisible: boolean = false;
-
-  ngOnInit() {
-    const user = this._HelperService.getItemFromLocalStorage(USER_PROFILE);
-    const vatType = user?.VatType;
-
-    if (vatType === 1) {
-      this.selectedCountry = CountryISO.SaudiArabia;
-    } else if (vatType === 2) {
-      this.selectedCountry = CountryISO.Egypt;
-    } else {
-      this.selectedCountry = CountryISO.SaudiArabia;
-    }
-  }
 
   get formControl(): FormControl {
     return this.control as FormControl;
@@ -104,16 +91,11 @@ export class StoreInputComponent implements OnInit {
   }
 
   onMonthChange(event: any): void {
-    if (
-      this._HelperService.getItemFromLocalStorage(USER_PROFILE)?.BranchSettings
-        ?.IntegrateWithRsd
-    ) {
-      const month = event.month - 1;
-      const year = event.year;
-      this.formControl.setValue(new Date(year, month, 1));
-      this.emitChanged.emit();
-      this.calendar?.hideOverlay();
-    }
+    const month = event.month - 1;
+    const year = event.year;
+    this.formControl.setValue(new Date(year, month, 1));
+    this.emitChanged.emit();
+    this.calendar?.hideOverlay();
   }
 
   closeCalendar() {

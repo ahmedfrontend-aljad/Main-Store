@@ -26,14 +26,6 @@ export const routes: Routes = [
           ),
         title: 'register',
       },
-      {
-        path: 'forgetpassword',
-        loadComponent: () =>
-          import('./pages/forget-password/forget-password.component').then(
-            (c) => c.ForgetPasswordComponent,
-          ),
-        title: 'forgetPassword',
-      },
     ],
   },
 
@@ -135,6 +127,16 @@ export const routes: Routes = [
             (c) => c.ProfileComponent,
           ),
         title: 'profile',
+      },
+
+      {
+        path: 'resetpassword',
+        canActivate: [blankGuard],
+        loadComponent: () =>
+          import('./pages/reset-password/reset-password.component').then(
+            (c) => c.ResetPasswordComponent,
+          ),
+        title: 'resetpassword',
       },
     ],
   },

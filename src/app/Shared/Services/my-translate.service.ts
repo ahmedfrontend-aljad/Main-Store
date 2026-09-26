@@ -30,6 +30,5 @@ export class MyTranslateService {
     this._TranslateService.use(lang);
     this.changeDirection(lang);
 
-    window.location.reload();
   }
 }

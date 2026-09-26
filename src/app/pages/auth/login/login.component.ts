@@ -1,24 +1,31 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
-  Validators,
-  ReactiveFormsModule,
   FormsModule,
+  ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router,
+  RouterLink,
+} from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, firstValueFrom, Unsubscribable } from 'rxjs';
-import { AuthService } from '../../../Shared/Services/auth.service';
 import { StoreInputComponent } from '../../../Shared/components/store-input/store-input.component';
 import { SubmitButtonComponent } from '../../../Shared/components/submit-button/submit-button.component';
-import { LoadingService } from '../../../Shared/Services/loading.service';
-import { CommonModule } from '@angular/common';
-import { GuestAuthService } from '../../../Shared/Services/guest-auth.service';
-import jwtDecode from 'jwt-decode';
 import { StoreUrl } from '../../../Shared/constants/api.constant';
+import { AuthService } from '../../../Shared/Services/auth.service';
 import { DataService } from '../../../Shared/Services/data.service';
+import { GuestAuthService } from '../../../Shared/Services/guest-auth.service';
+import { LoadingService } from '../../../Shared/Services/loading.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-login',
@@ -53,6 +60,19 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initForm();
+    this._Router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this._LoadingService.start();
+      }
+
+      if (
+        event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError
+      ) {
+        this._LoadingService.stop();
+      }
+    });
   }
 
   initForm() {

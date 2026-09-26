@@ -147,6 +147,8 @@ nav {
 
 .navbar-toggler {
   border-color: var(--color-border, #3f3f5a) !important;
+  position: relative;
+  z-index: 999999;
 
   .navbar-toggler-icon {
     filter: invert(1) grayscale(100%) brightness(200%);

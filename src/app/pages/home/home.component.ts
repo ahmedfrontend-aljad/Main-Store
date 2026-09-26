@@ -69,7 +69,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.currentUrl = this._Router.url;
 
-    // الاستماع لتغيير اللغة
     this.langSub = this._TranslateService.onLangChange.subscribe(
       (event: LangChangeEvent) => {
         setTimeout(() => {
@@ -99,16 +98,16 @@ export class HomeComponent implements OnInit, OnDestroy {
           nativeEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
 
           if (nativeEl.swiper) {
-            nativeEl.swiper.changeLanguageDirection(isRtl ? 'rtl' : 'ltr');
-            nativeEl.swiper.updateSize();
-            nativeEl.swiper.updateSlides();
-            nativeEl.swiper.update();
+            nativeEl.swiper.destroy(true, true);
+          }
 
-            if (nativeEl.swiper.autoplay && nativeEl.swiper.autoplay.running) {
-              nativeEl.swiper.autoplay.start();
-            }
-          } else if (typeof nativeEl.initialize === 'function') {
+          if (typeof nativeEl.initialize === 'function') {
             nativeEl.initialize();
+          } else if (
+            nativeEl.swiper &&
+            typeof nativeEl.swiper.init === 'function'
+          ) {
+            nativeEl.swiper.init();
           }
         }
       });

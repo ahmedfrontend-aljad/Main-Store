@@ -1,11 +1,18 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router,
+  RouterLink,
+} from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { Unsubscribable } from 'rxjs';
@@ -13,7 +20,6 @@ import { AuthService } from '../../../Shared/Services/auth.service';
 import { LoadingService } from '../../../Shared/Services/loading.service';
 import { StoreInputComponent } from '../../../Shared/components/store-input/store-input.component';
 import { SubmitButtonComponent } from '../../../Shared/components/submit-button/submit-button.component';
-import { passwordValidator } from '../../../Core/validators/password.validator';
 
 @Component({
   selector: 'app-user-register',
@@ -27,7 +33,7 @@ import { passwordValidator } from '../../../Core/validators/password.validator';
   templateUrl: './user-register.component.html',
   styleUrl: './user-register.component.scss',
 })
-export class UserRegisterComponent implements OnDestroy {
+export class UserRegisterComponent implements OnInit, OnDestroy {
   isloading: boolean = false;
   private readonly _FormBuilder = inject(FormBuilder);
   private readonly _AuthService = inject(AuthService);
@@ -35,6 +41,22 @@ export class UserRegisterComponent implements OnDestroy {
   private readonly _Router = inject(Router);
   private readonly _LoadingService = inject(LoadingService);
   destoryRegisterData!: Unsubscribable;
+
+  ngOnInit(): void {
+    this._Router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this._LoadingService.start();
+      }
+
+      if (
+        event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError
+      ) {
+        this._LoadingService.stop();
+      }
+    });
+  }
 
   registerForm: FormGroup = this._FormBuilder.group({
     userName: [

@@ -32,7 +32,7 @@
     "flowbite": "^3.1.2",
     "google-libphonenumber": "^3.2.46",
     "jquery": "^3.7.1",
-    "jwt-decode": "^3.1.2",
+    "jwt-decode": "^4.0.0",
     "ngx-bootstrap": "^22.0.0",
     "ngx-intl-tel-input": "^17.0.0",
     "ngx-spinner": "^19.0.0",

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md navbar-dark sticky-top py-2 shadow-sm mb-4">
+<nav class="navbar navbar-expand-md navbar-dark sticky-top py-2 shadow-sm">
   <div class="container-fluid px-3">
     <!-- Logo -->
     <a
@@ -23,7 +23,7 @@
       [attr.aria-expanded]="showMobileMenu"
       aria-label="Toggle navigation"
     >
-      <span class="navbar-toggler-icon"></span>
+      <i class="fa-solid fa-bars" style="color: #4ea3ff"></i>
     </button>
 
     <!-- Navigation Links & Action Controls (Desktop & Mobile) -->
@@ -114,9 +114,7 @@
               isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
             "
           >
-            <i
-              class="fa-solid fs-5 fa-moon"
-            ></i>
+            <i class="fa-solid fs-5 fa-moon"></i>
           </button>
 
           <div class="dropdown position-relative">
@@ -189,6 +187,16 @@
                   >
                     <i class="fa-solid fa-shield-heart" ngSkipHydration></i>
                     <span>{{ "wishlist" | translate }}</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/resetpassword"
+                    (click)="showMobileMenu && toggleMenu()"
+                  >
+                    <i class="fa-solid fa-user-lock" ngSkipHydration></i>
+                    <span>{{ "resetPassword" | translate }}</span>
                   </a>
                 </li>
                 <li>

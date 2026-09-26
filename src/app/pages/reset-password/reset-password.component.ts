@@ -10,14 +10,14 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from '../../Shared/Services/auth.service';
-import { DataService } from '../../Shared/Services/data.service';
-import { LoadingService } from '../../Shared/Services/loading.service';
 import { StoreInputComponent } from '../../Shared/components/store-input/store-input.component';
 import { SubmitButtonComponent } from '../../Shared/components/submit-button/submit-button.component';
+import { DataService } from '../../Shared/Services/data.service';
+import { LoadingService } from '../../Shared/Services/loading.service';
+import { AuthService } from '../../Shared/Services/auth.service';
 
 @Component({
-  selector: 'app-forget-password',
+  selector: 'app-reset-password',
   standalone: true,
   imports: [
     TranslateModule,
@@ -28,10 +28,10 @@ import { SubmitButtonComponent } from '../../Shared/components/submit-button/sub
     RouterModule,
     SubmitButtonComponent,
   ],
-  templateUrl: './forget-password.component.html',
-  styleUrl: './forget-password.component.scss',
+  templateUrl: './reset-password.component.html',
+  styleUrl: './reset-password.component.scss',
 })
-export class ForgetPasswordComponent implements OnInit {
+export class ResetPasswordComponent implements OnInit {
   resetForm!: FormGroup;
   isLoading: boolean = false;
 
@@ -64,7 +64,7 @@ export class ForgetPasswordComponent implements OnInit {
     }
 
     this._LoadingService.start();
-    this._AuthService.sendRegisterData(this.resetForm.value).subscribe({
+    this._AuthService.restPassword(this.resetForm.value).subscribe({
       next: (res) => {
         this._LoadingService.stop();
         if (res.IsSuccess) {

@@ -4,7 +4,6 @@
   padding-bottom: 3rem;
 }
 
-/* Card General Styling */
 .filter-card,
 .order-card,
 .empty-state {
@@ -33,17 +32,15 @@
     167,
     69,
     0.15
-  ); /* or var(--color-primary) with opacity */
+  ); 
   color: var(--color-primary);
 }
 
-/* Items Box Inside Card */
 .items-box {
-  background-color: rgba(255, 255, 255, 0.03); /* Soft subtle layer */
+  background-color: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--color-border);
 }
 
-/* For Light Mode compatibility fallback */
 [data-theme="light"] .items-box,
 :root:not([data-theme="dark"]) .items-box {
   background-color: #f8fafc;
@@ -74,7 +71,6 @@
   border-color: var(--color-border) !important;
 }
 
-/* Text & Contrast Fixes */
 .text-main {
   color: var(--color-text) !important;
 }
@@ -83,7 +79,6 @@
   color: var(--color-muted) !important;
 }
 
-/* PrimeNG Tabs Deep Overrides */
 ::ng-deep {
   .p-tabs {
     background: transparent !important;
@@ -144,7 +139,6 @@
   }
 }
 
-/* Helpers */
 .fs-7 {
   font-size: 0.8125rem;
 }
