@@ -222,5 +222,6 @@
   "paymentfailedmessage": "Sorry, we could not process your payment. Please try again or choose another payment method.",
   "tryagain": "Try Again",
   "backtocart": "Back to Cart",
-  "loading": "loading"
+  "loading": "loading",
+  "unAvaliable":"Not Avaliable"
 }
