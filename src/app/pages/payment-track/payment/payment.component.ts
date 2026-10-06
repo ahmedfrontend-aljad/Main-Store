@@ -7,17 +7,18 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { jwtDecode } from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, tap } from 'rxjs';
 import { Icart } from '../../../Shared/Interfaces/icart';
 import { CartService } from '../../../Shared/Services/cart.service';
+import { HelperService } from '../../../Shared/Services/helper.service';
 import { LoadingService } from '../../../Shared/Services/loading.service';
 import { PaymentService } from '../../../Shared/Services/payment.service';
 import { StoreInputComponent } from '../../../Shared/components/store-input/store-input.component';
 import { SubmitButtonComponent } from '../../../Shared/components/submit-button/submit-button.component';
-import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-payment',
@@ -28,6 +29,7 @@ import { jwtDecode } from 'jwt-decode';
     TranslateModule,
     StoreInputComponent,
     SubmitButtonComponent,
+    RouterLink,
   ],
   templateUrl: './payment.component.html',
   styleUrl: './payment.component.scss',
@@ -40,18 +42,20 @@ export class paymentComponent implements OnInit {
   private readonly _translate = inject(TranslateService);
   private readonly _router = inject(Router);
   private readonly _loadingService = inject(LoadingService);
+  private readonly _HelperService = inject(HelperService);
 
   cartproducts: Icart[] = [];
   InvoiceForm!: FormGroup;
   totalPrice: number = 0;
   userId: string | null = null;
   clientId: any;
+  deliveryAddress: any;
 
   get selectedPaymentMethod(): string {
     return this.InvoiceForm.get('paymentType')?.value?.toString() || '1';
   }
 
-  token = localStorage.getItem('userToken')!;
+  token = localStorage.getItem('E_K_T')!;
   decodedToken: any = jwtDecode(this.token);
 
   get saleInvoiceDetails(): FormArray {
@@ -106,12 +110,28 @@ export class paymentComponent implements OnInit {
   }
 
   initForm(): void {
+    const ClientProfile =
+      this._HelperService.getItemFromLocalStorage('ClientProfile');
+
+    this.deliveryAddress = [
+      ClientProfile?.Address,
+      ClientProfile?.NationalAddress,
+      ClientProfile?.Street,
+      ClientProfile?.District,
+      ClientProfile?.Governorate,
+      ClientProfile?.CityName,
+      ClientProfile?.BuildingNumber,
+    ]
+      .filter((value) => value != null && String(value).trim() !== '')
+      .map((value) => String(value).trim())
+      .join(' - ');
+
     const nowISO = new Date().toISOString().split('.')[0];
     this.clientId = Number(localStorage.getItem('profileData'));
     this.InvoiceForm = this._formBuilder.group({
       id: [0],
       insuranceAmount: [0],
-      deliveryAddress: [''],
+      deliveryAddress: [this.deliveryAddress],
       saleInvoiceReqId: [0],
       saleInvoiceReqDocNo: [0],
       paid: [0],
@@ -330,6 +350,7 @@ export class paymentComponent implements OnInit {
             if (res?.IsSuccess) {
               const createdInvoiceId = res?.Obj?.Id;
               this._ToastrService.success(res.Message);
+              this._router.navigate(['/orderSuccess']);
               localStorage.removeItem('items');
               localStorage.removeItem('cartCount');
 

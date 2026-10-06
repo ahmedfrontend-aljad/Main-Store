@@ -1,5 +1,6 @@
 export interface IitemsDetailes {
   item: Item;
+  quantity: number;
 }
 
 export interface Item {

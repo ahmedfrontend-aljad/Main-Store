@@ -158,6 +158,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.selectedProductId = null;
   }
 
+  get availableItems() {
+    return this.filteredItems.filter((p) => p.Quantity > 0);
+  }
+
   ngOnDestroy(): void {
     if (this.langSub) {
       this.langSub.unsubscribe();

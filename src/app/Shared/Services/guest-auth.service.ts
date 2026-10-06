@@ -12,7 +12,7 @@ export class GuestAuthService {
   private readonly _LoadingService = inject(LoadingService);
 
   async ensureGuestToken(): Promise<string | null> {
-    const userToken = localStorage.getItem('userToken');
+    const userToken = localStorage.getItem('E_K_T');
     const guestToken = localStorage.getItem('guestToken');
 
     if (userToken || guestToken) {

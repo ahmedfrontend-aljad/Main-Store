@@ -58,11 +58,20 @@
         </p>
       }
 
-      <div class="flex items-baseline gap-2 mb-3">
-        <span class="text-base md:text-lg font-bold text-primary">
-          {{ product.Price || "0.00" }}
-          <span class="text-xs font-normal">£</span>
-        </span>
+      <div class="flex flex-col gap-1 mb-3">
+        <div class="flex items-baseline gap-2">
+          <span class="text-base md:text-lg font-bold text-primary">
+            {{ product.Price || "0.00" }}
+            <span class="text-xs font-normal">£</span>
+          </span>
+        </div>
+
+        <div class="text-xs">
+          <span>{{ "availablequantity" | translate }}:</span>
+          <span class="font-semibold= ms-1">
+            {{ product.Quantity }}
+          </span>
+        </div>
       </div>
     </div>
 

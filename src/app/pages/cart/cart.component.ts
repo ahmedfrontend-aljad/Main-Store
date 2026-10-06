@@ -28,7 +28,7 @@ export class CartComponent implements OnInit, OnDestroy {
   totalPrice: any;
 
   ngOnInit(): void {
-    const token = localStorage.getItem('userToken')!;
+    const token = localStorage.getItem('E_K_T')!;
     if (token) {
       this.getCartItems();
     }

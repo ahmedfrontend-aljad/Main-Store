@@ -5,27 +5,16 @@
         <h3 class="font-weight-bolder font-serif text-4xl">
           {{ "Shopamongmanyproducts" | translate }}
         </h3>
+
         <p class="mb-8 mt-1 text-1xl">
           {{ "enjoythemostpopularproducts" | translate }}
         </p>
       </div>
 
-      <div class="search-wrapper m-auto">
-        <input
-          type="search"
-          [(ngModel)]="text"
-          class="form-control"
-          [placeholder]="'searchbyproductname' | translate"
-        />
-        <button class="search-btn" type="button" aria-label="Search">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-      </div>
-
       <div
         class="section-content mt-8 grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
       >
-        @for (product of filteredItems; track product.Id) {
+        @for (product of availableProducts(); track product.Id) {
           <app-product-card
             [product]="product"
             [currentUrl]="currentUrl"
@@ -33,23 +22,22 @@
           ></app-product-card>
         }
       </div>
+
+      @if (isLoading && allProducts().length > 0) {
+        <div class="flex justify-center items-center py-8">
+          <div
+            class="w-10 h-10 border-4 border-gray-300 border-t-primary rounded-full animate-spin"
+          ></div>
+        </div>
+      }
+
+      @if (!isLoading && !hasMoreProducts && allProducts().length === 0) {
+        <div class="text-center py-8 text-gray-500">
+          <p>{{ "nomoreproducts" | translate }}</p>
+        </div>
+      }
     </div>
   </section>
-
-  @if (pagination && pagination.TotalCount! > pagination.PageSize!) {
-    <div class="my-9 d-flex justify-content-center">
-      <ngb-pagination
-        [collectionSize]="pagination.TotalCount!"
-        [(page)]="pageNo"
-        [maxSize]="3"
-        [rotate]="true"
-        [boundaryLinks]="true"
-        [pageSize]="pageSize!"
-        (pageChange)="page($event)"
-      >
-      </ngb-pagination>
-    </div>
-  }
 
   @if (selectedProductId) {
     <app-product-details

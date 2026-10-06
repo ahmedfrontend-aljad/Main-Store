@@ -68,7 +68,7 @@ export class StoreInputComponent {
   private readonly _HelperService = inject(HelperService);
   private readonly cdr = inject(ChangeDetectorRef);
   private debounceTimer: any;
-  user = this._HelperService.getItemFromLocalStorage('userToken');
+  user = this._HelperService.getItemFromLocalStorage('E_K_T');
   passwordVisible: boolean = false;
 
   get formControl(): FormControl {

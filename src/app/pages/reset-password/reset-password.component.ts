@@ -12,9 +12,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { StoreInputComponent } from '../../Shared/components/store-input/store-input.component';
 import { SubmitButtonComponent } from '../../Shared/components/submit-button/submit-button.component';
+import { AuthService } from '../../Shared/Services/auth.service';
 import { DataService } from '../../Shared/Services/data.service';
 import { LoadingService } from '../../Shared/Services/loading.service';
-import { AuthService } from '../../Shared/Services/auth.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -76,7 +76,7 @@ export class ResetPasswordComponent implements OnInit {
       },
       error: (err) => {
         this._LoadingService.stop();
-        console.log(err);
+        console.error(err);
         this._ToastrService.error(err?.error?.Message);
       },
     });

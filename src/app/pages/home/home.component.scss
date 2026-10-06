@@ -1,6 +1,13 @@
 .container {
   background: var(--color-bg);
   color: var(--color-text);
+  --cat-section-bg: #dbe9f9;
+  --cat-card-bg: #f9fafb;
+  --cat-card-hover-bg: #ffffff;
+  --cat-img-bg: #e5e7eb;
+  --cat-title: #1f2937;
+  --cat-subtitle: #6b7280;
+  --cat-card-shadow: rgba(0, 0, 0, 0.15);
 
   .iconSearch {
     left: 40%;
@@ -23,6 +30,46 @@
       }
     }
   }
+}
+
+:host-context(.dark) .container,
+:host-context([data-theme="dark"]) .container {
+  --cat-section-bg: #1b2535;
+  --cat-card-bg: #243044;
+  --cat-card-hover-bg: #2c3b54;
+  --cat-img-bg: #334155;
+  --cat-title: #e5e7eb;
+  --cat-subtitle: #9ca3af;
+  --cat-card-shadow: rgba(0, 0, 0, 0.5);
+}
+
+.categories-section {
+  background: var(--cat-section-bg);
+  padding: 20px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.section-subtitle {
+  color: var(--cat-subtitle);
+}
+
+.category-slide {
+  background: var(--cat-card-bg);
+  border: 1px solid transparent;
+
+  &:hover {
+    background: var(--cat-card-hover-bg);
+    box-shadow: 0 10px 25px var(--cat-card-shadow);
+  }
+}
+
+.category-img {
+  background: var(--cat-img-bg);
+}
+
+.category-title {
+  color: var(--cat-title);
 }
 
 .text-base {
@@ -48,47 +95,4 @@
 }
 .shadow-card {
   box-shadow: 2px 2px 6px var(--color-shadow);
-}
-
-.search-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 600px;
-
-  .form-control {
-    width: 100% !important;
-    height: 48px;
-    padding-inline-start: 1.5rem;
-    padding-inline-end: 3.25rem;
-    border-radius: 999px;
-    background: var(--color-bg);
-    color: var(--color-text);
-    border: 1px solid var(--color-border);
-    text-align: start;
-
-    &:focus {
-      outline: none;
-      border-color: var(--color-primary);
-    }
-  }
-
-  .search-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    inset-inline-end: 0.75rem;
-    background: transparent;
-    border: none;
-    color: var(--color-text);
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-
-    i {
-      font-size: 1.1rem;
-    }
-  }
 }

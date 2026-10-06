@@ -26,8 +26,7 @@
   --color-border: #2d2d2d;
   --color-shadow: rgba(0, 0, 0, 0.5);
   --btn-hover-bg: #2c974b;
-  --bs-box-shadow-sm: #fff
-  
+  --bs-box-shadow-sm: #fff;
 }
 
 body {
@@ -97,7 +96,6 @@ p-inputnumber,
 }
 
 header,
-nav,
 .navbar {
   position: relative;
   z-index: 9999 !important;
@@ -338,7 +336,6 @@ nav,
 }
 
 header,
-nav,
 .navbar {
   position: relative;
   z-index: 99 !important;
@@ -368,14 +365,34 @@ nav,
     transform: rotate(20deg) scale(1.1);
   }
 }
+.pagination-wrapper {
+  width: 100%;
+  overflow-x: auto; // يسمح بالسكرول الأفقي النظيف داخل الحاوية فقط دون أن يؤثر على الصفحة كلها
+  padding: 0 10px;
+}
+
 .pagination {
   gap: 4px;
+  flex-wrap: nowrap;
+  margin-bottom: 0;
+
   .page-item {
     .page-link {
       border-radius: 6px !important;
       border: 1px solid #e2e8f0;
-      color: #475569;
+      color: #4ea3ff;
       font-weight: 500;
+      padding: 0.36rem 0.5rem;
+      font-size: 0.875rem;
+      outline: none !important;
+      box-shadow: none !important;
+
+      &:focus,
+      &:focus-visible,
+      &:active {
+        outline: none !important;
+        box-shadow: none !important;
+      }
     }
 
     &.active .page-link {

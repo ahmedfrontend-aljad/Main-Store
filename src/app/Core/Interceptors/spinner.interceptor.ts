@@ -7,7 +7,7 @@ export const spinnerInterceptor: HttpInterceptorFn = (req, next) => {
   const spinnerService = inject(NgxSpinnerService);
 
   const token =
-    localStorage.getItem('userToken') || localStorage.getItem('guestToken');
+    localStorage.getItem('E_K_T') || localStorage.getItem('guestToken');
   let modifiedReq = req;
 
   if (token) {

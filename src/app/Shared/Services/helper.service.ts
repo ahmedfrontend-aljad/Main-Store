@@ -4,6 +4,10 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class HelperService {
+  setItemToLocalStorage(name: string, value: any): void {
+    localStorage.setItem(name, JSON.stringify(value));
+  }
+
   getItemFromLocalStorage(key: string) {
     const item = localStorage.getItem(key);
     if (!item) return null;

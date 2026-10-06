@@ -86,11 +86,11 @@
                 <span class="text-gray-300 font-medium">
                   {{ "remainingStock" | translate }}:
                 </span>
-                @if (detailsProduct.item.Balance > 0) {
+                @if (detailsProduct.quantity > 0) {
                   <span
                     class="font-bold text-emerald-600 dark:text-emerald-400"
                   >
-                    {{ detailsProduct.item.Balance }}
+                    {{ detailsProduct.quantity }}
                     {{ "availableItems" | translate }}
                   </span>
                 } @else {

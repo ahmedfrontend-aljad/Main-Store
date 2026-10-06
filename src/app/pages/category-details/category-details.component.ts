@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
@@ -17,8 +16,6 @@ import { DataService } from '../../Shared/Services/data.service';
 import { LoadingService } from '../../Shared/Services/loading.service';
 import { ProductCardComponent } from '../../Shared/components/product-card/product-card.component';
 import { apiUrl } from '../../Shared/constants/api.constant';
-import { PAGE_SIZE } from '../../Shared/constants/general.constant';
-import { IPagination } from '../../Shared/models/IPagination.model';
 import { ProductDetailsComponent } from '../product-details/product-details.component';
 
 @Component({
@@ -27,7 +24,6 @@ import { ProductDetailsComponent } from '../product-details/product-details.comp
   imports: [
     FormsModule,
     TranslateModule,
-    NgbPaginationModule,
     ProductCardComponent,
     ProductDetailsComponent,
   ],
@@ -43,14 +39,20 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription = new Subscription();
 
-  pagination!: IPagination;
   currentUrl!: string;
-  pageNo = 1;
-  pageSize = PAGE_SIZE;
   searchTerm = signal<string>('');
   selectedProductId: number | string | null = null;
 
   selectedGroupProducts = signal<Iproducts[]>([]);
+
+  filteredItems = computed(() => {
+    const query = this.searchTerm().trim().toLowerCase();
+    return this.selectedGroupProducts().filter(
+      (item) =>
+        item.NameAr?.toLowerCase().includes(query) ||
+        item.NameEn?.toLowerCase().includes(query),
+    );
+  });
 
   ngOnInit(): void {
     this.currentUrl = this._Router.url;
@@ -82,9 +84,7 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
               next: (res) => {
                 this._LoadingService.stop();
                 if (res?.IsSuccess) {
-                  const mappedItems = res.Obj.Items;
-                  this.selectedGroupProducts.set(mappedItems);
-                  this.setData(mappedItems.length);
+                  this.selectedGroupProducts.set(res.Obj?.Items || []);
                 } else {
                   this.selectedGroupProducts.set([]);
                   this._ToastrService.error(res?.Message);
@@ -104,36 +104,6 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions.add(sub);
-  }
-
-  filteredItems = computed(() => {
-    const products = this.selectedGroupProducts();
-    const query = this.searchTerm().trim().toLowerCase();
-    const currentPage = this.pageNo;
-
-    const filtered = products.filter((item) => {
-      const matchAr = item.NameAr?.toLowerCase().includes(query);
-      const matchEn = item.NameEn?.toLowerCase().includes(query);
-      return matchAr || matchEn;
-    });
-
-    if (this.pagination) {
-      this.pagination.TotalCount = filtered.length;
-    }
-
-    const startIndex = (currentPage - 1) * this.pageSize;
-    return filtered.slice(startIndex, startIndex + this.pageSize);
-  });
-
-  setData(totalCount: number): void {
-    this.pagination = {
-      PageSize: this.pageSize,
-      TotalCount: totalCount,
-    };
-  }
-
-  page(ev: number): void {
-    this.pageNo = ev;
   }
 
   openProductModal(id: number | string): void {

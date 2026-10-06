@@ -3,33 +3,36 @@ import {
   ElementRef,
   HostListener,
   inject,
+  Input,
   OnDestroy,
   OnInit,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import {
-  NavigationCancel,
   NavigationEnd,
-  NavigationError,
-  NavigationStart,
   Router,
   RouterLink,
   RouterLinkActive,
 } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { filter, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { CartService } from '../../../Services/cart.service';
+import { CatService } from '../../../Services/cat.service';
 import { LoadingService } from '../../../Services/loading.service';
 import { MyTranslateService } from '../../../Services/my-translate.service';
 import { ThemeService } from '../../../Services/theme.service';
+import { HelperService } from '../../../Services/helper.service';
 
 @Component({
   selector: 'app-nav-blank',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, TranslateModule],
+  imports: [RouterLink, RouterLinkActive, TranslateModule, FormsModule],
   templateUrl: './nav-blank.component.html',
   styleUrls: ['./nav-blank.component.scss'],
 })
 export class NavBlankComponent implements OnInit, OnDestroy {
+  @Input() text: string = '';
+
   isUserLogged = false;
   isGuest = false;
   userId: any;
@@ -38,8 +41,10 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   showMobileMenu = false;
   showLangDropdown = false;
   isDarkMode = false;
+  ClientProfile: any;
+  userAddress: string = '';
   selectedLanguage = 'English';
-
+  groups: any[] = [];
   private cartSub!: Subscription;
   private routerSub!: Subscription;
   private langSub!: Subscription;
@@ -51,50 +56,39 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   private readonly _themeService = inject(ThemeService);
   private readonly _CartService = inject(CartService);
   private readonly _elementRef = inject(ElementRef);
-  private readonly _LoadingService = inject(LoadingService);
+  private readonly _HelperService = inject(HelperService);
+  private readonly _CatService = inject(CatService);
 
   constructor() {
     this.updateLanguageLabel();
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.checkAuthStatus();
+
     this.themeSub = this._themeService.isDarkMode$.subscribe((isDark) => {
       this.isDarkMode = isDark;
     });
-
-    this.checkAuthStatus();
-    this.updateLanguageLabel();
 
     this.langSub = this._TranslateService.onLangChange.subscribe((event) => {
       this.selectedLanguage = event.lang === 'ar' ? 'عربي' : 'English';
     });
 
-    this.routerSub = this._Router.events
-      .pipe(filter((e) => e instanceof NavigationEnd))
-      .subscribe(() => {
-        this.checkAuthStatus();
-      });
-
     this.cartSub = this._CartService.cartCount$.subscribe((count) => {
       this.itemsCount = count;
+    });
+
+    this.routerSub = this._Router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.checkAuthStatus();
+      }
     });
 
     if (this.userId && this.isUserLogged) {
       this._CartService.getLoggedCart(this.userId).subscribe();
     }
-
-    this._Router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        this._LoadingService.start();
-      }
-
-      if (
-        event instanceof NavigationEnd ||
-        event instanceof NavigationCancel ||
-        event instanceof NavigationError
-      ) {
-        this._LoadingService.stop();
-      }
+    this._CatService.getCategories().subscribe((groups) => {
+      this.groups = groups;
     });
   }
 
@@ -108,9 +102,11 @@ export class NavBlankComponent implements OnInit, OnDestroy {
   }
 
   checkAuthStatus(): void {
-    const userToken = localStorage.getItem('userToken');
+    const userToken = localStorage.getItem('E_K_T');
     this.userId = localStorage.getItem('userId');
-
+    this.ClientProfile =
+      this._HelperService.getItemFromLocalStorage('ClientProfile') || '';
+    this.userAddress = this.ClientProfile.Address || '';
     if (userToken) {
       this.isUserLogged = true;
       this.isGuest = false;
@@ -141,16 +137,16 @@ export class NavBlankComponent implements OnInit, OnDestroy {
     this._Router.navigate(['/auth/register']);
   }
 
+  toggleLangDropdown(): void {
+    this.showLangDropdown = !this.showLangDropdown;
+  }
+
   signout(): void {
     localStorage.clear();
     this.isUserLogged = false;
     this.isGuest = true;
     this._CartService.updateCartCount(0);
     this._Router.navigate(['/auth/login']);
-  }
-
-  toggleLangDropdown(): void {
-    this.showLangDropdown = !this.showLangDropdown;
   }
 
   changeLang(lang: string): void {
@@ -194,6 +190,12 @@ export class NavBlankComponent implements OnInit, OnDestroy {
     ) {
       this.showDropdown = false;
     }
+  }
+
+  productsSearch() {
+    this._Router.navigate(['/products'], {
+      queryParams: { search: this.text },
+    });
   }
 
   ngOnDestroy(): void {

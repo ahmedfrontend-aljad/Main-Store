@@ -10,23 +10,10 @@
         {{ "shopbyyourfavoritecategory" | translate }}
       </p>
     </div>
-
-    <div class="search-wrapper m-auto relative">
-      <input
-        type="search"
-        [(ngModel)]="searchTerm"
-        class="form-control search-input"
-        [placeholder]="'searchbycategoryname...' | translate"
-      />
-      <button class="search-btn" type="button" aria-label="Search">
-        <i class="fa-solid fa-magnifying-glass search-icon"></i>
-      </button>
-    </div>
-
     <div
-      class="section-content mt-10 md:mt-16 grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
+      class="section-content grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
     >
-      @for (item of filteredItems; track item.Id) {
+      @for (item of groups; track item.Id) {
         <div class="flex justify-center w-full">
           <div
             class="product-card category-card relative flex flex-col justify-between p-3 rounded-lg border bg-white shadow-sm hover:shadow-md transition-all cursor-pointer w-full"
@@ -64,19 +51,4 @@
       }
     </div>
   </section>
-
-  @if (pagination && pagination.TotalCount! > pagination.PageSize!) {
-    <div class="my-8 md:my-12 flex justify-center pagination-wrapper">
-      <ngb-pagination
-        [collectionSize]="pagination.TotalCount!"
-        [(page)]="pageNo"
-        [maxSize]="3"
-        [rotate]="true"
-        [boundaryLinks]="true"
-        [pageSize]="pagination.PageSize!"
-        (pageChange)="page($event)"
-      >
-      </ngb-pagination>
-    </div>
-  }
 </div>

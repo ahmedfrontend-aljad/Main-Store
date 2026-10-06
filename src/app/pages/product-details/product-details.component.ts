@@ -63,7 +63,7 @@ export class ProductDetailsComponent implements OnChanges {
       NameAr: item?.NameAr,
       NameEn: item?.NameEn,
       Price: unit?.Price ?? 0,
-      Quantity: item?.Balance ?? 0,
+      Quantity: this.detailsProduct?.quantity ?? 0,
     } as Iproducts;
   }
   closeModal(): void {

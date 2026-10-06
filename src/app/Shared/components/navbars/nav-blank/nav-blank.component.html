@@ -1,232 +1,281 @@
-<nav class="navbar navbar-expand-md navbar-dark sticky-top py-2 shadow-sm">
-  <div class="container-fluid px-3">
-    <!-- Logo -->
-    <a
-      routerLink="/home"
-      class="d-flex align-items-center gap-2 text-decoration-none"
-    >
-      <i class="fa-solid fa-cart-shopping fa-xl iconsColor"></i>
-      <img
-        style="height: 55px"
-        [style.filter]="isDarkMode ? 'none' : 'invert(1) brightness(0.2)'"
-        src="./assets/images/storeLogo.png"
-        alt="Store Logo"
-      />
-    </a>
+<div class="nav-blank-container shadow-sm">
+  <header class="navbar navbar-expand-md navbar-dark pt-2">
+    <div class="container-fluid px-3 header-row">
+      <div class="brand-wrap d-flex align-items-center gap-2 gap-md-4">
+        <a
+          routerLink="/home"
+          class="d-flex align-items-center gap-2 text-decoration-none"
+        >
+          <i class="fa-solid fa-cart-shopping fa-xl iconsColor"></i>
+          <img
+            style="height: 55px"
+            [style.filter]="isDarkMode ? 'none' : 'invert(1) brightness(0.2)'"
+            src="./assets/images/storeLogo.png"
+            alt="Store Logo"
+          />
+        </a>
 
-    <!-- Mobile Toggler Button -->
-    <button
-      class="navbar-toggler"
-      type="button"
-      (click)="toggleMenu()"
-      aria-controls="mainNavbar"
-      [attr.aria-expanded]="showMobileMenu"
-      aria-label="Toggle navigation"
-    >
-      <i class="fa-solid fa-bars" style="color: #4ea3ff"></i>
-    </button>
+        @if (isUserLogged && userAddress) {
+          <div
+            class="address-chip cursor-pointer"
+            [title]="userAddress"
+            routerLink="/profile"
+          >
+            <i class="fa-solid fa-location-dot"></i>
+            <span>{{ userAddress }}</span>
+          </div>
+        }
+      </div>
 
-    <!-- Navigation Links & Action Controls (Desktop & Mobile) -->
-    <div
-      class="navbar-collapse"
-      id="mainNavbar"
-      [class.d-none]="!showMobileMenu"
-      [class.d-md-flex]="true"
-    >
-      <ul
-        class="navbar-nav mx-auto mb-2 mb-md-0 gap-md-2 fw-medium my-2 my-md-0"
+      <button
+        class="navbar-toggler"
+        type="button"
+        (click)="toggleMenu()"
+        aria-controls="mainNavbar"
+        [attr.aria-expanded]="showMobileMenu"
+        aria-label="Toggle navigation"
       >
-        <li class="nav-item">
-          <a
-            routerLink="/home"
-            class="nav-link px-2"
-            routerLinkActive="active text-primary fw-bold border-bottom border-2 border-primary"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="showMobileMenu && toggleMenu()"
-          >
-            {{ "home" | translate }}
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            routerLink="/products"
-            class="nav-link px-2"
-            routerLinkActive="active text-primary fw-bold border-bottom border-2 border-primary"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="showMobileMenu && toggleMenu()"
-          >
-            {{ "products" | translate }}
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            routerLink="/categories"
-            class="nav-link px-2"
-            routerLinkActive="active text-primary fw-bold border-bottom border-2 border-primary"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="showMobileMenu && toggleMenu()"
-          >
-            {{ "categories" | translate }}
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            routerLink="/offers"
-            class="nav-link px-2"
-            routerLinkActive="active text-primary fw-bold border-bottom border-2 border-primary"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="showMobileMenu && toggleMenu()"
-          >
-            {{ "offers" | translate }}
-          </a>
-        </li>
-      </ul>
+        <i class="fa-solid fa-bars" style="color: #4ea3ff"></i>
+      </button>
 
       <div
-        class="nav-controls d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3 pt-2 pt-md-0"
+        class="navbar-collapse"
+        id="mainNavbar"
+        [class.d-none]="!showMobileMenu"
+        [class.d-md-flex]="true"
       >
-        <div
-          class="d-flex align-items-center gap-3 w-100 w-md-auto justify-content-between justify-content-md-start"
+        <ul
+          class="navbar-nav mx-auto mb-2 mb-md-0 gap-md-2 fw-medium my-2 my-md-0"
         >
-          @if (isUserLogged) {
-            <div
-              class="cart cursor-pointer position-relative d-inline-block"
-              routerLink="/cart"
+          <li class="nav-item">
+            <a
+              routerLink="/home"
+              class="nav-link px-2"
+              routerLinkActive="active text-primary fw-bold border-bottom border-2 border-primary"
+              [routerLinkActiveOptions]="{ exact: true }"
               (click)="showMobileMenu && toggleMenu()"
             >
-              <i class="fa-solid fa-cart-shopping fs-5" ngSkipHydration></i>
+              {{ "home" | translate }}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              routerLink="/products"
+              class="nav-link px-2"
+              routerLinkActive="active text-primary fw-bold border-bottom border-2 border-primary"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="showMobileMenu && toggleMenu()"
+            >
+              {{ "products" | translate }}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              routerLink="/categories"
+              class="nav-link px-2"
+              routerLinkActive="active text-primary fw-bold border-bottom border-2 border-primary"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="showMobileMenu && toggleMenu()"
+            >
+              {{ "categories" | translate }}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              routerLink="/offers"
+              class="nav-link px-2"
+              routerLinkActive="active text-primary fw-bold border-bottom border-2 border-primary"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="showMobileMenu && toggleMenu()"
+            >
+              {{ "offers" | translate }}
+            </a>
+          </li>
+        </ul>
 
-              @if (itemsCount > 0) {
-                <span
-                  class="cart-badge badge rounded-pill position-absolute translate-middle"
-                >
-                  {{ itemsCount }}
-                </span>
-              }
-            </div>
-          }
-
-          <button
-            type="button"
-            (click)="toggleTheme()"
-            class="btn btn-link p-0 border-0 theme-toggle-btn text-decoration-none"
-            [attr.aria-label]="
-              isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
-            "
+        <div
+          class="nav-controls d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3 pt-2 pt-md-0"
+        >
+          <div
+            class="d-flex align-items-center gap-3 w-100 w-md-auto justify-content-between justify-content-md-start"
           >
-            <i class="fa-solid fs-5 fa-moon"></i>
-          </button>
+            @if (isUserLogged) {
+              <div
+                class="cart cursor-pointer position-relative d-inline-block"
+                routerLink="/cart"
+                (click)="showMobileMenu && toggleMenu()"
+              >
+                <i class="fa-solid fa-cart-shopping fs-5" ngSkipHydration></i>
 
-          <div class="dropdown position-relative">
+                @if (itemsCount > 0) {
+                  <span
+                    class="cart-badge badge rounded-pill position-absolute translate-middle"
+                  >
+                    {{ itemsCount }}
+                  </span>
+                }
+              </div>
+            }
+
             <button
               type="button"
-              (click)="toggleLangDropdown()"
-              class="btn btn-outline-secondary btn-sm dropdown-toggle d-flex align-items-center gap-1"
+              (click)="toggleTheme()"
+              class="btn btn-link p-0 border-0 theme-toggle-btn text-decoration-none"
+              [attr.aria-label]="
+                isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'
+              "
             >
-              {{ selectedLanguage }}
+              <i class="fa-solid fs-5 fa-moon"></i>
             </button>
 
-            @if (showLangDropdown) {
-              <ul
-                class="dropdown-menu show position-absolute end-0 start-auto mt-1 shadow-sm"
-                style="min-width: 100px"
+            <div class="dropdown position-relative">
+              <button
+                type="button"
+                (click)="toggleLangDropdown()"
+                class="btn btn-outline-secondary btn-sm dropdown-toggle d-flex align-items-center gap-1"
               >
-                <li>
-                  <button class="dropdown-item" (click)="changeLang('en')">
-                    English
-                  </button>
-                </li>
-                <li>
-                  <button class="dropdown-item" (click)="changeLang('ar')">
-                    عربي
-                  </button>
-                </li>
-              </ul>
+                {{ selectedLanguage }}
+              </button>
+
+              @if (showLangDropdown) {
+                <ul
+                  class="dropdown-menu show position-absolute end-0 start-auto mt-1 shadow-sm"
+                  style="min-width: 100px; z-index: 9999"
+                >
+                  <li>
+                    <button class="dropdown-item" (click)="changeLang('en')">
+                      English
+                    </button>
+                  </li>
+                  <li>
+                    <button class="dropdown-item" (click)="changeLang('ar')">
+                      عربي
+                    </button>
+                  </li>
+                </ul>
+              }
+            </div>
+
+            @if (isUserLogged) {
+              <div class="dropdown">
+                <button
+                  class="btn btn-link userIcon user-toggle p-0 text-decoration-none"
+                  type="button"
+                  (click)="toggleDropdown()"
+                >
+                  <i class="fas fa-user fs-5"></i>
+                </button>
+
+                <ul
+                  class="dropdown-menu user-dropdown"
+                  [class.show]="showDropdown"
+                  style="z-index: 2000"
+                >
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      [routerLink]="['/profile']"
+                      (click)="showMobileMenu && toggleMenu()"
+                    >
+                      <i class="fas fa-user" ngSkipHydration></i>
+                      <span>{{ "profile" | translate }}</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      [routerLink]="['/allOrders']"
+                      (click)="showMobileMenu && toggleMenu()"
+                    >
+                      <i class="fa-solid fa-box" ngSkipHydration></i>
+                      <span>{{ "allorders" | translate }}</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      routerLink="/wishList"
+                      (click)="showMobileMenu && toggleMenu()"
+                    >
+                      <i class="fa-solid fa-shield-heart" ngSkipHydration></i>
+                      <span>{{ "wishlist" | translate }}</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      routerLink="/resetpassword"
+                      (click)="showMobileMenu && toggleMenu()"
+                    >
+                      <i class="fa-solid fa-user-lock" ngSkipHydration></i>
+                      <span>{{ "resetPassword" | translate }}</span>
+                    </a>
+                  </li>
+                  <li>
+                    <button class="dropdown-item" (click)="signout()">
+                      <i class="fas fa-sign-out-alt" ngSkipHydration></i>
+                      <span>{{ "signout" | translate }}</span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            }
+
+            @if (isGuest) {
+              <div class="d-flex gap-2">
+                <button
+                  (click)="guestLogin()"
+                  class="btn btn-primary btn-sm px-3"
+                >
+                  {{ "login" | translate }}
+                </button>
+                <button
+                  (click)="guestRegister()"
+                  class="btn btn-outline-primary btn-sm px-3"
+                >
+                  {{ "register" | translate }}
+                </button>
+              </div>
             }
           </div>
-
-          @if (isUserLogged) {
-            <div class="dropdown">
-              <button
-                class="btn btn-link userIcon user-toggle p-0 text-decoration-none"
-                type="button"
-                (click)="toggleDropdown()"
-              >
-                <i class="fas fa-user fs-5"></i>
-              </button>
-
-              <ul
-                class="dropdown-menu user-dropdown"
-                [class.show]="showDropdown"
-              >
-                <li>
-                  <a
-                    class="dropdown-item"
-                    [routerLink]="['/profile']"
-                    (click)="showMobileMenu && toggleMenu()"
-                  >
-                    <i class="fas fa-user" ngSkipHydration></i>
-                    <span>{{ "profile" | translate }}</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item"
-                    [routerLink]="['/allOrders']"
-                    (click)="showMobileMenu && toggleMenu()"
-                  >
-                    <i class="fa-solid fa-box" ngSkipHydration></i>
-                    <span>{{ "allorders" | translate }}</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item"
-                    routerLink="/wishList"
-                    (click)="showMobileMenu && toggleMenu()"
-                  >
-                    <i class="fa-solid fa-shield-heart" ngSkipHydration></i>
-                    <span>{{ "wishlist" | translate }}</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    class="dropdown-item"
-                    routerLink="/resetpassword"
-                    (click)="showMobileMenu && toggleMenu()"
-                  >
-                    <i class="fa-solid fa-user-lock" ngSkipHydration></i>
-                    <span>{{ "resetPassword" | translate }}</span>
-                  </a>
-                </li>
-                <li>
-                  <button class="dropdown-item" (click)="signout()">
-                    <i class="fas fa-sign-out-alt" ngSkipHydration></i>
-                    <span>{{ "signout" | translate }}</span>
-                  </button>
-                </li>
-              </ul>
-            </div>
-          }
-
-          @if (isGuest) {
-            <div class="d-flex gap-2">
-              <button
-                (click)="guestLogin()"
-                class="btn btn-primary btn-sm px-3"
-              >
-                {{ "login" | translate }}
-              </button>
-              <button
-                (click)="guestRegister()"
-                class="btn btn-outline-primary btn-sm px-3"
-              >
-                {{ "register" | translate }}
-              </button>
-            </div>
-          }
         </div>
       </div>
     </div>
+  </header>
+  <div class="search-wrapper m-auto">
+    <input
+      type="search"
+      [(ngModel)]="text"
+      class="form-control"
+      [placeholder]="'searchbyproductname' | translate"
+      (keydown.enter)="productsSearch()"
+    />
+
+    <button
+      class="search-btn"
+      type="button"
+      aria-label="Search"
+      (click)="productsSearch()"
+    >
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </button>
   </div>
-</nav>
+  <nav class="categories-nav pt-4" dir="rtl">
+    <div class="categories-bar">
+      <a routerLink="/categories" class="cat-link all-link">
+        <i class="fa-solid fa-border-all"></i>
+        <span>جميع الفئات</span>
+      </a>
+
+      @for (group of groups; track group.Id) {
+        <a
+          class="cat-link"
+          [routerLink]="['/catDetails', group.Id]"
+          routerLinkActive="active"
+        >
+          {{ group.NameAr }}
+        </a>
+      }
+    </div>
+  </nav>
+</div>

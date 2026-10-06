@@ -223,5 +223,9 @@
   "paymentfailedmessage": "عذراً، لم نتمكن من إتمام عملية الدفع. يرجى المحاولة مرة أخرى أو اختيار طريقة دفع أخرى.",
   "tryagain": "إعادة المحاولة",
   "backtocart": "العودة إلى السلة",
-  "loading":"جارٍ التحميل"
+  "loading": "جارٍ التحميل",
+  "availablequantity": "الكمية المتاحة",
+  "noMoreAvalibleProducts": "لا توجد منتجات متاحة حالياً",
+  "nomoreproducts": "لا توجد منتجات مطابقة للبحث",
+  "deliveryAddress": "عنوان التوصيل"
 }

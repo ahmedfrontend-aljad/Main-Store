@@ -1,7 +1,7 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
 export const headersInterceptor: HttpInterceptorFn = (req, next) => {
-  const userToken = localStorage.getItem('userToken');
+  const userToken = localStorage.getItem('E_K_T');
   const guestToken = localStorage.getItem('guestToken');
 
   const token = userToken ?? guestToken;

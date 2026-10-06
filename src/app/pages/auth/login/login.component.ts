@@ -16,16 +16,18 @@ import {
   RouterLink,
 } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { jwtDecode } from 'jwt-decode';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, firstValueFrom, Unsubscribable } from 'rxjs';
 import { StoreInputComponent } from '../../../Shared/components/store-input/store-input.component';
 import { SubmitButtonComponent } from '../../../Shared/components/submit-button/submit-button.component';
 import { StoreUrl } from '../../../Shared/constants/api.constant';
+import { USER_PROFILE } from '../../../Shared/constants/general.constant';
 import { AuthService } from '../../../Shared/Services/auth.service';
 import { DataService } from '../../../Shared/Services/data.service';
 import { GuestAuthService } from '../../../Shared/Services/guest-auth.service';
+import { HelperService } from '../../../Shared/Services/helper.service';
 import { LoadingService } from '../../../Shared/Services/loading.service';
-import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-login',
@@ -52,6 +54,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   private readonly _LoadingService = inject(LoadingService);
   private readonly _GuestAuthService = inject(GuestAuthService);
   private readonly _DataService = inject(DataService);
+  private readonly _HelperService = inject(HelperService);
 
   destoryUserData!: Unsubscribable;
   destoryGustData!: Unsubscribable;
@@ -102,7 +105,10 @@ export class LoginComponent implements OnInit, OnDestroy {
           'profileData',
           JSON.stringify(response.Obj?.Client?.Id),
         );
-        console.log(response);
+        this._HelperService.setItemToLocalStorage(
+          'ClientProfile',
+          response.Obj?.Client,
+        );
       } else {
         this._ToastrService.error(response?.Message);
       }
@@ -142,20 +148,18 @@ export class LoginComponent implements OnInit, OnDestroy {
           );
 
           localStorage.removeItem('guestToken');
-          localStorage.setItem('userToken', res.Obj.AccessToken);
+          localStorage.setItem('E_K_T', res.Obj.AccessToken);
+          this._HelperService.setItemToLocalStorage(USER_PROFILE, res);
 
           try {
             const decoded: any = jwtDecode(res.Obj.AccessToken);
-            console.log(decoded?.Id);
-
             if (decoded?.Id) {
               localStorage.setItem('userId', decoded.Id);
               await this.getProfileData(decoded.Id);
             }
           } catch (e) {
-            console.error('Invalid JWT Token', e);
+            console.error(e);
           }
-
           this._Router.navigate(['/home']);
         } else {
           this._ToastrService.error(res?.Message);
@@ -164,7 +168,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       error: (err) => {
         this._LoadingService.stop();
         this.isloading = false;
-        console.error('HTTP Error:', err);
+        console.error(err);
         this._ToastrService.error(
           this._TranslateService.instant(err?.error?.Message),
         );

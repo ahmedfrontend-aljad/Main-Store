@@ -223,5 +223,9 @@
   "tryagain": "Try Again",
   "backtocart": "Back to Cart",
   "loading": "loading",
-  "unAvaliable":"Not Avaliable"
+  "unAvaliable": "Not Avaliable",
+  "availablequantity": "Available Quantity",
+  "noMoreAvalibleProducts": "No more available products at the moment",
+  "nomoreproducts": "No more products matching the search",
+  "deliveryAddress": " Delivery Address"
 }

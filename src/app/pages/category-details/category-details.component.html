@@ -28,30 +28,17 @@
         class="section-content mt-8 grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5"
       >
         @for (product of filteredItems(); track product.Id) {
-          <app-product-card
-            [product]="product"
-            [currentUrl]="currentUrl"
-            (showDetails)="openProductModal($event)"
-          ></app-product-card>
+          @if (product.Quantity > 0) {
+            <app-product-card
+              [product]="product"
+              [currentUrl]="currentUrl"
+              (showDetails)="openProductModal($event)"
+            ></app-product-card>
+          }
         }
       </div>
     </div>
   </section>
-
-  @if (pagination && pagination.TotalCount! > pagination.PageSize!) {
-    <div class="my-9 flex justify-center">
-      <ngb-pagination
-        [collectionSize]="pagination.TotalCount!"
-        [(page)]="pageNo"
-        [maxSize]="3"
-        [rotate]="true"
-        [boundaryLinks]="true"
-        [pageSize]="pageSize"
-        (pageChange)="page($event)"
-      >
-      </ngb-pagination>
-    </div>
-  }
 
   @if (selectedProductId) {
     <app-product-details

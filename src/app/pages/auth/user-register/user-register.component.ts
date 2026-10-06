@@ -91,7 +91,7 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this._LoadingService.stop();
-          console.log(err);
+          console.error(err);
           this._ToastrService.error(err?.error?.Message, 'Failed');
         },
       });
