@@ -39,12 +39,13 @@ export class AddToCartComponent {
     const userId = localStorage.getItem('userId');
 
     const dataToSend = {
-      productId: this.product.Id,
+      productId: this.product.ProductId,
       productName: this.product.NameAr || this.product.NameEn || '',
       userId: userId,
       price: this.product.Price ?? 0,
       quantity: 1,
       unitId: 1,
+      ItemUnitId: this.product.ItemUnitId,
       unitName: this.product.UnitName ?? '',
     };
 

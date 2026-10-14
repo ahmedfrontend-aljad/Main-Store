@@ -1,5 +1,7 @@
 export interface Iproducts {
   Id: number;
+  ProductId: number;
+  ItemId: number;
   Code: string;
   NameAr: string;
   NameEn: string;

@@ -9,6 +9,8 @@ export interface Item {
   ItemGroupGuid: string;
   ItemGroupCode: string;
   ItemGroupId: number;
+  ItemCategoryId: null;
+  ItemCategoryName: null;
   ItemType: number;
   RecipeItemType: number;
   RecipeItems: any[];
@@ -19,7 +21,7 @@ export interface Item {
   MaxLimit: number;
   MinLimit: number;
   Category: string;
-  CardImage: string;
+  CardImage: null;
   TBL007ID: number;
   SmallestUnit: number;
   TotalInQty: number;
@@ -75,7 +77,7 @@ export interface Item {
   DocRefGuid: string;
   IsActive: boolean;
   CreatedDate: Date;
-  CreatedBy: null;
+  CreatedBy: string;
   IsUpdated: boolean;
   LastUpdatedBy: null;
   LastUpdatedDate: Date;
@@ -96,10 +98,10 @@ export interface ItemUnit {
   Code: string;
   UnitId: number;
   UnitName: string;
-  UnitCode: string;
+  UnitCode: null | string;
   ManualCode: string;
   Barcode: string;
-  Gtin: string;
+  Gtin: null;
   Weight: number;
   Value: number;
   Factor: number;
@@ -124,6 +126,8 @@ export interface ItemUnit {
   WA: number;
   IsPurchase: null;
   IsWorking: boolean;
+  ItemCategoryId: null;
+  ItemCategoryName: null;
   ItemPlace: number;
   Description: null;
   HowToUse: null;
@@ -131,7 +135,7 @@ export interface ItemUnit {
   Opinions: null;
   ModelType: null;
   Model: null;
-  ItemImages: ItemImage[];
+  ItemImages: any[];
   ItemInStorageDetails: any[];
   ItemsSpare: any[];
   DealingExpiryDate: boolean;
@@ -162,39 +166,6 @@ export interface ItemUnit {
   CancelDate: Date;
   ModifyById: null;
   ModifyByName: null;
-  LastModifiedDate: Date;
-  ModifyCount: number;
-  updateFlag: null;
-}
-
-export interface ItemImage {
-  ItemUnitId: number;
-  ImagePath: string;
-  Image: string;
-  Id: number;
-  No: number;
-  Guid: string;
-  NameAr: null;
-  NameEn: null;
-  BranchId: number;
-  BranchName: null;
-  CompanyId: number;
-  CompanyName: null;
-  DocRefGuid: string;
-  IsActive: boolean;
-  CreatedDate: Date;
-  CreatedBy: null;
-  IsUpdated: boolean;
-  LastUpdatedBy: null;
-  LastUpdatedDate: Date;
-  UpdatedCount: number;
-  IsCanceled: boolean;
-  CancelById: number;
-  CancelBy: null;
-  Notes: null;
-  CancelDate: Date;
-  ModifyById: null;
-  ModifyByName: string;
   LastModifiedDate: Date;
   ModifyCount: number;
   updateFlag: null;

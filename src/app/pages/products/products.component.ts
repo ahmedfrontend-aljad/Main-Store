@@ -43,7 +43,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   private fetchSub?: Subscription;
 
   pageNo = 1;
-  pageSize = PAGE_SIZE;
+  pageSize = 20;
 
   text = '';
 
@@ -228,8 +228,10 @@ export class ProductsComponent implements OnInit, OnDestroy {
     }
   }
 
-  openProductModal(id: number | string): void {
-    this.selectedProductId = id;
+  openProductModal(ProductId: number | string): void {
+    console.log(ProductId);
+    
+    this.selectedProductId = ProductId;
   }
 
   closeProductModal(): void {

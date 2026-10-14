@@ -217,7 +217,7 @@ export class paymentComponent implements OnInit {
       discountPercent: [item.discountPercent || 0],
       vat: [item.vat || 15],
       vatAmount: [item.vatAmount || 0],
-      itemID: [item.id || item.itemId],
+      itemID: [item.ItemId],
       weight: [0],
       quantity: [qty],
       count: [qty],
