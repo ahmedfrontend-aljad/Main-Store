@@ -198,28 +198,64 @@
       </div>
     </section>
   }
-  @for (offer of offers; track offer.Code) {
-    <swiper-slide>
-      <div
-        class="category-slide group p-3 rounded-2xl transition-all duration-300 text-center cursor-pointer my-2"
-        [routerLink]="['/offerDetails', offer.Code]"
-      >
-        <div
-          class="category-img aspect-square w-full rounded-xl overflow-hidden mb-3"
-        >
-          <img
-            class="w-full h-full object-cover"
-            src="./assets/images/Category.png"
-            [alt]="currentLang === 'ar' ? offer.NameAr : offer.NameEn"
-          />
+  @if (offers.length > 0) {
+    <section class="categories-section w-full mb-8 md:mb-8 mt-2 md:mt-7">
+      <div class="px-1">
+        <div class="heading flex justify-between items-end mb-4">
+          <div>
+            <h3 class="font-bold font-sans text-xl md:text-3xl">
+              {{ "offers" | translate }}
+            </h3>
+            <p class="section-subtitle mt-1 text-sm">
+              {{ "shopbyyourfavoritecategory" | translate }}
+            </p>
+          </div>
         </div>
-        <h2
-          class="category-title text-sm md:text-base font-medium line-clamp-1"
-        >
-          {{ currentLang === "ar" ? offer.NameAr : offer.NameEn }}
-        </h2>
+
+        <div class="section-content">
+          <swiper-container
+            slides-per-view="2"
+            space-between="16"
+            loop="true"
+            autoplay-delay="200"
+            [attr.dir]="currentLang === 'ar' ? 'rtl' : 'ltr'"
+            speed="2500"
+            autoplay-disable-on-interaction="false"
+            breakpoints='{
+            "640": { "slidesPerView": 3 },
+            "768": { "slidesPerView": 4 },
+            "1024": { "slidesPerView": 6 }
+          }'
+            pagination="false"
+          >
+            @for (offer of offers; track offer.Code) {
+              <swiper-slide>
+                <div
+                  class="category-slide group p-3 rounded-2xl transition-all duration-300 text-center cursor-pointer my-2"
+                  [routerLink]="['/offerDetails', offer.Code]"
+                >
+                  <div
+                    class="category-img aspect-square w-full rounded-xl overflow-hidden mb-3"
+                  >
+                    <img
+                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      src="./assets/images/Category.png"
+                      [alt]="currentLang === 'ar' ? offer.NameAr : offer.NameEn"
+                    />
+                  </div>
+
+                  <h2
+                    class="category-title text-sm md:text-base font-medium line-clamp-1"
+                  >
+                    {{ currentLang === "ar" ? offer.NameAr : offer.NameEn }}
+                  </h2>
+                </div>
+              </swiper-slide>
+            }
+          </swiper-container>
+        </div>
       </div>
-    </swiper-slide>
+    </section>
   }
   <section>
     <div class="w-full mt-8 md:mt-16">
