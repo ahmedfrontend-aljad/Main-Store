@@ -39,6 +39,7 @@ export interface Item {
   ProfitRate: number;
   valueOfProfit: number;
   ProductCompany: null;
+  ProductId: number;
   ProductDescription: null;
   DescriptionNotes: null;
   ModelType: null;

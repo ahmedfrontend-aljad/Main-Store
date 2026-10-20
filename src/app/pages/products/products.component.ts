@@ -17,7 +17,6 @@ import { Iproducts } from '../../Shared/Interfaces/iproducts';
 import { AllProductsService } from '../../Shared/Services/all-products.service';
 import { LoadingService } from '../../Shared/Services/loading.service';
 import { ProductCardComponent } from '../../Shared/components/product-card/product-card.component';
-import { PAGE_SIZE } from '../../Shared/constants/general.constant';
 import { ProductDetailsComponent } from '../product-details/product-details.component';
 
 @Component({
@@ -43,7 +42,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   private fetchSub?: Subscription;
 
   pageNo = 1;
-  pageSize = 20;
+  pageSize = 10;
 
   text = '';
 
@@ -230,7 +229,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   openProductModal(ProductId: number | string): void {
     console.log(ProductId);
-    
+
     this.selectedProductId = ProductId;
   }
 
