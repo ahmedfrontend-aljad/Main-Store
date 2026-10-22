@@ -77,11 +77,11 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
+
   initForm() {
     this.loginForm = this._FormBuilder.group({
       companyId: [1],
-      branchId: [1],
+      isStoreLogin: [true],
       userName: ['', [Validators.required]],
       password: ['', [Validators.required]],
       rememberMe: [true],
