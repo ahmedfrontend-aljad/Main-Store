@@ -77,7 +77,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
     });
   }
-
+  
   initForm() {
     this.loginForm = this._FormBuilder.group({
       companyId: [1],
@@ -87,6 +87,11 @@ export class LoginComponent implements OnInit, OnDestroy {
       rememberMe: [true],
       getRoles: [true],
     });
+
+    if (localStorage.getItem('UserNameRegister')) {
+      const userNameReges = localStorage.getItem('UserNameRegister')!;
+      this.loginForm.get('userName')?.setValue(userNameReges);
+    }
   }
 
   async getProfileData(userId: string): Promise<void> {

@@ -166,11 +166,14 @@ export class AllOrdersComponent implements OnInit {
 
   getOrdersByStatus(StoreOrderStatus: number): any[] {
     if (StoreOrderStatus === 5) {
-      if (!this.allApprovedOrders) return [];
-      return this.allApprovedOrders.filter((order) => {
-        const status = order.StoreOrderStatus ?? 5;
+      const approvedInvoices = this.allApprovedOrders || [];
+
+      const deliveredReqOrders = (this.allReqOrders || []).filter((order) => {
+        const status = order.StoreOrderStatus ?? 1;
         return status === 5;
       });
+
+      return [...approvedInvoices, ...deliveredReqOrders];
     }
 
     if (!this.allReqOrders) return [];
@@ -182,7 +185,12 @@ export class AllOrdersComponent implements OnInit {
 
   getTotalCountByStatus(status: number): number {
     if (status === 5) {
-      return this.totalOrdersCount || this.getOrdersByStatus(5).length;
+      const approvedCount =
+        this.totalOrdersCount || this.allApprovedOrders.length;
+      const deliveredReqCount = (this.allReqOrders || []).filter(
+        (o) => (o.StoreOrderStatus ?? 1) === 5,
+      ).length;
+      return approvedCount + deliveredReqCount;
     }
     return this.totalReqOrdersCount || this.getOrdersByStatus(status).length;
   }

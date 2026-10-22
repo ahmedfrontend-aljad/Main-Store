@@ -83,6 +83,10 @@ export class UserRegisterComponent implements OnInit, OnDestroy {
         next: (res) => {
           this._LoadingService.stop();
           if (res.IsSuccess) {
+            localStorage.setItem(
+              'UserNameRegister',
+              this.registerForm.get('userName')?.value,
+            );
             this._ToastrService.success(res.Message, 'Success');
             this._Router.navigate(['/auth/login']);
           } else {
