@@ -207,9 +207,11 @@ export class paymentComponent implements OnInit {
     const qty = item.count || item.quantity || item.Quantity || 1;
     const price = item.price || item.Price || 0;
     const todayISO = new Date().toISOString().split('T')[0];
-
+    const branchId =
+      this._HelperService.getItemFromLocalStorage('USER_PROFILE').Obj.BranchId;
+      
     return this._formBuilder.group({
-      branchId: [1],
+      branchId: [branchId],
       price: [price],
       priceIncludeVat: [item.priceIncludeVat || price],
       discount: [item.discount || 0],

@@ -15,6 +15,7 @@ import { SubmitButtonComponent } from '../../Shared/components/submit-button/sub
 import { AuthService } from '../../Shared/Services/auth.service';
 import { DataService } from '../../Shared/Services/data.service';
 import { LoadingService } from '../../Shared/Services/loading.service';
+import { HelperService } from '../../Shared/Services/helper.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -36,7 +37,7 @@ export class ResetPasswordComponent implements OnInit {
   isLoading: boolean = false;
 
   private readonly _FormBuilder = inject(FormBuilder);
-  private readonly _DataService = inject(DataService);
+  private readonly _HelperService = inject(HelperService);
   private readonly _LoadingService = inject(LoadingService);
   private readonly _AuthService = inject(AuthService);
   private readonly _ToastrService = inject(ToastrService);
@@ -47,11 +48,13 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   initForm(): void {
+    const branchId =
+      this._HelperService.getItemFromLocalStorage('USER_PROFILE').Obj.BranchId;
     this.resetForm = this._FormBuilder.group({
       userName: ['', Validators.required],
       oldPassword: ['', Validators.required],
       newPassword: ['', Validators.required],
-      branchId: [1],
+      branchId: [branchId],
     });
   }
 
