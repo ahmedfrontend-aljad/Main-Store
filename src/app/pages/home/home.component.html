@@ -179,11 +179,19 @@
                   <div
                     class="category-img aspect-square w-full rounded-xl overflow-hidden mb-3"
                   >
-                    <img
-                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      [src]="cat.ImagePath || './assets/images/Category.png'"
-                      [alt]="currentLang === 'ar' ? cat.NameAr : cat.NameEn"
-                    />
+                    @if (cat.Image) {
+                      <img
+                        [src]="'data:image/jpeg;base64,' + cat.Image"
+                        [alt]="cat.NameAr"
+                        class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                      />
+                    } @else {
+                      <img
+                        src="./assets/images/Category.png"
+                        [alt]="cat.NameAr"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    }
                   </div>
                   <h2
                     class="category-title text-sm md:text-base font-medium line-clamp-1"
@@ -237,11 +245,19 @@
                   <div
                     class="category-img aspect-square w-full rounded-xl overflow-hidden mb-3"
                   >
-                    <img
-                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      src="./assets/images/Category.png"
-                      [alt]="currentLang === 'ar' ? offer.NameAr : offer.NameEn"
-                    />
+                    @if (offer.Image) {
+                      <img
+                        [src]="'data:image/jpeg;base64,' + offer.Image"
+                        [alt]="offer.NameAr"
+                        class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                      />
+                    } @else {
+                      <img
+                        src="/assets/images/Category.png"
+                        [alt]="offer.NameAr"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    }
                   </div>
 
                   <h2

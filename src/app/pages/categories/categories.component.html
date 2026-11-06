@@ -26,13 +26,21 @@
             </div>
 
             <div
-              class="image-container mb-3 flex justify-center items-center h-36"
+              class="image-container mb-3 flex justify-center items-center h-40"
             >
-              <img
-                [src]="'./assets/images/Category.png'"
-                [alt]="item.NameAr || 'Item Image'"
-                class="max-h-full object-contain"
-              />
+              @if (item.Image) {
+                <img
+                  [src]="'data:image/jpeg;base64,' + item.Image"
+                  [alt]="item.NameAr"
+                  class="max-h-full object-contain"
+                />
+              } @else {
+                <img
+                  src="./assets/images/Category.png"
+                  [alt]="item.NameAr"
+                  class="max-h-full object-contain"
+                />
+              }
             </div>
 
             <div class="product-body text-end flex flex-col gap-1">
